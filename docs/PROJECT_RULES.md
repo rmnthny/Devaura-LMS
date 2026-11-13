@@ -26,3 +26,13 @@ Only these 3 authenticated user roles exist in `spatie/laravel-permission`:
 - **NO Reservations/Scheduling:** No seat booking, study-space reservations, or advance book reservations.
 - **NO External School System Integration:** Standalone database; no DepEd LIS, enrollment, or grading API connections.
 - **NO Embedded AI:** AI tools are used strictly for development, never integrated inside the Laravel application.
+
+## 5. Team Workflow, Branching & QA Standards
+- **Team Roles:**
+  - **Ramon Anthony V. Dela Fuente** — Backend Developer
+  - **Shaina Cuevas** — Frontend Developer
+  - **Kyle E. Mata** — Document Analyst / Backend Developer
+  - **Kristine P. Salazar** — Project Manager / Quality Assurance
+- **Git Branching:** Keep `main` clean and deployable. Develop sprint tasks on short-lived feature branches (e.g., `feat/sprint-1-auth`, `feat/sprint-1-members-qr`, `feat/sprint-1-books-qr`) and merge to `main` after QA verification.
+- **Shared Blade Layouts:** All staff views must extend `resources/views/layouts/app.blade.php` and public kiosk views must extend `resources/views/layouts/kiosk.blade.php` using local `public/vendor/` assets.
+- **Sprint Feature Tests:** Every sprint task must include corresponding `php artisan test` feature tests covering RBAC guards, core CRUD/circulation logic, and edge cases before closing the sprint.
