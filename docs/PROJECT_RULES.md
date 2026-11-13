@@ -29,7 +29,7 @@ Only these 3 authenticated user roles exist in `spatie/laravel-permission`:
 
 ## 5. Team Workflow, Branching & QA Standards
 - **Team Roles:**
-  - **Ramon Anthony V. Dela Fuente** — Backend Developer
+  - **Ramon Anthony V. Dela Fuente** — Backend Developer 
   - **Shaina Cuevas** — Frontend Developer
   - **Kyle E. Mata** — Document Analyst / Backend Developer
   - **Kristine P. Salazar** — Project Manager / Quality Assurance
