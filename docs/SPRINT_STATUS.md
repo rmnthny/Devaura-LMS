@@ -1,6 +1,6 @@
 # Sprint Status
 
-Only work on tasks under **Current Sprint**. Do not build anything under **Upcoming Sprints** yet. Once all tasks in the current sprint pass tests, write a short handoff note and stop so we can merge to `main`.
+Only work on tasks under **Current Sprint**. Do not build anything under **Upcoming Sprints** yet. Each sprint follows this Agile loop: **Build → `php artisan test` → Kristine's QA Review → Apply QA Fixes → Merge to `main`**. Once all tasks and QA fixes pass, write a short handoff note and stop.
 
 ---
 
@@ -27,6 +27,8 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
   - Restrict `admin`, `staff`, and `maintenance` account creation and management to `superadmin` only.
 - [ ] **1.4 Member CRUD, Archiving & QR Codes** *(Anthony + Shaina)*
   - Build member CRUD, auto-generate `member_code` and QR PNGs (`simple-qrcode`), add soft-delete archiving, printable Member QR ID cards, and Sprint 1 feature tests.
+- [ ] **1.5 QA Review & Fixes** *(Kristine + Team)*
+  - Run Kristine's QA check, apply any fixes, and verify all Sprint 1 tests pass before merging to `main`.
 
 ---
 
