@@ -39,5 +39,6 @@ We use 7 roles in `spatie/laravel-permission`:
 
 ## 5. Git & Testing Workflow
 - Keep `main` clean. Build each task on a short-lived branch (e.g., `feat/sprint-1-auth`) and merge to `main` after QA.
+- Never commit `.env`, database passwords, mail/OTP credentials, or private keys—keep all sensitive files in `.gitignore`.
 - Extend `resources/views/layouts/app.blade.php` for staff/member views and `resources/views/layouts/kiosk.blade.php` for `/kiosk`.
 - Every sprint task needs `php artisan test` feature tests covering RBAC, core logic, and edge cases before closing the sprint.
