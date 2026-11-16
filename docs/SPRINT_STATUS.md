@@ -16,37 +16,39 @@
 
 ## CURRENT SPRINT
 
-### Sprint 1 — Core Schema, Auth/RBAC & Member/Book QR Generation
-- [ ] **Task 1.1: Migrations & Eloquent Models**
-  - Update `users` migration to include `status` (`enum('active', 'inactive')`, default `'active'`).
-  - Create migrations and Eloquent models for `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, and `inventory_audit_items` strictly matching `docs/SCHEMA.md`.
-  - Configure model relationships, fillable attributes, casts, `HasRoles` (`User`), and `LogsActivity` (`spatie/laravel-activitylog`).
-- [ ] **Task 1.2: Authentication, RBAC Middleware & Database Seeders**
-  - Implement session authentication (Login/Logout) with active status enforcement (`status === 'active'`) and offline Bootstrap 5 layout (`public/vendor/`).
-  - Create role seeders for exact Spatie role slugs: `head_librarian`, `library_staff`, `student_staff`.
-  - Seed default UBNHS accounts for each role and realistic sample UBNHS members (students Grade 7–12 + faculty) and cataloged books.
-- [ ] **Task 1.3: Member CRUD + QR Code PNG Generation**
-  - Build Member management controllers, Form Requests, and offline Blade views (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy` restricted by role).
-  - Auto-generate unique `member_code` (e.g., `UBNHS-2026-0001`) and render local QR code PNG via `simplesoftwareio/simple-qrcode` saved to `storage/app/public/qrcodes/members/` (`qr_code_path`), plus printable Member QR ID card view.
-- [ ] **Task 1.4: Book CRUD + QR Code PNG Generation**
-  - Build Book catalog controllers, Form Requests, and offline Blade views (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy` restricted by role).
-  - Auto-generate or validate unique `accession_number` (e.g., `ACC-00001`) and render local QR code PNG via `simplesoftwareio/simple-qrcode` saved to `storage/app/public/qrcodes/books/` (`qr_code_path`), plus printable Book QR label view.
+### Sprint 1 — Auth, Email OTP, 7-Role RBAC & Member Management
+- [ ] **Task 1.1: Database & Eloquent Models** *(DB: Kyle | Backend Models: Anthony)*
+  - Finalize MySQL schema (`devaura_lms`) and Eloquent models with relationships and `SoftDeletes` for archiving (`users`, `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, `inventory_audit_items`, `email_otps`, `notifications`).
+- [ ] **Task 1.2: Authentication & Email OTP Verification** *(Backend: Anthony | Frontend: Shaina)*
+  - Implement session Login/Logout with active status enforcement.
+  - Restrict public Sign Up / Log In strictly to `student` and `faculty` with Email OTP verification.
+- [ ] **Task 1.3: 7-Role RBAC & Superadmin User Management** *(Backend: Anthony | Frontend: Shaina)*
+  - Configure Spatie roles: `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, `maintenance`.
+  - Enforce that `admin`, `staff`, and `maintenance` accounts are created/managed exclusively by `superadmin`.
+- [ ] **Task 1.4: Member CRUD, Archiving & QR Generation** *(Backend: Anthony | Frontend: Shaina)*
+  - Build Member CRUD, auto-generated `member_code` & QR PNG (`simple-qrcode`), soft-delete archiving, printable Member QR ID cards, and Sprint 1 feature tests.
 
 ---
 
 ## LOCKED / FUTURE SPRINTS (DO NOT IMPLEMENT YET)
 
-### Sprint 2 — Public Kiosk (`/kiosk`) QR Attendance & Public Book Search
-- [ ] **Task 2.1:** Unauthenticated `/kiosk` interface using offline Bootstrap 5 and `html5-qrcode.min.js` (webcam + USB scanner support).
-- [ ] **Task 2.2:** Rapid QR attendance logging (`time_in` / `time_out` toggle per `member_id` on `log_date`) with instant visual confirmation.
-- [ ] **Task 2.3:** Public Kiosk book catalog & availability search (`available`, `borrowed`, `shelf_location`) and Staff Attendance Log viewer.
+### Sprint 2 — Book Inventory Management, Archiving & QR Integration
+- [ ] **Task 2.1:** Book CRUD + stock quantities & real-time availability status (`available`, `borrowed`, `missing`, `damaged`).
+- [ ] **Task 2.2:** Auto-generated `accession_number` & Book QR PNG generation + printable Book QR labels.
+- [ ] **Task 2.3:** Archive Bin (soft-delete & restore) for books and members.
+- [ ] **Task 2.4:** Inventory Audit session workflow & QR scan verification (`verified`, `missing`, `misplaced`) + Sprint 2 feature tests.
 
-### Sprint 3 — Borrowing/Returning Circulation & Operational Dashboard
-- [ ] **Task 3.1:** QR-assisted Borrow (Checkout) workflow (`TRX-YYYYMMDD-XXXX`, due date assignment, book status -> `'borrowed'`).
-- [ ] **Task 3.2:** QR-assisted Return (Check-in) workflow (`returned_at`, overdue status detection without fines/payments, book status -> `'available'` / `'damaged'`).
-- [ ] **Task 3.3:** Role-aware Staff Dashboard displaying real-time KPIs (today's attendance, active borrows, overdue books, catalog summary) and Staff/User management for `head_librarian`.
+### Sprint 3 — Public Kiosk & Attendance Monitoring (QR + Manual)
+- [ ] **Task 3.1:** Unauthenticated `/kiosk` terminal (`kiosk.blade.php`) with webcam/USB QR scanner (`html5-qrcode.min.js`) for rapid `time_in` / `time_out`.
+- [ ] **Task 3.2:** Manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, Visitors).
+- [ ] **Task 3.3:** Staff Attendance Monitoring & filtering views + Sprint 3 feature tests.
 
-### Sprint 4 — Digital Inventory Auditing & Automated PDF/Excel Reports
-- [ ] **Task 4.1:** Inventory Audit session workflow (`inventory_audits` & `inventory_audit_items`) with QR scan verification (`verified`, `missing`, `misplaced`).
-- [ ] **Task 4.2:** Automated PDF (`barryvdh/laravel-dompdf`) and Excel (`maatwebsite/excel`) exports for Attendance, Circulation/Overdue, and Inventory Audit reports.
-- [ ] **Task 4.3:** Activity Log viewer (`spatie/laravel-activitylog`) for `head_librarian` and final December 1 defense readiness verification.
+### Sprint 4 — Book Circulation (QR Borrow/Return) & Notifications
+- [ ] **Task 4.1:** QR-assisted Borrow (checkout) & Return (check-in) workflows (`TRX-YYYYMMDD-XXXX`) with real-time book availability updates.
+- [ ] **Task 4.2:** Overdue detection & borrow-blocking for members with overdue books (strictly zero fines/payments).
+- [ ] **Task 4.3:** Automated Notifications for account updates, pending items, and due/overdue alerts + Sprint 4 feature tests.
+
+### Sprint 5 — Analytical Dashboard, Formal Reports & Audit Logs
+- [ ] **Task 5.1:** Interactive Analytical Dashboard with KPIs and charts (attendance trends, circulation statistics).
+- [ ] **Task 5.2:** Formal PDF (`barryvdh/laravel-dompdf`) and Excel (`maatwebsite/excel`) exports for Attendance, Circulation, and Inventory.
+- [ ] **Task 5.3:** Chronological Audit Log viewer (`spatie/laravel-activitylog`) for `superadmin` + Sprint 5 feature tests & Dec 1 defense readiness check.
