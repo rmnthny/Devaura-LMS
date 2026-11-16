@@ -1,54 +1,54 @@
-# UBNHS-LMS Sprint Status & Boundary Gate
+# Sprint Status
 
-> **AI EXECUTION GATE:** You may ONLY implement tasks listed under **`CURRENT SPRINT`** below. Never build features listed under **`LOCKED / FUTURE SPRINTS`**. When all tasks in `CURRENT SPRINT` are finished and verified, output a **Sprint Handoff Summary** and **STOP**.
-
----
-
-## COMPLETED SPRINTS
-
-### Sprint 0 — Foundation & Offline Environment Setup
-- [x] **Task 0.1:** Scaffold Laravel 13 project (`Devaura-LMS`) and install required packages (`spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel`).
-- [x] **Task 0.2:** Publish Spatie Permission & Activitylog migrations/config, create `public/storage` symlink, configure `.env` & `.env.example` for MySQL (`devaura_lms`), and verify base migrations.
-- [x] **Task 0.3:** Download 100% local offline frontend assets (`bootstrap.min.css`, `bootstrap.bundle.min.js`, `bootstrap-icons.min.css` + fonts, `html5-qrcode.min.js`) into `public/vendor/`.
-- [x] **Task 0.4:** Establish Cross-AI Instruction Loaders (`GEMINI.md`, `CLAUDE.md`, `.github/copilot-instructions.md`), Antigravity rules/workflows (`.agent/`), and `docs/` architecture baselines.
+Only work on tasks under **Current Sprint**. Do not build anything under **Upcoming Sprints** yet. Once all tasks in the current sprint pass tests, write a short handoff note and stop so we can merge to `main`.
 
 ---
 
-## CURRENT SPRINT
+## Completed
+
+### Sprint 0 — Project Setup
+- [x] **0.1:** Set up Laravel 13 (`Devaura-LMS`) and install `spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `barryvdh/laravel-dompdf`, and `maatwebsite/excel`.
+- [x] **0.2:** Publish Spatie migrations/config, link `public/storage`, configure `.env` for MySQL (`devaura_lms`), and run base migrations.
+- [x] **0.3:** Add offline frontend assets (`bootstrap.min.css`, `bootstrap.bundle.min.js`, `bootstrap-icons.min.css`, `html5-qrcode.min.js`) to `public/vendor/`.
+- [x] **0.4:** Add team docs (`docs/`) and repo guidelines.
+
+---
+
+## Current Sprint
 
 ### Sprint 1 — Auth, Email OTP, 7-Role RBAC & Member Management
-- [ ] **Task 1.1: Database & Eloquent Models** *(DB: Kyle | Backend Models: Anthony)*
-  - Finalize MySQL schema (`devaura_lms`) and Eloquent models with relationships and `SoftDeletes` for archiving (`users`, `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, `inventory_audit_items`, `email_otps`, `notifications`).
-- [ ] **Task 1.2: Authentication & Email OTP Verification** *(Backend: Anthony | Frontend: Shaina)*
-  - Implement session Login/Logout with active status enforcement.
-  - Restrict public Sign Up / Log In strictly to `student` and `faculty` with Email OTP verification.
-- [ ] **Task 1.3: 7-Role RBAC & Superadmin User Management** *(Backend: Anthony | Frontend: Shaina)*
-  - Configure Spatie roles: `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, `maintenance`.
-  - Enforce that `admin`, `staff`, and `maintenance` accounts are created/managed exclusively by `superadmin`.
-- [ ] **Task 1.4: Member CRUD, Archiving & QR Generation** *(Backend: Anthony | Frontend: Shaina)*
-  - Build Member CRUD, auto-generated `member_code` & QR PNG (`simple-qrcode`), soft-delete archiving, printable Member QR ID cards, and Sprint 1 feature tests.
+- [ ] **1.1 Database & Eloquent Models** *(DB: Kyle | Models: Anthony)*
+  - Finalize the MySQL schema (`devaura_lms`) and Eloquent models with soft-delete archiving (`users`, `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, `inventory_audit_items`, `email_otps`, `notifications`).
+- [ ] **1.2 Auth & Email OTP** *(Anthony + Shaina)*
+  - Build login/logout and check that the account is active.
+  - Limit public sign-up and login to `student` and `faculty` with Email OTP verification.
+- [ ] **1.3 7-Role RBAC & Superadmin User Management** *(Anthony + Shaina)*
+  - Set up roles: `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`.
+  - Restrict `admin`, `staff`, and `maintenance` account creation and management to `superadmin` only.
+- [ ] **1.4 Member CRUD, Archiving & QR Codes** *(Anthony + Shaina)*
+  - Build member CRUD, auto-generate `member_code` and QR PNGs (`simple-qrcode`), add soft-delete archiving, printable Member QR ID cards, and Sprint 1 feature tests.
 
 ---
 
-## LOCKED / FUTURE SPRINTS (DO NOT IMPLEMENT YET)
+## Upcoming Sprints (Locked)
 
-### Sprint 2 — Book Inventory Management, Archiving & QR Integration
-- [ ] **Task 2.1:** Book CRUD + stock quantities & real-time availability status (`available`, `borrowed`, `missing`, `damaged`).
-- [ ] **Task 2.2:** Auto-generated `accession_number` & Book QR PNG generation + printable Book QR labels.
-- [ ] **Task 2.3:** Archive Bin (soft-delete & restore) for books and members.
-- [ ] **Task 2.4:** Inventory Audit session workflow & QR scan verification (`verified`, `missing`, `misplaced`) + Sprint 2 feature tests.
+### Sprint 2 — Book Inventory, Archiving & QR Codes
+- [ ] **2.1:** Build book CRUD with stock counts and availability status (`available`, `borrowed`, `missing`, `damaged`).
+- [ ] **2.2:** Auto-generate `accession_number`, Book QR PNGs, and printable Book QR labels.
+- [ ] **2.3:** Build the Archive Bin (soft-delete and restore) for books and members.
+- [ ] **2.4:** Build Inventory Audit sessions with QR scan checks (`verified`, `missing`, `misplaced`) and Sprint 2 tests.
 
-### Sprint 3 — Public Kiosk & Attendance Monitoring (QR + Manual)
-- [ ] **Task 3.1:** Unauthenticated `/kiosk` terminal (`kiosk.blade.php`) with webcam/USB QR scanner (`html5-qrcode.min.js`) for rapid `time_in` / `time_out`.
-- [ ] **Task 3.2:** Manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, Visitors).
-- [ ] **Task 3.3:** Staff Attendance Monitoring & filtering views + Sprint 3 feature tests.
+### Sprint 3 — Public Kiosk & Attendance Monitoring
+- [ ] **3.1:** Build the public `/kiosk` page (`kiosk.blade.php`) with webcam/USB QR scanning (`html5-qrcode.min.js`) for quick `time_in` / `time_out`.
+- [ ] **3.2:** Add manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, Visitors).
+- [ ] **3.3:** Build staff attendance monitoring and filter views + Sprint 3 tests.
 
-### Sprint 4 — Book Circulation (QR Borrow/Return) & Notifications
-- [ ] **Task 4.1:** QR-assisted Borrow (checkout) & Return (check-in) workflows (`TRX-YYYYMMDD-XXXX`) with real-time book availability updates.
-- [ ] **Task 4.2:** Overdue detection & borrow-blocking for members with overdue books (strictly zero fines/payments).
-- [ ] **Task 4.3:** Automated Notifications for account updates, pending items, and due/overdue alerts + Sprint 4 feature tests.
+### Sprint 4 — Book Circulation & Notifications
+- [ ] **4.1:** Build QR-assisted borrow and return flows (`TRX-YYYYMMDD-XXXX`) that update book status in real time.
+- [ ] **4.2:** Flag overdue books and block new borrows for members with overdue items (no fines or payments).
+- [ ] **4.3:** Send automated notifications for account updates, pending items, and due/overdue alerts + Sprint 4 tests.
 
-### Sprint 5 — Analytical Dashboard, Formal Reports & Audit Logs
-- [ ] **Task 5.1:** Interactive Analytical Dashboard with KPIs and charts (attendance trends, circulation statistics).
-- [ ] **Task 5.2:** Formal PDF (`barryvdh/laravel-dompdf`) and Excel (`maatwebsite/excel`) exports for Attendance, Circulation, and Inventory.
-- [ ] **Task 5.3:** Chronological Audit Log viewer (`spatie/laravel-activitylog`) for `superadmin` + Sprint 5 feature tests & Dec 1 defense readiness check.
+### Sprint 5 — Dashboard, Reports & Audit Logs
+- [ ] **5.1:** Build the analytical dashboard with KPIs, attendance trends, and circulation charts.
+- [ ] **5.2:** Export formal PDF (`barryvdh/laravel-dompdf`) and Excel (`maatwebsite/excel`) reports for Attendance, Circulation, and Inventory.
+- [ ] **5.3:** Build the chronological Audit Log viewer (`spatie/laravel-activitylog`) for `superadmin` + Sprint 5 tests and Dec 1 defense check.

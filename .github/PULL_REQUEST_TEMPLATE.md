@@ -1,11 +1,11 @@
 ## Sprint & Notion Task
 - **Sprint:** Sprint #
 - **Notion Task:** [Link or Task ID]
-- **Summary of Changes:**
+- **What changed:**
   - 
 
-## QA & Guardrail Checklist
-- [ ] Follows `docs/SPRINT_STATUS.md` (`CURRENT SPRINT` only)
-- [ ] Matches `docs/SCHEMA.md` (no unapproved columns/tables)
-- [ ] Zero external CDNs (uses local `public/vendor/` assets)
+## Checklist
+- [ ] Matches `docs/SPRINT_STATUS.md` (Current Sprint only)
+- [ ] Matches `docs/SCHEMA.md` (no unapproved columns or tables)
+- [ ] Uses local `public/vendor/` assets (no external CDNs)
 - [ ] `php artisan test` passes locally
