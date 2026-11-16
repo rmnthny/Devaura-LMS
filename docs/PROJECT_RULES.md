@@ -8,15 +8,20 @@
 
 ## 2. Locked Technology Stack (Do Not Substitute)
 - **Backend:** PHP 8.3+, Laravel 13 (MVC, Eloquent ORM, Form Requests, Middleware)
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+), Laravel Blade, Bootstrap 5 (stored locally in `public/vendor/` — zero external CDN dependency)
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+), Laravel Blade, Bootstrap 5 + Tailwind CSS (stored locally in `public/vendor/` — zero external CDN dependency)
 - **Database:** MySQL 8.4+ (`devaura_lms`)
 - **Required Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `html5-qrcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel`
 
 ## 3. Role-Based Access Control (Exact Role Slugs)
-Only these 3 authenticated user roles exist in `spatie/laravel-permission`:
-1. `head_librarian` — Full administrative access (staff/role management, books, members, circulation, attendance, inventory audits, reports, audit logs, data retention).
-2. `library_staff` — Operational management (books, members, circulation, attendance, inventory audits, reports).
-3. `student_staff` — Restricted operational assistance (attendance monitoring, borrowing/returning transactions, basic book catalog lookup; NO deletion of master records or role changes).
+7 user roles exist in `spatie/laravel-permission`:
+1. `superadmin` (Head Librarian) — Full administrative access (creates/manages `admin`, `staff`, and `maintenance` accounts; full access to books, members, circulation, attendance, inventory audits, reports, audit logs, archiving).
+2. `admin` (Assigned Teacher) — Operational management (books, members, circulation, attendance, inventory audits, reports).
+3. `staff` (Student Staff) — Restricted operational assistance (attendance monitoring, borrowing/returning transactions, basic book catalog lookup; NO deletion/archiving of master records or role changes).
+4. `student` — Library member (public sign up/log in with Email OTP; can view catalog, borrowing history, and personal QR).
+5. `faculty` — Library member (public sign up/log in with Email OTP; can view catalog, borrowing history, and personal QR).
+6. `visitor` — Walk-in guest (attendance logging at `/kiosk` or manual entry).
+7. `maintenance` — System/facility maintenance role managed exclusively by `superadmin`.
+- **Auth & Registration Rule:** Public Sign Up / Log In is restricted strictly to `student` and `faculty` (with Email OTP verification). `admin`, `staff`, and `maintenance` accounts are created and managed **only** by `superadmin`.
 - **Public Kiosk (Unauthenticated Route `/kiosk`):** Dedicated library terminal interface for rapid QR code entry/exit attendance logging and public book availability search.
 
 ## 4. Strict Out-of-Scope Exclusions (NEVER CODE THESE)
