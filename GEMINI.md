@@ -7,10 +7,15 @@ Before writing any code, migrations, routes, or commands for `Devaura-LMS`, read
 4. `docs/REQUIREMENTS.md` — Functional requirements (R1–R5)
 5. `docs/handoffs/` — Check the latest `SPRINT_*_HANDOFF.md` to pick up where the last sprint left off
 
-## Core Rules
-- **Stay in scope:** Never build features from **Upcoming Sprints** or **Out of Scope**.
-- **Stick to the schema:** Never invent or rename database columns without updating `docs/SCHEMA.md` first.
-- **Offline assets only:** Never link external CDNs (`cdn.jsdelivr.net`, `unpkg.com`, `cdnjs.cloudflare.com`) in Blade views; use local files in `public/vendor/`.
-- **Keep docs updated:** When a sprint finishes or the structure changes, update `docs/handoffs/SPRINT_<N>_HANDOFF.md` and `docs/SPRINT_STATUS.md` automatically.
-- **Notion sync:** When Kristine shares a Notion sprint, validate it against `docs/PROJECT_RULES.md` and `docs/SCHEMA.md`, then update `docs/SPRINT_STATUS.md`.
-- **Sprint handoff:** Once all tasks in **Current Sprint** pass tests, write the handoff note, update `docs/SPRINT_STATUS.md`, share a short summary, and stop so we can push to `main` and start the next sprint fresh.
+## Do's and Don'ts
+**Do:**
+- Read `docs/PROJECT_RULES.md`, `docs/SCHEMA.md`, `docs/SPRINT_STATUS.md`, and `docs/REQUIREMENTS.md` before coding.
+- Use local assets in `public/vendor/` (Bootstrap 5, Tailwind CSS, JS).
+- Write feature tests (`php artisan test`) for every sprint task.
+- Keep sensitive files (`.env`, keys, passwords) in `.gitignore`.
+
+**Don't:**
+- Never build tasks from **Upcoming Sprints** or **Out of Scope**.
+- Never invent or rename database columns without updating `docs/SCHEMA.md` first.
+- Never link external CDNs in Blade templates.
+- Never commit `.env` or any credentials to GitHub.
