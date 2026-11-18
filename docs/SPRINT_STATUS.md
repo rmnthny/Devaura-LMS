@@ -20,13 +20,13 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 - [ ] **1.1 Database & Eloquent Models** *(DB: Kyle | Models: Anthony)*
   - Finalize the MySQL schema (`devaura_lms`) and Eloquent models with soft-delete archiving (`users`, `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, `inventory_audit_items`, `email_otps`, `notifications`).
 - [ ] **1.2 Auth & Email OTP** *(Anthony + Shaina)*
-  - Build login/logout and check that the account is active.
+  - Build login/logout, check that the account is active, add **5/min login rate limiting** (1-min cooldown), and add **prevent-back-history middleware** on authenticated routes.
   - Limit public sign-up and login to `student` and `faculty` with Email OTP verification.
 - [ ] **1.3 7-Role RBAC & Superadmin User Management** *(Anthony + Shaina)*
-  - Set up roles: `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`.
+  - Set up roles (`superadmin`, `admin`, `staff`, `student`, `faculty`, `visitor`, `maintenance`) with **granular Spatie permissions** (`books.view`, `books.create`, `books.update`, `books.delete`, `reports.view`, `admins.manage`, etc.) enforced in controllers and Blade `@can`.
   - Restrict `admin`, `staff`, and `maintenance` account creation and management to `superadmin` only.
 - [ ] **1.4 Member CRUD, Archiving & QR Codes** *(Anthony + Shaina)*
-  - Build member CRUD, auto-generate `member_code` and QR PNGs (`simple-qrcode`), add soft-delete archiving, printable Member QR ID cards, and Sprint 1 feature tests.
+  - Build member CRUD, auto-generate `member_code` and QR PNGs (`simple-qrcode`), add soft-delete archiving, printable Member QR ID cards, **Laravel Factories**, and Sprint 1 feature/Postman tests.
 - [ ] **1.5 QA Review & Fixes** *(Kristine + Team)*
   - Run Kristine's QA check, apply any fixes, and verify all Sprint 1 tests pass before merging to `main`.
 
@@ -39,10 +39,11 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 - [ ] **2.2:** Auto-generate `accession_number`, Book QR PNGs, and printable Book QR labels.
 - [ ] **2.3:** Build the Archive Bin (soft-delete and restore) for books and members.
 - [ ] **2.4:** Build Inventory Audit sessions with QR scan checks (`verified`, `missing`, `misplaced`) and Sprint 2 tests.
+- [ ] **2.5:** Add batched (**100-record**) CSV/Excel bulk user import (restricted to `superadmin`) with automated email error handling.
 
 ### Sprint 3 — Public Kiosk & Attendance Monitoring
 - [ ] **3.1:** Build the public `/kiosk` page (`kiosk.blade.php`) with webcam/USB QR scanning (`html5-qrcode.min.js`) for quick `time_in` / `time_out`.
-- [ ] **3.2:** Add manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, Visitors).
+- [ ] **3.2:** Add manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, and Visitors with **Full Name, Organization, and Email**).
 - [ ] **3.3:** Build staff attendance monitoring and filter views + Sprint 3 tests.
 
 ### Sprint 4 — Book Circulation & Notifications
@@ -53,4 +54,4 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 ### Sprint 5 — Dashboard, Reports & Audit Logs
 - [ ] **5.1:** Build the analytical dashboard with KPIs, attendance trends, and circulation charts.
 - [ ] **5.2:** Export formal PDF (`barryvdh/laravel-dompdf`) and Excel (`maatwebsite/excel`) reports for Attendance, Circulation, and Inventory.
-- [ ] **5.3:** Build the chronological Audit Log viewer (`spatie/laravel-activitylog`) for `superadmin` + Sprint 5 tests and Dec 1 defense check.
+- [ ] **5.3:** Build the chronological Audit Log viewer (`spatie/laravel-activitylog`) for `superadmin` + Sprint 5 tests, **mobile responsiveness check**, and Dec 1 defense check.
