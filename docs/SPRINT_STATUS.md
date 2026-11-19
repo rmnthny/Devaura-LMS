@@ -19,17 +19,17 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 
 ### Sprint 1 — Auth, Email OTP, 7-Role RBAC & Member Management
 - [ ] **1.1 Normalized Database & Eloquent Models** *(DB: Kyle | Models: Anthony)*
-  - Finalize the normalized MySQL schema (`devaura_lms`) separating user credentials, members (`student`/`faculty`), personnel (`department`, roles, schedules), and visitors, plus Eloquent models with soft-delete archiving and `activity_log` tracking.
+  - Sprint 1 backend models and a PHPUnit-only schema contract cover `users`, `department`, `library_member`, `library_personnel`, and `email_otps`. Kyle's production migrations and schema review remain pending.
 - [ ] **1.2 Auth & Email OTP** *(Backend: Anthony | UI: Shaina)*
-  - Build login/logout, active account check, **5/min login rate limiting** (1-min cooldown), and **prevent-back-history middleware** on authenticated routes.
-  - Limit public sign-up to `student` and `faculty` with 6-digit Email OTP verification (auto-generating Member QR on verification per Use Case/DFD).
-- [ ] **1.3 7-Role RBAC, Role Permissions & Superadmin User Management** *(Backend: Anthony | UI: Shaina)*
-  - Configure 7 roles (`superadmin`, `admin`, `staff`, `student`, `faculty`, `visitor`, `maintenance`) with **granular Spatie permissions** (`books.*`, `members.*`, `departments.*`, `reports.*`, `admins.manage`, etc.) enforced in controllers, middleware, and Blade `@can`.
-  - Restrict `admin`, `staff`, and `maintenance` account management and **Manage Role Permissions** to `superadmin` only; add self-service **Update Personal Info** for authenticated users.
+  - Login/logout, active account check, **3/min login rate limiting** (1-min cooldown), and **`PreventBackHistory` middleware** on authenticated routes.
+  - Public sign-up limited to `student` (strict 12-digit LRN) and `faculty` (strict 7-digit DepEd Employee Number + subject Department) with 6-digit Email OTP via Gmail SMTP (auto-generating `UBNHS-YYYY-XXXX` & Member QR via `milon/barcode`).
+- [ ] **1.3 7-Role Predefined RBAC & Superadmin User Management** *(Backend: Anthony | UI: Shaina)*
+  - Configured 7 predefined Spatie roles (`superadmin`, `admin`, `staff`, `student`, `faculty`, `visitor`, `maintenance`) aligned with the Use Case Diagrams + role-gated Dashboard module cards.
+  - Superadmin-only **User Roles** (`/admin/users`) with strict password confirmation (Faculty → `admin`, Student → `staff`, `maintenance`) and **Single-Superadmin Transfer** (reverting old superadmin to `faculty`), plus self-service **Update Personal Info** (`/profile`).
 - [ ] **1.4 Member CRUD, Archiving & QR Codes** *(Backend: Anthony | UI: Shaina)*
-  - Build member CRUD (with duplicate LRN/ID rejection), auto-generate `member_code` (`UBNHS-YYYY-XXXX`) and QR PNGs (`simple-qrcode`), soft-delete archiving, printable Member QR ID cards, **Laravel Factories**, and **PHPUnit + Postman** tests.
+  - Member CRUD (with duplicate LRN/DepEd Employee Number rejection), auto-generated `member_code` (`UBNHS-YYYY-XXXX`), `milon/barcode` QR PNGs/SVGs, 6-month Archive Bin + Restore, QR JSON endpoints, **Laravel Factories**, and **34 PHPUnit tests**.
 - [ ] **1.5 QA Review & Fixes** *(QA: Kristine + Team)*
-  - Verify CSRF, XSS, SQLi, RBAC, rate limiting, `php artisan test`, and Postman endpoints; apply fixes before merging to `main`.
+  - The current automated suite passes 34/34 tests; Postman verification and Kristine's sign-off remain pending before merging to `main`.
 
 ---
 

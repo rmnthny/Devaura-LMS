@@ -8,7 +8,7 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
 | Member | Role | Primary Folders / Deliverables |
 | :--- | :--- | :--- |
 | **Anthony** | Backend Developer | `app/`, `routes/`, `tests/`, Spatie RBAC, Auth/OTP, QR Service, Bulk Import, Postman & PHPUnit |
-| **Shaina** | Frontend Developer | `resources/views/`, `public/vendor/`, Bootstrap 5 + Tailwind CSS, mobile-responsive UI & `@can` buttons |
+| **Shaina** | Frontend Developer | `resources/views/`, `public/vendor/`, Bootstrap 5 (offline), mobile-responsive UI & `@can` buttons |
 | **Kyle** | Document Analyst / Database Developer | Normalized MySQL (`devaura_lms`) schema, ERD/DFD/Flowchart/Use Case documentation, migrations |
 | **Kristine** | Project Manager / QA | Notion sprint tracking, QA checklist (RBAC, CSRF, XSS, SQLi, Postman, mobile responsiveness) |
 
@@ -22,7 +22,7 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
 3. **Pull Request & QA Gate:** Never merge directly to `main` until:
    - `php artisan test` passes (100% green).
    - **Postman API Verification** passes (`GET`, `POST`, `PUT/PATCH`, `DELETE`, CSRF token handling, expected `200`/`201`/`403`/`422` codes).
-   - **Security Checks** pass (5/min login rate limit, `PreventBackHistory`, active check, no raw SQL, Blade escaping).
+   - **Security Checks** pass (3/min login rate limit, `PreventBackHistory`, active check, no raw SQL, Blade escaping).
    - **Responsiveness Check** passes (Chrome DevTools / mobile screen viewer for grids, cards, and inputs).
 4. **Sprint Handoff:** Generate `docs/handoffs/SPRINT_<N>_HANDOFF.md`, update `docs/SPRINT_STATUS.md`, merge to `main`, and start a fresh AI chat for the next sprint.
 

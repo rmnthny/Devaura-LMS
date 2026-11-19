@@ -4,7 +4,7 @@
 - **System:** QR Code-Integrated Library Management System for Upper Bicutan National High School (UBNHS-LMS)
 - **Team (Group 1 - Devaura, PUP Taguig):**
   - **Anthony (Ramon Anthony V. Dela Fuente)** — Backend Developer (`app/`, `routes/`, `tests/` — Auth, OTP, Spatie RBAC, Controllers, Services, JSON/API endpoints, PHPUnit & Postman testing)
-  - **Shaina Cuevas** — Frontend Developer (`resources/views/`, Bootstrap 5 + Tailwind CSS, mobile-responsive grids/cards/forms)
+  - **Shaina Cuevas** — Frontend Developer (`resources/views/`, Bootstrap 5 offline assets in `public/vendor/`, mobile-responsive grids/cards/forms)
   - **Kyle E. Mata** — Document Analyst / Database Developer (Normalized MySQL 8.4+ schema `devaura_lms` & migrations)
   - **Kristine P. Salazar** — Project Manager / QA (Notion sprint board, UI/UX & QA review: RBAC, CSRF, XSS, SQLi, responsiveness)
 - **Current Target:** Localhost prototype on Laragon 6.0.0 (`http://localhost:8000`) for December 1, 2026 defense.
@@ -12,26 +12,26 @@
 
 ## 2. Tech Stack
 - **Backend:** PHP 8.3+, Laravel 13 (MVC, Eloquent ORM, Form Requests, Middleware, Services)
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+), Laravel Blade, Bootstrap 5 + Tailwind CSS (local assets in `public/vendor/` — **no external CDNs**)
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+), Laravel Blade, Bootstrap 5 (local assets in `public/vendor/` — **no external CDNs**)
 - **Database:** MySQL 8.4+ (`devaura_lms`) — normalized tables separating credentials (`user_account`/`users`), students & faculty (`library_member`/`members`), personnel (`library_personnel` + `department` + schedules), and walk-in visitors (`library_visitor`)
-- **Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `html5-qrcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel` (PhpSpreadsheet)
+- **Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `milon/barcode` (QR generation), `html5-qrcode` (QR scanning), `barryvdh/laravel-dompdf`, `maatwebsite/excel` (PhpSpreadsheet), Laravel Mail / Symfony Mailer (Gmail SMTP for Email OTP)
 - **Project Management & Testing:** Notion (sprint tracking), Postman (API/HTTP endpoint testing), PHPUnit (`php artisan test`)
 
 ## 3. Roles, Permissions & Security Standards
-We use **7 roles** in `spatie/laravel-permission` with **granular, department-aware permissions** enforced in controllers, route middleware, and Blade `@can` directives:
-1. `superadmin` (Head Librarian) — Full access. Creates/manages `admin`, `staff`, and `maintenance` accounts; manages role permissions; runs batched CSV/Excel bulk imports; views audit trail and archives.
-2. `admin` (Assigned Teacher) — Manages books, members, circulation, attendance, inventory audits, staff schedules, and operational reports.
-3. `staff` (Student Staff) — Handles attendance monitoring, borrowing/returning, and catalog lookup. Cannot delete/archive master records or change roles/permissions.
-4. `student` — Library member. Public sign-up/login with 6-digit Email OTP, catalog search, borrowing history, personal QR code, and self-profile update.
-5. `faculty` — Library member. Same public sign-up/login with Email OTP and member access.
-6. `visitor` — Walk-in guest. Logs attendance at `/kiosk` or manual entry with **Full Name, Organization, and Email**.
-7. `maintenance` — System/facility maintenance role managed exclusively by `superadmin`.
+We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges per role aligned with the Use Case Diagrams) enforced in controllers, route middleware, and Blade `@can` directives:
+1. `superadmin` (Head Librarian) — Single active superadmin (a Faculty teacher with a subject Department). Full access; promotes Faculty → `admin`, Student → `staff`, or `maintenance` (with strict password confirmation); can transfer `superadmin` to another Faculty member (reverting to `faculty`); runs batched CSV/Excel bulk imports; views audit trail and archives.
+2. `admin` (Assigned Teacher — Faculty only) — Manages books, members, circulation, attendance, inventory audits, personnel schedules, audit trail, and operational reports. Cannot manage roles or delete books/personnel.
+3. `staff` (Student Staff — Student only) — Handles attendance monitoring, borrowing/returning, book inventory & QR, and catalog lookup. Cannot manage/archive members, delete books/personnel, view audit trail, or change roles.
+4. `student` — Library member. Public sign-up/login with **strict 12-digit LRN** and 6-digit Email OTP (no username prompt), catalog search, borrowing history, personal QR ID card, and self-profile update.
+5. `faculty` — Library member. Public sign-up/login with **strict 7-digit DepEd Employee Number**, subject-only **Department**, and 6-digit Email OTP.
+6. `visitor` — Walk-in guest (no login). Logs attendance at `/kiosk` or manual entry with **Last Name, First Name, Middle Initial, Email, and Purpose**.
+7. `maintenance` — System/facility maintenance role assigned exclusively by `superadmin`.
 
 ### Non-Negotiable Security & Data Rules
-- **Registration Rule:** Public sign-up applies only to `student` and `faculty` (with Email OTP verification). Only `superadmin` can create or manage `admin`, `staff`, and `maintenance` accounts.
-- **Brute-Force & Session Protection:** Enforce **5 login attempts per minute** (1-minute cooldown), active account checks, `PreventBackHistory` middleware on authenticated routes, and database sessions.
+- **Registration Rule:** Public sign-up applies only to `student` (12-digit LRN) and `faculty` (7-digit DepEd Employee Number + subject Department) with 6-digit Email OTP verification via Gmail SMTP. Only `superadmin` can assign `admin`, `staff`, or `maintenance` privileges (with strict password confirmation) or transfer `superadmin`.
+- **Brute-Force & Session Protection:** Enforce **3 login attempts per minute** (1-minute cooldown), active account checks, `PreventBackHistory` middleware on authenticated routes, and database sessions.
 - **Web Security:** Always protect against **CSRF** (`@csrf` / token checks), **SQL Injection** (Eloquent/parameterized queries only — never raw concatenated SQL), and **XSS** (Blade `{{ }}` escaping).
-- **Soft-Delete Archiving & Audit Trail:** Never hard-delete master records (`users`, `members`, `books`); use `SoftDeletes` and log critical actions via `spatie/laravel-activitylog` (tracking actor, target, and `processed_by` on borrow transactions).
+- **Soft-Delete Archiving (6-Month Retention) & Audit Trail:** Never hard-delete master records (`users`, `library_member`, `library_personnel`, `library_visitor`, `books`); use `SoftDeletes` with a scheduled daily `model:prune` purge after **6 months**, and log critical actions via `spatie/laravel-activitylog`.
 - **Bulk User Import:** Restricted to `superadmin` via CSV/Excel (`maatwebsite/excel`), processed in **100-record batches** with automated email error handling.
 - **Public Kiosk (`/kiosk`):** Open terminal for quick QR attendance (`time_in` / `time_out`) and book availability search.
 
