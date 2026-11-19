@@ -1,60 +1,95 @@
-# Devaura-LMS (UBNHS-LMS)
+# Devaura-LMS
 
-**QR Code-Integrated Library Management System** for **Upper Bicutan National High School (UBNHS)**.
+QR Code-Integrated Library Management System for Upper Bicutan National High School, developed by Group 1 — Devaura of PUP Taguig.
 
-Built by **Group 1 — Devaura** (PUP Taguig):
-- **Ramon Anthony V. Dela Fuente** — Lead Backend Developer
-- **Shaina Cuevas** — Frontend Developer
-- **Kyle E. Mata** — Document Analyst / Database & Backend Developer
-- **Kristine P. Salazar** — Project Manager / Quality Assurance
+## Team
 
----
+| Member | Role |
+| --- | --- |
+| Shaina Cuevas | Frontend Developer |
+| Ramon Anthony V. Dela Fuente | Backend Developer |
+| Kyle E. Mata | Documentation Analyst |
+| Kristine P. Salazar | Project Manager and Quality Assurance |
 
-## Tech Stack
-- **Backend:** PHP 8.3+, Laravel 13
-- **Frontend:** Blade, Bootstrap 5, Tailwind CSS, JavaScript (ES6+) — 100% offline assets in `public/vendor/`
-- **Database:** MySQL 8.4+ (`devaura_lms`)
-- **Local Environment:** Laragon 6.0.0 (`http://localhost:8000`)
-- **Key Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `html5-qrcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel`
+## Technology
 
----
+- PHP 8.3 or later
+- Laravel 13
+- MySQL 8.4 or later
+- Laravel Blade and offline Bootstrap assets
+- Spatie Laravel Permission and Activitylog
+- Server-side QR code generation
+- Laravel Mail for Email OTP
+- PHPUnit and Postman for backend testing
 
-## Core Features
-- **7-Role RBAC & Email OTP:** `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`. Public sign-up/login is limited to `student` and `faculty` with Email OTP verification; `admin`, `staff`, and `maintenance` accounts are managed exclusively by `superadmin`.
-- **Book Inventory & Archiving:** Digital catalog with stock counts, real-time availability, unique QR codes, soft-delete archiving, and QR-verified inventory audits.
-- **Public Kiosk & Attendance Monitoring:** Dedicated `/kiosk` terminal for quick QR `time_in` / `time_out`, plus manual attendance entry for all user types including visitors.
-- **Book Circulation & Notifications:** QR-assisted borrow/return workflows, overdue tracking (zero fines/payments), and automated alerts.
-- **Analytical Dashboard, Reports & Audit Logs:** Interactive charts, PDF/Excel report exports, and chronological activity logs.
+## Current Sprint
 
----
+Sprint 1 covers:
 
-## Local Setup (Laragon 6.0.0)
-1. Clone the repository and install dependencies:
-   ```bash
-   git clone https://github.com/rmnthny/Devaura-LMS.git
-   cd Devaura-LMS
-   composer install
-   ```
-2. Copy `.env.example` to `.env`, generate the app key, and configure your MySQL database (`devaura_lms`):
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-3. Run migrations and link storage:
-   ```bash
-   php artisan migrate
-   php artisan storage:link
-   ```
-4. Start the local server and run tests:
-   ```bash
-   php artisan serve
-   php artisan test
-   ```
+- Student and faculty registration
+- Email OTP verification
+- Login, logout, and account-status protection
+- Seven predefined user roles
+- Superadmin role management
+- Personal profile updates
+- Member management and archiving
+- Member QR code generation
+- Activity logging
+- Backend feature tests
 
----
+Sprint work is developed on feature branches and merged into `main` only after automated tests, Postman verification, and QA approval.
 
-## Project Docs
+## Local Setup
+
+Clone the repository and install its dependencies:
+
+```powershell
+git clone https://github.com/rmnthny/Devaura-LMS.git
+Set-Location Devaura-LMS
+composer install
+```
+
+Create the local environment file and application key:
+
+```powershell
+Copy-Item .env.example .env
+php artisan key:generate
+```
+
+Configure the following values in `.env`:
+
+- MySQL connection for the `devaura_lms` database
+- Mail settings for Email OTP
+- Application URL and other machine-specific settings
+
+Prepare and run the application:
+
+```powershell
+php artisan migrate
+php artisan storage:link
+php artisan serve
+```
+
+Run the backend tests:
+
+```powershell
+php artisan test
+```
+
+Do not commit `.env`, passwords, mail credentials, database credentials, private keys, or other secrets.
+
+## Development Workflow
+
+1. Create a feature branch from `main`.
+2. Implement only the tasks assigned to the current sprint.
+3. Run PHPUnit and Postman checks.
+4. Submit the feature branch for review.
+5. Apply QA fixes.
+6. Merge into `main` after approval.
+
+## Project Documents
+
 - [Project Rules](docs/PROJECT_RULES.md)
+- [Team Workflow](docs/TEAM_WORKFLOW.md)
 - [Sprint Status](docs/SPRINT_STATUS.md)
 - [Requirements](docs/REQUIREMENTS.md)
-- [Sprint Handoffs](docs/handoffs/README.md)
