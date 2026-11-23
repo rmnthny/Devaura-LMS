@@ -40,7 +40,16 @@ return [
             'connection' => env('DB_QUEUE_CONNECTION'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
-            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 300),
+            'after_commit' => false,
+        ],
+
+        'member-mail' => [
+            'driver' => 'database',
+            'connection' => null,
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => 'welcome-mail',
+            'retry_after' => 90,
             'after_commit' => false,
         ],
 

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\LibraryMember;
-use App\Models\UserAccount;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /** @extends Factory<LibraryMember> */
@@ -15,7 +15,7 @@ class LibraryMemberFactory extends Factory
     {
         return [
             // This creates one matching account (role assigned) and then this member profile.
-            'account_id' => UserAccount::factory()->student(),
+            'account_id' => User::factory()->student(),
             'last_name' => fake()->lastName(),
             'first_name' => fake()->firstName(),
             'middle_initial' => strtoupper(fake()->randomLetter()),
@@ -27,18 +27,18 @@ class LibraryMemberFactory extends Factory
     public function faculty(): static
     {
         return $this->state(fn (): array => [
-            'account_id' => UserAccount::factory()->faculty(),
+            'account_id' => User::factory()->faculty(),
         ]);
     }
 
     public function student(): static
     {
         return $this->state(fn (): array => [
-            'account_id' => UserAccount::factory()->student(),
+            'account_id' => User::factory()->student(),
         ]);
     }
 
-    public function forAccount(UserAccount $account): static
+    public function forAccount(User $account): static
     {
         return $this->state(fn (): array => ['account_id' => $account->account_id]);
     }

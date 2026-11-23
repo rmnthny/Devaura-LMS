@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\RequireHttps;
 use Illuminate\Auth\AuthenticationException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -18,7 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo(fn () => null);
+        $middleware->prepend(RequireHttps::class);
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo(fn () => route('books.index'));
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
@@ -27,12 +30,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'prevent-back' => PreventBackHistory::class,
         ]);
 
-        // Every authenticated page: auth + active-account check + no-cache headers.
         $middleware->group('secure', ['auth', 'active', 'prevent-back']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(fn (AuthenticationException $exception) => response()->json(['message' => 'Unauthenticated.'], 401));
+        $exceptions->render(function (AuthenticationException $exception, Request $request) {
+            if ($request->expectsJson() || ($request->is('api/*') && ! $request->acceptsHtml())) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+
+            return redirect()->guest(route('login'));
+        });
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->expectsJson() || ($request->is('api/*') && ! $request->acceptsHtml()),
         );
     })->create();

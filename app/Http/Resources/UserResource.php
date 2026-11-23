@@ -11,10 +11,10 @@ class UserResource extends JsonResource
     {
         return [
             ...$this->resource->only([
-                'id',
+                'account_id',
                 'email',
                 'account_status',
-                'email_verified_at',
+                'reference_number',
                 'user_qr_value',
             ]),
             'roles' => $this->resource->getRoleNames(),

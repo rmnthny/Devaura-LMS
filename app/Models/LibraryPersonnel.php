@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-/** ERD: library_personnel — Head Librarian, Assigned Teachers, Student Staff, Maintenance. */
 #[Fillable([
     'department_id',
     'account_id',
@@ -41,7 +41,14 @@ class LibraryPersonnel extends Model
 
     public function prunable(): Builder
     {
-        return static::onlyTrashed()->where('deleted_at', '<=', now()->subMonths(6));
+        return static::onlyTrashed()->where('deleted_at', '<=', now()->subMonthsNoOverflow(6))
+            ->whereDoesntHave('schedules')
+            ->whereHas('user', fn (Builder $query) => $query->withTrashed()->withoutLibraryHistory());
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(PersonnelSchedule::class, 'personnel_id');
     }
 
     public function user(): BelongsTo

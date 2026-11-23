@@ -3,45 +3,47 @@
 namespace App\Services;
 
 use App\Mail\EmailOtpMail;
-use App\Models\EmailOtp;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 class OtpService
 {
     public const EXPIRY_MINUTES = 10;
 
-    public function issue(User $user): EmailOtp
+    public function issue(User $user): void
     {
-        // Invalidate any prior unused codes for this user.
-        $user->emailOtps()->whereNull('verified_at')->delete();
-
         $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $key = "email_otp:{$user->getKey()}";
 
-        $otp = $user->emailOtps()->create([
-            'code' => $code,
-            'expires_at' => now()->addMinutes(self::EXPIRY_MINUTES),
-        ]);
-
-        Mail::to($user->email)->send(new EmailOtpMail($user, $code, self::EXPIRY_MINUTES));
-
-        return $otp;
+        Cache::lock("$key:lock", 10)->block(5, function () use ($user, $key, $code): void {
+            Mail::to($user->email)->send(new EmailOtpMail($user, $code, self::EXPIRY_MINUTES));
+            Cache::put($key, $this->digest($user, $code), now()->addMinutes(self::EXPIRY_MINUTES));
+        });
     }
 
     public function verify(User $user, string $code): bool
     {
-        $otp = $user->emailOtps()
-            ->whereNull('verified_at')
-            ->latest('id')
-            ->first();
+        $key = "email_otp:{$user->getKey()}";
 
-        if (! $otp || $otp->isExpired() || ! hash_equals($otp->code, trim($code))) {
-            return false;
-        }
+        return Cache::lock("$key:lock", 10)->block(5, function () use ($user, $key, $code): bool {
+            $digest = Cache::get($key);
+            if (! is_string($digest) || ! hash_equals($digest, $this->digest($user, $code))) {
+                return false;
+            }
 
-        $otp->forceFill(['verified_at' => now()])->save();
-        $user->forceFill(['email_verified_at' => now()])->save();
+            $activated = User::whereKey($user->getKey())
+                ->where('account_status', User::STATUS_PENDING)
+                ->where('email', $user->email)
+                ->update(['account_status' => User::STATUS_ACTIVE]);
+            Cache::forget($key);
 
-        return true;
+            return $activated === 1;
+        });
+    }
+
+    private function digest(User $user, string $code): string
+    {
+        return hash_hmac('sha256', $user->getKey().'|'.$user->email.'|'.$code, config('app.key'));
     }
 }

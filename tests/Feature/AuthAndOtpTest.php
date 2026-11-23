@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Mail\EmailOtpMail;
-use App\Models\Department;
 use App\Models\LibraryMember;
 use App\Models\User;
+use App\Services\OtpService;
 use App\Support\Rbac;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,27 +23,18 @@ class AuthAndOtpTest extends TestCase
         $this->seed(RolePermissionSeeder::class);
     }
 
-    public function test_student_can_sign_up_verify_otp_and_receive_member_qr(): void
+    public function test_existing_pending_member_can_verify_otp_and_receive_member_qr(): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('local');
 
-        $response = $this->postJson(route('api.v1.register.store'), [
-            'member_role' => 'Student',
-            'reference_number' => '136812345678',
-            'last_name' => 'Dela Cruz',
-            'first_name' => 'Juan',
-            'middle_initial' => 'M',
-            'email' => 'juan@ubnhs.test',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        $response->assertSuccessful();
-
-        $user = User::where('email', 'juan@ubnhs.test')->firstOrFail();
+        $user = User::factory()->student()->pending()->create();
+        LibraryMember::factory()->forAccount($user)->create();
+        $user->assignMemberQr();
+        app(OtpService::class)->issue($user);
+        $this->withSession(['otp_user_id' => $user->getKey()]);
         $this->assertTrue($user->hasRole(Rbac::STUDENT));
-        $this->assertNull($user->email_verified_at);
+        $this->assertSame(User::STATUS_PENDING, $user->account_status);
 
         $otpCode = null;
         Mail::assertSent(EmailOtpMail::class, function (EmailOtpMail $mail) use ($user, &$otpCode) {
@@ -52,114 +43,68 @@ class AuthAndOtpTest extends TestCase
             return $mail->hasTo($user->email) && strlen($mail->code) === 6;
         });
 
-        // Verify the 6-digit OTP.
         $verifyResponse = $this->postJson(route('api.v1.otp.verify'), ['code' => $otpCode]);
         $verifyResponse->assertOk();
         $this->assertAuthenticatedAs($user);
+        Storage::disk('local')->assertExists("qrcodes/members/{$user->user_qr_value}.png");
+        Storage::disk('public')->assertMissing("qrcodes/members/{$user->user_qr_value}.png");
 
         $user->refresh();
         $member = $user->member->fresh();
 
-        $this->assertNotNull($user->email_verified_at);
+        $this->assertSame(User::STATUS_ACTIVE, $user->account_status);
         $this->assertMatchesRegularExpression('/^UBNHS-\d{4}-\d{4}$/', $member->member_code);
         $this->assertEquals($member->member_code, $user->user_qr_value);
 
-        // Dashboard renders with the personal QR SVG and no-cache headers.
         $dash = $this->getJson(route('api.v1.me'));
         $dash->assertOk()->assertSee($member->member_code);
         $this->assertStringContainsString('no-store', $dash->headers->get('Cache-Control'));
     }
 
-    public function test_faculty_sign_up_requires_and_saves_department(): void
-    {
-        Mail::fake();
-        $dept = Department::factory()->create(['department_name' => 'Science']);
 
-        // Missing department & letters in Faculty ID are rejected
-        $this->postJson(route('api.v1.register.store'), [
-            'member_role' => 'Faculty',
-            'reference_number' => 'FAC-2026-01',
-            'last_name' => 'Cruz',
-            'first_name' => 'Elena',
-            'email' => 'elena@ubnhs.test',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ])->assertJsonValidationErrors(['department_id', 'reference_number']);
-
-        // With department & 7-digit DepEd Employee Number succeeds and saves department_id
-        $this->postJson(route('api.v1.register.store'), [
-            'member_role' => 'Faculty',
-            'department_id' => $dept->department_id,
-            'reference_number' => '4567890',
-            'last_name' => 'Cruz',
-            'first_name' => 'Elena',
-            'email' => 'elena@ubnhs.test',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ])->assertSuccessful();
-
-        $this->assertDatabaseHas('library_member', [
-            'reference_number' => '4567890',
-            'department_id' => $dept->department_id,
-        ]);
-    }
-
-    public function test_public_sign_up_rejects_personnel_roles_and_duplicate_reference_number(): void
-    {
-        Mail::fake();
-        LibraryMember::factory()->create(['reference_number' => '136899999999']);
-
-        $this->postJson(route('api.v1.register.store'), [
-            'member_role' => 'superadmin',
-            'reference_number' => '136899999999',
-            'last_name' => 'Test',
-            'first_name' => 'User',
-            'username' => 'badroleuser',
-            'email' => 'badrole@ubnhs.test',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ])->assertJsonValidationErrors(['member_role', 'reference_number']);
-    }
 
     public function test_invalid_or_expired_otp_is_rejected(): void
     {
         Mail::fake();
 
-        $user = User::factory()->unverified()->withRole(Rbac::FACULTY)->create();
-        $user->emailOtps()->create([
-            'code' => '123456',
-            'expires_at' => now()->subMinute(),
-        ]);
+        $user = User::factory()->pending()->withRole(Rbac::FACULTY)->create();
+        app(OtpService::class)->issue($user);
+        $code = Mail::sent(EmailOtpMail::class)->sole()->code;
 
-        $this->withSession(['otp_user_id' => $user->id])
-            ->postJson(route('api.v1.otp.verify'), ['code' => '123456'])
+        $this->travel(11)->minutes();
+        $this->withSession(['otp_user_id' => $user->getKey()])
+            ->postJson(route('api.v1.otp.verify'), ['code' => $code])
             ->assertJsonValidationErrors('code');
 
         $this->assertGuest();
     }
 
-    public function test_login_works_with_username_or_email_and_enforces_three_per_minute_rate_limit(): void
+    public function test_email_login_has_a_three_per_minute_rate_limit(): void
     {
         $user = User::factory()->withRole(Rbac::SUPERADMIN)->create([
             'username' => 'headlib',
             'email' => 'head@ubnhs.test',
-            'password' => 'secret123',
+            'reference_number' => '1234567',
+            'password_hash' => 'secret123',
         ]);
 
-        // 3 failed attempts are allowed; 4th hits 429 rate limit.
-        for ($i = 0; $i < 3; $i++) {
+        foreach (['head@ubnhs.test', 'HEAD@ubnhs.test', ' head@ubnhs.test '] as $login) {
             $this->postJson(route('api.v1.login.attempt'), [
-                'login' => 'headlib',
+                'login' => $login,
                 'password' => 'wrong-password',
             ])->assertJsonValidationErrors('login');
         }
 
         $this->postJson(route('api.v1.login.attempt'), [
-            'login' => 'headlib',
+            'login' => $user->email,
             'password' => 'wrong-password',
         ])->assertStatus(429);
 
-        // Using email (distinct key) succeeds cleanly.
+        $this->post(route('api.v1.login.attempt'), [
+            'login' => $user->email, 'password' => 'secret123',
+        ])->assertStatus(429)->assertHeader('Retry-After')->assertSee('Too many login attempts');
+
+        $this->travel(61)->seconds();
         $this->postJson(route('api.v1.login.attempt'), [
             'login' => 'head@ubnhs.test',
             'password' => 'secret123',
@@ -167,8 +112,33 @@ class AuthAndOtpTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
 
-        // Logout clears session.
         $this->postJson(route('api.v1.logout'))->assertOk();
         $this->assertGuest();
+    }
+
+    public function test_username_and_reference_number_cannot_be_used_to_log_in(): void
+    {
+        $user = User::factory()->student()->create([
+            'username' => 'localstudent', 'password_hash' => 'secret123',
+        ]);
+        foreach ([$user->username, $user->reference_number] as $login) {
+            $this->postJson(route('api.v1.login.attempt'), ['login' => $login, 'password' => 'secret123'])
+                ->assertUnprocessable()->assertJsonValidationErrors('login');
+        }
+        $this->assertGuest();
+    }
+
+    public function test_otp_cannot_verify_a_different_email_address(): void
+    {
+        Mail::fake();
+        $user = User::factory()->pending()->student()->create();
+        app(OtpService::class)->issue($user);
+        $code = Mail::sent(EmailOtpMail::class)->sole()->code;
+        $user->update(['email' => 'new-address@example.test']);
+
+        $this->withSession(['otp_user_id' => $user->getKey()])
+            ->postJson(route('api.v1.otp.verify'), ['code' => $code])
+            ->assertJsonValidationErrors('code');
+        $this->assertSame(User::STATUS_PENDING, $user->refresh()->account_status);
     }
 }

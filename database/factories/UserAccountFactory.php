@@ -4,15 +4,15 @@ namespace Database\Factories;
 
 use App\Models\LibraryMember;
 use App\Models\LibraryPersonnel;
-use App\Models\UserAccount;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/** @extends Factory<UserAccount> */
+/** @extends Factory<User> */
 class UserAccountFactory extends Factory
 {
-    protected $model = UserAccount::class;
+    protected $model = User::class;
 
     public function definition(): array
     {
@@ -42,13 +42,20 @@ class UserAccountFactory extends Factory
     // Requires the Spatie roles to be seeded and UserAccount to use HasRoles (guard: web).
     public function withRole(string $role): static
     {
-        return $this->afterCreating(function (UserAccount $account) use ($role): void {
+        return $this->afterCreating(function (User $account) use ($role): void {
             $account->syncRoles([$role]);
         });
     }
 
-    public function student(): static { return $this->withRole('student'); }
-    public function faculty(): static { return $this->withRole('faculty'); }
+    public function student(): static
+    {
+        return $this->withRole('student')->state(fn () => ['reference_number' => fake()->unique()->numerify('############')]);
+    }
+
+    public function faculty(): static
+    {
+        return $this->withRole('faculty')->state(fn () => ['reference_number' => fake()->unique()->numerify('#######')]);
+    }
     public function staff(): static { return $this->withRole('staff'); }
     public function admin(): static { return $this->withRole('admin'); }
     public function superadmin(): static { return $this->withRole('superadmin'); }
@@ -62,7 +69,7 @@ class UserAccountFactory extends Factory
             throw new \InvalidArgumentException('Member profile requires student or faculty role.');
         }
 
-        return $this->withRole($role)->afterCreating(function (UserAccount $account): void {
+        return $this->{$role}()->afterCreating(function (User $account): void {
             LibraryMember::factory()->forAccount($account)->create();
         });
     }
@@ -73,7 +80,7 @@ class UserAccountFactory extends Factory
             throw new \InvalidArgumentException('Personnel profile requires a personnel role.');
         }
 
-        return $this->withRole($role)->afterCreating(function (UserAccount $account) use ($role): void {
+        return $this->withRole($role)->afterCreating(function (User $account) use ($role): void {
             $factory = LibraryPersonnel::factory()->forAccount($account);
             if ($role === 'maintenance') {
                 $factory = $factory->state(['department_id' => null]);

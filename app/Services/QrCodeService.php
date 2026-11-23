@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\DNS2D;
 
-/** Generates and stores QR code PNGs using milon/barcode. */
 class QrCodeService
 {
     public function generateMemberQrPng(string $value): string
@@ -14,7 +13,8 @@ class QrCodeService
         $path = "qrcodes/members/{$value}.png";
 
         if ($pngBinary !== false && $pngBinary !== '') {
-            Storage::disk('public')->put($path, $pngBinary);
+            // Member cards stay outside the public storage link.
+            Storage::disk('local')->put($path, $pngBinary);
         }
 
         return $path;

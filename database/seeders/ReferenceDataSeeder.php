@@ -9,7 +9,6 @@ class ReferenceDataSeeder extends Seeder
 {
     public function run(): void
     {
-        // Names preserved from the team's existing ReferenceDataSeeder.
         $departments = [
             'English',
             'Mathematics',
@@ -28,7 +27,7 @@ class ReferenceDataSeeder extends Seeder
             ]);
         }
 
-        // Fixed IDs: schedule_day.day_id is a TINYINT UNSIGNED PK without AUTO_INCREMENT.
+        // Day IDs are fixed so seeding does not change existing schedules.
         $days = [
             1 => 'Monday',
             2 => 'Tuesday',
@@ -54,6 +53,27 @@ class ReferenceDataSeeder extends Seeder
             ]);
         }
 
-        // No genres/authors/publishers are seeded: the team has not approved a fixed catalog.
+        $genres = [
+            'Fiction',
+            'Non-Fiction',
+            'Science',
+            'Mathematics',
+            'History',
+            'Literature',
+            'Filipino',
+            'Reference',
+            'Biography',
+            'Technology & ICT',
+            'Arts & Music',
+            'Health & Physical Education',
+            'Values & Philosophy',
+            'Social Studies',
+        ];
+
+        foreach ($genres as $genreName) {
+            DB::table('genre')->insertOrIgnore([
+                'genre_name' => $genreName,
+            ]);
+        }
     }
 }

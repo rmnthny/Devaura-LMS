@@ -16,6 +16,7 @@ class Department extends Model
 
     protected $table = 'department';
     protected $primaryKey = 'department_id';
+    public $timestamps = false;
 
     public function personnel(): HasMany
     {

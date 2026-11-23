@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'require_https' => env('APP_REQUIRE_HTTPS', env('APP_ENV', 'production') === 'production'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

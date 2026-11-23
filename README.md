@@ -5,26 +5,25 @@
 Built by **Group 1 — Devaura** (PUP Taguig):
 - **Ramon Anthony V. Dela Fuente** — Lead Backend Developer
 - **Shaina Cuevas** — Frontend Developer
-- **Kyle E. Mata** — Document Analyst / Database & Backend Developer
+- **Kyle E. Mata** — Document Analyst / Database Developer
 - **Kristine P. Salazar** — Project Manager / Quality Assurance
 
 ---
 
 ## Tech Stack
-- **Backend:** PHP 8.3+, Laravel 13
-- **Frontend:** Blade, Bootstrap 5, Tailwind CSS, JavaScript (ES6+) — 100% offline assets in `public/vendor/`
+- **Backend:** PHP 8.4+, Laravel 13
+- **Frontend:** Blade, Bootstrap 5, JavaScript (ES6+) — local assets under `public/vendor/` for offline operation
 - **Database:** MySQL 8.4+ (`devaura_lms`)
 - **Local Environment:** Laragon 6.0.0 (`http://localhost:8000`)
-- **Key Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `simplesoftwareio/simple-qrcode`, `html5-qrcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel`
+- **Key Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `milon/barcode`, `barryvdh/laravel-dompdf`, `maatwebsite/excel`
 
 ---
 
 ## Core Features
-- **7-Role RBAC & Email OTP:** `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`. Public sign-up/login is limited to `student` and `faculty` with Email OTP verification; `admin`, `staff`, and `maintenance` accounts are managed exclusively by `superadmin`.
+- **7-Role RBAC:** `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`. The Head Librarian adds Student and Faculty accounts individually or by import and is the only role with Archive access. The Head Librarian and Admins can add books. Existing pending accounts can still verify their email.
 - **Book Inventory & Archiving:** Digital catalog with stock counts, real-time availability, unique QR codes, soft-delete archiving, and QR-verified inventory audits.
-- **Public Kiosk & Attendance Monitoring:** Dedicated `/kiosk` terminal for quick QR `time_in` / `time_out`, plus manual attendance entry for all user types including visitors.
-- **Book Circulation & Notifications:** QR-assisted borrow/return workflows, overdue tracking (zero fines/payments), and automated alerts.
-- **Analytical Dashboard, Reports & Audit Logs:** Interactive charts, PDF/Excel report exports, and chronological activity logs.
+- **Personnel schedules:** Assigned teachers and student staff can view their shifts. Schedule managers can add, edit, or remove shifts within their assigned permissions.
+- **Next sprints:** Public kiosk, attendance, circulation, dashboards, and reports are tracked in [Sprint Status](docs/SPRINT_STATUS.md).
 
 ---
 
@@ -40,16 +39,43 @@ Built by **Group 1 — Devaura** (PUP Taguig):
    cp .env.example .env
    php artisan key:generate
    ```
-3. Run migrations and link storage:
+3. Enable the PHP MySQL, GD, and Zip extensions. Run the migrations and seed the library settings:
    ```bash
    php artisan migrate
-   php artisan storage:link
+   php artisan db:seed
    ```
-4. Start the local server and run tests:
+4. Start the web server and queue workers:
    ```bash
-   php artisan serve
-   php artisan test
+   composer dev
    ```
+
+### Tests
+
+Create a separate MySQL database named `devaura_lms_test`. Run `php artisan test`
+with a MySQL user that can create and update tables in that database. The test suite
+checks the database name before running migrations. The GitHub workflow starts
+MySQL 8.4 and creates this database for each run.
+
+### Bulk imports
+
+Use `composer dev` for localhost to start the web server, import listener, and welcome email worker together.
+Small imports of up to 20 members or 20 book copies finish during the upload request.
+Larger imports use the configured queue. Welcome emails use a separate queue so an SMTP delay does not
+hold up account creation. Email jobs are saved with the accounts and become available after commit.
+If you run `php artisan serve` separately with `QUEUE_CONNECTION=database`, run
+`php artisan queue:work` for imports and `php artisan queue:work member-mail` for welcome emails.
+Enable PHP's `zip` extension in Laragon for XLSX imports and templates, then restart the existing web server.
+The Head Librarian imports official Student and Faculty records from Members. The Head
+Librarian and Assigned Teachers can import books from Books.
+Upload an Excel workbook (`.xlsx` or `.xls`) with one worksheet or a CSV file (`.csv`).
+Each import supports up to 2,000 data rows and 5 MB. Download an Excel or CSV template
+from Members or Books. Keep the headers in the first row. The Excel templates include column notes
+and format member references and ISBNs as text to preserve leading zeros.
+Configure the SMTP mailer for welcome delivery. Temporary passwords are not sent through the log mailer.
+For a fresh installation with no Head Librarian, an authorized operator can run
+`php artisan library:bootstrap-head 1234567 --from=first-head.csv`. The file must use the
+member template and contain only the designated Faculty record. Replace the sample
+employee number with the matching value from that official record.
 
 ---
 

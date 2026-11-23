@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/** Stops the browser from showing cached authenticated pages after logout. */
 class PreventBackHistory
 {
     public function handle(Request $request, Closure $next): Response

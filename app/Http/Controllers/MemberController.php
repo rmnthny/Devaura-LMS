@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Members\StoreMemberRequest;
-use App\Http\Requests\Members\UpdateMemberRequest;
+use App\Http\Requests\Members\SaveMemberRequest;
 use App\Http\Resources\MemberResource;
+use App\Models\Department;
 use App\Models\LibraryMember;
 use App\Models\User;
+use App\Services\ArchiveBin;
+use App\Services\ImportedMember;
 use App\Services\QrCodeService;
+use App\Services\MemberProfileService;
 use App\Support\Rbac;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,92 +25,110 @@ class MemberController extends Controller
 
     public function index(Request $request)
     {
-        $search = trim((string) $request->query('q'));
+        $query = $request->query('q');
+        $search = is_string($query) ? trim($query) : '';
         $roleFilter = $request->query('role');
+        $statusFilter = $request->query('status');
+        $allowedStatuses = [User::STATUS_ACTIVE, User::STATUS_PENDING, User::STATUS_INACTIVE, User::STATUS_LOCKED];
 
-        $members = LibraryMember::with(['user.roles', 'department'])
+        $members = LibraryMember::with(['user.roles', 'user.personnel.department'])->whereHas('user')
             ->when(in_array($roleFilter, [LibraryMember::ROLE_STUDENT, LibraryMember::ROLE_FACULTY], true),
-                fn ($q) => $q->where('member_role', $roleFilter))
-            ->when($search, fn ($q) => $q->where(fn ($w) => $w
-                ->where('last_name', 'like', "%{$search}%")
-                ->orWhere('first_name', 'like', "%{$search}%")
-                ->orWhere('reference_number', 'like', "%{$search}%")
-                ->orWhere('member_code', 'like', "%{$search}%")
-                ->orWhereHas('user', fn ($u) => $u
-                    ->where('username', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%"))))
+                fn ($q) => $q->whereHas('user', fn ($u) => $u->where('reference_number', 'like',
+                    str_repeat('_', $roleFilter === LibraryMember::ROLE_FACULTY ? 7 : 12))))
+            ->when(in_array($statusFilter, $allowedStatuses, true),
+                fn ($q) => $q->whereHas('user', fn ($u) => $u->where('account_status', $statusFilter)))
+            ->when($search !== '', function ($q) use ($search) {
+                foreach (preg_split('/\s+/u', $search, -1, PREG_SPLIT_NO_EMPTY) as $term) {
+                    $pattern = '%'.strtr($term, ['!' => '!!', '%' => '!%', '_' => '!_']).'%';
+                    $q->where(function ($member) use ($term, $pattern) {
+                        $member->whereRaw("last_name LIKE ? ESCAPE '!'", [$pattern])
+                            ->orWhereRaw("first_name LIKE ? ESCAPE '!'", [$pattern])
+                            ->orWhereHas('user', fn ($user) => $user
+                                ->whereRaw("username LIKE ? ESCAPE '!'", [$pattern])
+                                ->orWhereRaw("reference_number LIKE ? ESCAPE '!'", [$pattern])
+                                ->orWhereRaw("user_qr_value LIKE ? ESCAPE '!'", [$pattern])
+                                ->orWhereRaw("email LIKE ? ESCAPE '!'", [$pattern]));
+
+                        if (preg_match('/\A\p{L}\p{M}*\.?\z/u', $term)) {
+                            $initial = rtrim($term, '.');
+                            $member->orWhereIn('middle_initial', [$initial, $initial.'.']);
+                        }
+                    });
+                }
+            })
             ->latest('member_id')
             ->paginate(15)
             ->withQueryString();
 
-        return MemberResource::collection($members);
+        return $request->expectsJson() ? MemberResource::collection($members)
+            : view('members.index', compact('members', 'search', 'roleFilter', 'statusFilter', 'allowedStatuses'));
     }
 
-
-    public function store(StoreMemberRequest $request, QrCodeService $qrService)
+    public function edit(Request $request, LibraryMember $member)
     {
-        $data = $request->validated();
+        $this->authorizeMemberEdit($request, $member);
 
-        $member = DB::transaction(function () use ($data, $qrService): LibraryMember {
-            $memberCode = LibraryMember::generateMemberCode();
+        return $this->form($member);
+    }
 
-            $user = User::create([
-                'username' => str()->uuid()->toString(),
-                'email' => $data['email'],
-                'password' => $data['password'],
-                'account_status' => User::STATUS_ACTIVE,
-                'email_verified_at' => now(),
-                'user_qr_value' => $memberCode,
-            ]);
+    public function create()
+    {
+        return $this->form(new LibraryMember);
+    }
 
-            $spatieRole = $data['member_role'] === LibraryMember::ROLE_FACULTY
-                ? Rbac::FACULTY
-                : Rbac::STUDENT;
-            $user->assignRole($spatieRole);
+    private function form(LibraryMember $member)
+    {
+        return view('members.form', [
+            'member' => $member,
+            'departments' => Department::orderBy('department_name')->get(),
+        ]);
+    }
 
-            $member = LibraryMember::create([
-                'account_id' => $user->id,
-                'department_id' => $data['member_role'] === LibraryMember::ROLE_FACULTY ? ($data['department_id'] ?? null) : null,
-                'member_role' => $data['member_role'],
-                'reference_number' => $data['reference_number'],
-                'member_code' => $memberCode,
-                'last_name' => $data['last_name'],
-                'first_name' => $data['first_name'],
-                'middle_initial' => $data['middle_initial'] ?? null,
-            ]);
+    public function store(SaveMemberRequest $request, ImportedMember $members, MemberProfileService $profiles)
+    {
+        $data = $request->validated() + ['department_id' => null, 'middle_initial' => null];
 
-            $qrService->generateMemberQrPng($memberCode);
+        DB::transaction(function () use ($request, $members, $profiles, $data): void {
+            if (! $members->create($data, $profiles)) {
+                throw ValidationException::withMessages([
+                    'email' => 'The email address or reference number already belongs to an existing or archived account.',
+                ]);
+            }
 
-            return $member;
+            $account = User::where('email', $data['email'])->firstOrFail();
+            activity('members')->causedBy($request->user())->performedOn($account)
+                ->event('created')->log('Created a member account manually');
         });
 
-        return response()->json(['message' => "Member {$member->fullName()} ({$member->member_code}) created with QR code."], 201);
+        $message = 'Member account created. The welcome email is queued.';
+
+        return $request->expectsJson() ? response()->json(['message' => $message], 201)
+            : to_route('members.index')->with('status', $message);
     }
 
-
-    public function update(UpdateMemberRequest $request, LibraryMember $member)
+    public function update(SaveMemberRequest $request, LibraryMember $member, MemberProfileService $profiles)
     {
+        $this->authorizeMemberEdit($request, $member);
         $data = $request->validated();
-
-        DB::transaction(function () use ($member, $data): void {
-            $member->update([
-                'member_role' => $data['member_role'],
-                'department_id' => $data['member_role'] === LibraryMember::ROLE_FACULTY ? ($data['department_id'] ?? null) : null,
-                'reference_number' => $data['reference_number'],
-                'last_name' => $data['last_name'],
-                'first_name' => $data['first_name'],
-                'middle_initial' => $data['middle_initial'] ?? null,
+        if ($member->user->hasAnyRole(Rbac::PERSONNEL_ROLES) && $member->member_role !== $data['member_role']) {
+            throw ValidationException::withMessages([
+                'member_role' => 'Remove the personnel role before changing the membership type.',
             ]);
+        }
 
+        DB::transaction(function () use ($member, $data, $profiles): void {
             $user = $member->user;
             if ($user) {
                 $user->email = $data['email'];
-                if (! empty($data['account_status']) && ! $user->hasRole(Rbac::SUPERADMIN)) {
+                $user->reference_number = $data['reference_number'];
+                if (! empty($data['account_status']) && $user->account_status !== User::STATUS_PENDING
+                    && ! $user->hasRole(Rbac::SUPERADMIN)) {
                     $user->account_status = $data['account_status'];
                 }
                 $user->save();
+                $profiles->save($user, $data);
 
-                // Sync Spatie role only if the user currently holds a base member role.
+                // Updating membership must not remove a staff or admin assignment.
                 $currentRole = $user->getRoleNames()->first();
                 if (in_array($currentRole, Rbac::MEMBER_ROLES, true)) {
                     $user->syncRoles([strtolower($data['member_role'])]);
@@ -115,31 +136,17 @@ class MemberController extends Controller
             }
         });
 
-        return response()->json(['message' => "Updated member {$member->fullName()}."]);
+        return $request->expectsJson() ? response()->json(['message' => "Updated member {$member->refresh()->fullName()}."])
+            : to_route('members.index')->with('status', 'Member updated.');
     }
 
-    public function destroy(Request $request, LibraryMember $member)
+    public function destroy(Request $request, LibraryMember $member, ArchiveBin $archive)
     {
-        $user = $member->user;
+        $archive->archiveMember($request->user(), $member);
 
-        if ($user && ($user->hasRole(Rbac::SUPERADMIN) || $request->user()->is($user))) {
-            throw ValidationException::withMessages(['member' => 'You cannot archive the Head Librarian or your own account.']);
-        }
-
-        DB::transaction(function () use ($request, $member, $user): void {
-            if ($user) {
-                $user->forceFill(['account_status' => User::STATUS_INACTIVE])->save();
-                $user->delete();
-            }
-            $member->delete();
-
-            activity('archive')
-                ->causedBy($request->user())
-                ->performedOn($member)
-                ->log("Archived member {$member->fullName()} ({$member->member_code})");
-        });
-
-        return response()->json(['message' => "{$member->fullName()} was moved to the Archive Bin (retained for 6 months)."]);
+        return $request->expectsJson()
+            ? response()->json(['message' => "{$member->fullName()} was moved to the Archive Bin (retained for 6 months)."])
+            : to_route('members.index')->with('status', 'Member archived.');
     }
 
     public function archive(Request $request)
@@ -151,8 +158,9 @@ class MemberController extends Controller
             ->when($search, fn ($q) => $q->where(fn ($w) => $w
                 ->where('last_name', 'like', "%{$search}%")
                 ->orWhere('first_name', 'like', "%{$search}%")
-                ->orWhere('reference_number', 'like', "%{$search}%")
-                ->orWhere('member_code', 'like', "%{$search}%")))
+                ->orWhereHas('user', fn ($u) => $u->withTrashed()
+                    ->where('reference_number', 'like', "%{$search}%")
+                    ->orWhere('user_qr_value', 'like', "%{$search}%"))))
             ->latest('deleted_at')
             ->paginate(15)
             ->withQueryString();
@@ -160,35 +168,68 @@ class MemberController extends Controller
         return MemberResource::collection($archived);
     }
 
-    public function restore(Request $request, int $memberId)
+    public function restore(Request $request, int $memberId, ArchiveBin $archive)
     {
-        $member = LibraryMember::onlyTrashed()->findOrFail($memberId);
+        $member = $archive->restore($request->user(), LibraryMember::class, $memberId);
 
-        DB::transaction(function () use ($request, $member): void {
-            $member->restore();
+        return $request->expectsJson()
+            ? response()->json(['message' => "{$member->fullName()} has been restored."])
+            : to_route('archive.index', ['section' => 'members'])->with('status', 'Member restored.');
+    }
 
-            $user = User::withTrashed()->find($member->account_id);
-            if ($user) {
-                $user->restore();
-                $user->forceFill(['account_status' => User::STATUS_ACTIVE])->save();
-            }
+    public function qrSheet(Request $request, QrCodeService $qrService)
+    {
+        $validated = $request->validate([
+            'member_ids' => ['required', 'array', 'min:1'],
+            'member_ids.*' => ['required', 'integer', 'distinct'],
+        ]);
 
-            activity('archive')
-                ->causedBy($request->user())
-                ->performedOn($member)
-                ->log("Restored member {$member->fullName()} ({$member->member_code}) from archive");
-        });
+        $members = LibraryMember::with('user.personnel.department')
+            ->whereIn('member_id', $validated['member_ids'])
+            ->whereHas('user', fn ($user) => $user->whereNotNull('user_qr_value')->where('user_qr_value', '<>', ''))
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+        if ($members->count() !== count($validated['member_ids'])) {
+            throw ValidationException::withMessages([
+                'member_ids' => 'One or more selected QR cards are unavailable. Refresh Member Management and select the cards again.',
+            ]);
+        }
 
-        return response()->json(['message' => "{$member->fullName()} has been restored."]);
+        $items = $members->map(function (LibraryMember $member) use ($qrService) {
+            $dept = $member->user?->personnel?->department?->department_name;
+            $idLabel = $member->member_role === LibraryMember::ROLE_FACULTY ? 'DepEd ID' : 'LRN';
+
+            return [
+                'title' => $member->fullName(),
+                'subtitle' => $dept ? "{$member->member_role} · {$dept}" : $member->member_role,
+                'code' => $member->member_code,
+                'footer' => "{$idLabel}: {$member->reference_number}",
+                'png' => $qrService->getQrPngBase64($member->member_code, 6),
+            ];
+        })->values()->all();
+
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.qr-sheet', [
+            'title' => 'Member QR Cards',
+            'columns' => 2,
+            'items' => $items,
+        ])->setPaper('a4')->stream('member-qr-cards.pdf');
     }
 
     public function qrCard(Request $request, LibraryMember $member, QrCodeService $qrService)
     {
         $actor = $request->user();
-        abort_unless($actor->can('members.manage') || $member->account_id === $actor->id, 403);
+        abort_unless($actor->can('members.manage') || $member->account_id === $actor->getKey(), 403);
 
-        $member->load('user');
-        $code = $this->ensureMemberQr($member, $qrService);
+        $member->load('user.personnel.department');
+        $code = $member->member_code;
+        abort_if($code === null, 404);
+
+        if (! $request->expectsJson()) {
+            $png = $qrService->getQrPngBase64($code);
+
+            return view('members.qr', compact('member', 'code', 'png'));
+        }
 
         return response()->json([
             'member_code' => $code,
@@ -207,18 +248,10 @@ class MemberController extends Controller
         return $this->qrCard($request, $member, $qrService);
     }
 
-    private function ensureMemberQr(LibraryMember $member, QrCodeService $qrService): string
+    private function authorizeMemberEdit(Request $request, LibraryMember $member): void
     {
-        if (! $member->member_code) {
-            $member->forceFill(['member_code' => LibraryMember::generateMemberCode()])->save();
-        }
-
-        if ($member->user && $member->user->user_qr_value !== $member->member_code) {
-            $member->user->forceFill(['user_qr_value' => $member->member_code])->save();
-        }
-
-        $qrService->generateMemberQrPng($member->member_code);
-
-        return $member->member_code;
+        abort_unless($member->user, 404);
+        abort_if($member->user->hasRole(Rbac::SUPERADMIN)
+            || ($member->user->hasAnyRole(Rbac::PERSONNEL_ROLES) && $request->user()->cannot('roles.manage')), 403);
     }
 }

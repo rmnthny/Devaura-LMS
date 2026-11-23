@@ -9,6 +9,7 @@ use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
@@ -16,14 +17,12 @@ class ErdModelsAndArchiveTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_database_seeder_populates_reference_data_and_head_librarian(): void
+    public function test_database_seeder_populates_reference_data_without_demo_accounts(): void
     {
         $this->seed(DatabaseSeeder::class);
 
         $this->assertGreaterThanOrEqual(9, Department::count());
-        $head = User::where('username', 'headlibrarian')->firstOrFail();
-        $this->assertNotNull($head->personnel);
-        $this->assertEquals('Head Librarian', $head->fullName());
+        $this->assertSame(0, User::count());
     }
 
     public function test_member_and_personnel_relationships_work(): void
@@ -43,33 +42,33 @@ class ErdModelsAndArchiveTest extends TestCase
 
     public function test_duplicate_reference_number_is_rejected_by_database(): void
     {
-        LibraryMember::factory()->create(['reference_number' => '136800000001']);
+        User::factory()->create(['reference_number' => '136800000001']);
 
         $this->expectException(QueryException::class);
-        LibraryMember::factory()->create(['reference_number' => '136800000001']);
+        User::factory()->create(['reference_number' => '136800000001']);
     }
 
     public function test_member_code_generator_increments_and_skips_archived_codes(): void
     {
-        $year = 2026;
-        $first = LibraryMember::generateMemberCode($year);
-        $this->assertEquals('UBNHS-2026-0001', $first);
+        $first = User::factory()->create();
+        $first->assignMemberQr();
+        $first->delete();
+        $next = User::factory()->create();
+        $next->assignMemberQr();
 
-        $member = LibraryMember::factory()->create(['member_code' => $first]);
-        $member->delete(); // archive
-
-        $this->assertEquals('UBNHS-2026-0002', LibraryMember::generateMemberCode($year));
+        $this->assertNotSame($first->user_qr_value, $next->user_qr_value);
+        $this->assertSame(sprintf('UBNHS-%d-%04d', now()->year, $next->getKey()), $next->user_qr_value);
     }
 
     public function test_activity_log_records_member_changes_and_prune_purges_after_six_months(): void
     {
+        $this->seed(DatabaseSeeder::class);
         $oldArchived = LibraryMember::factory()->create();
         $recentArchived = LibraryMember::factory()->create();
 
         $oldArchived->delete();
         $recentArchived->delete();
 
-        // Backdate oldArchived to 7 months ago.
         LibraryMember::onlyTrashed()
             ->where('member_id', $oldArchived->member_id)
             ->update(['deleted_at' => now()->subMonths(7)]);
@@ -81,5 +80,34 @@ class ErdModelsAndArchiveTest extends TestCase
 
         $this->assertNull(LibraryMember::withTrashed()->find($oldArchived->member_id));
         $this->assertNotNull(LibraryMember::withTrashed()->find($recentArchived->member_id));
+    }
+
+    public function test_archive_cleanup_keeps_profiles_connected_to_library_history(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $member = LibraryMember::factory()->create();
+        $personnel = LibraryPersonnel::factory()->create();
+        DB::table('attendance_log')->insert([
+            'account_id' => $member->account_id, 'user_role' => 'Student', 'time_in_at' => now(),
+        ]);
+        $schedule = [
+            'personnel_id' => $personnel->getKey(),
+            'day_id' => DB::table('schedule_day')->value('day_id'),
+            'period_id' => DB::table('schedule_period')->value('period_id'),
+        ];
+        DB::table('personnel_schedule')->insert($schedule);
+
+        $this->travelTo(now()->subMonthsNoOverflow(7), function () use ($member, $personnel): void {
+            $member->delete();
+            $member->user()->firstOrFail()->delete();
+            $personnel->delete();
+            $personnel->user()->firstOrFail()->delete();
+        });
+
+        $this->artisan('model:prune', ['--model' => [LibraryMember::class, LibraryPersonnel::class, User::class]])
+            ->assertSuccessful();
+        $this->assertSoftDeleted('library_member', ['member_id' => $member->getKey()]);
+        $this->assertSoftDeleted('library_personnel', ['personnel_id' => $personnel->getKey()]);
+        $this->assertDatabaseHas('personnel_schedule', $schedule);
     }
 }

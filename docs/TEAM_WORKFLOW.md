@@ -31,6 +31,6 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
 ## 3. Localhost (Dec 1 Defense) vs. Hostinger (Next Phase)
 - **Localhost Prototype (Laragon, `http://localhost:8000`):**
   - Uses local MySQL (`devaura_lms`), offline assets in `public/vendor/`, and `MAIL_MAILER=log` (or Gmail SMTP if Wi-Fi is available during defense).
-  - Backend-only development can run tests anytime without MySQL using `php artisan test` (in-memory SQLite).
+  - Run `php artisan test` against the dedicated MySQL database `devaura_lms_test`.
 - **Cloud Deployment (Hostinger — Next Phase):**
   - Restrict admin/staff routes to the school network while allowing external student/faculty portal access.

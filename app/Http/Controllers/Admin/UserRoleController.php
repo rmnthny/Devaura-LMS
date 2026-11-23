@@ -6,43 +6,72 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\RoleAssignmentService;
+use App\Support\Rbac;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-/** Superadmin: assign personnel roles, transfer superadmin, activate/deactivate accounts. */
 class UserRoleController extends Controller
 {
     public function index(Request $request)
     {
-        $search = trim((string) $request->query('q'));
+        $query = $request->query('q');
+        $search = is_string($query) ? trim($query) : '';
+        $roleFilter = $request->query('role');
+        $isHead = $request->user()->hasRole(Rbac::SUPERADMIN);
+        $filterableRoles = $isHead ? RoleAssignmentService::ASSIGNABLE : [Rbac::STUDENT, Rbac::STAFF];
+        if ($isHead) {
+            $filterableRoles[] = Rbac::SUPERADMIN;
+        }
 
         $users = User::with(['roles', 'member', 'personnel.department'])
-            ->when($search, fn ($q) => $q->where(fn ($w) => $w
-                ->where('username', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhereHas('member', fn ($m) => $m
-                    ->where('last_name', 'like', "%{$search}%")
-                    ->orWhere('first_name', 'like', "%{$search}%")
-                    ->orWhere('reference_number', 'like', "%{$search}%"))))
-            ->orderBy('username')
+            ->when(! $isHead, fn ($q) => $q->role($filterableRoles)->whereHas('member')->has('roles', '=', 1)
+                ->where('reference_number', 'like', str_repeat('_', 12))
+                ->whereDoesntHave('roles', fn ($roles) => $roles->whereNotIn('name', $filterableRoles)))
+            ->when(in_array($roleFilter, $filterableRoles, true), fn ($q) => $q->role($roleFilter))
+            ->when($search !== '', function ($q) use ($search, $isHead) {
+                foreach (preg_split('/\s+/u', $search, -1, PREG_SPLIT_NO_EMPTY) as $term) {
+                    $q->where(fn ($w) => $w
+                        ->when($isHead, fn ($fields) => $fields->where('email', 'like', "%{$term}%")
+                            ->orWhere('reference_number', 'like', "%{$term}%")
+                            ->orWhere('user_qr_value', 'like', "%{$term}%"))
+                        ->orWhereHas('member', fn ($m) => $m
+                            ->where('last_name', 'like', "%{$term}%")
+                            ->orWhere('first_name', 'like', "%{$term}%"))
+                        ->orWhereHas('personnel', fn ($p) => $p
+                            ->where('last_name', 'like', "%{$term}%")
+                            ->orWhere('first_name', 'like', "%{$term}%")));
+                }
+            })
+            ->orderBy('email')
             ->paginate(15)
             ->withQueryString();
 
-        return UserResource::collection($users);
+        if ($request->expectsJson()) {
+            return $isHead ? UserResource::collection($users) : response()->json($users->through(fn (User $account) => [
+                'account_id' => $account->getKey(),
+                'name' => $account->fullName(),
+                'role' => $account->getRoleNames()->first(),
+                'status' => $account->account_status,
+            ]));
+        }
+
+        return view('members.accounts', compact('users', 'search', 'roleFilter', 'filterableRoles', 'isHead'));
     }
 
     public function updateRole(Request $request, User $user, RoleAssignmentService $service)
     {
         $data = $request->validate([
             'role' => ['required', Rule::in(RoleAssignmentService::ASSIGNABLE)],
-            'department_id' => ['nullable', 'exists:department,department_id'],
             'confirm' => ['accepted'],
             'current_password' => ['required', 'current_password'],
         ]);
 
-        $service->assign($request->user(), $user, $data['role'], $data['department_id'] ?? null);
+        $service->assign($request->user(), $user, $data['role']);
 
-        return response()->json(['message' => "{$user->fullName()} is now {$data['role']}."]);
+        $message = "{$user->fullName()} is now ".ucfirst($data['role']).'.';
+
+        return $request->expectsJson() ? response()->json(['message' => $message])
+            : to_route('accounts.index')->with('status', $message);
     }
 
     public function transfer(Request $request, User $user, RoleAssignmentService $service)
@@ -54,7 +83,10 @@ class UserRoleController extends Controller
 
         $service->transferSuperadmin($request->user(), $user);
 
-        return response()->json(['message' => "Superadmin privilege transferred to {$user->fullName()}. You are now a Faculty member."]);
+        $message = "Head Librarian privilege transferred to {$user->fullName()}. Your account is now Faculty.";
+
+        return $request->expectsJson() ? response()->json(['message' => $message])
+            : to_route('profile.edit')->with('status', $message);
     }
 
     public function updateStatus(Request $request, User $user)
@@ -64,9 +96,13 @@ class UserRoleController extends Controller
         ])]]);
 
         abort_if($request->user()->is($user), 422, 'You cannot change your own account status.');
+        abort_if($user->account_status === User::STATUS_PENDING, 422, 'The member must verify their email first.');
 
         $user->update($data);
+        $message = "{$user->fullName()} is now {$data['account_status']}.";
 
-        return response()->json(['message' => "{$user->fullName()} is now {$data['account_status']}."]);
+        return $request->expectsJson()
+            ? response()->json(['message' => $message])
+            : to_route('accounts.index')->with('status', $message);
     }
 }

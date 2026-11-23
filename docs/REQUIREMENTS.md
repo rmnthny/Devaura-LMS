@@ -1,65 +1,66 @@
-# UBNHS-LMS Functional Requirements Traceability Matrix (R1–R5)
+# UBNHS-LMS Functional Requirements Traceability Matrix (R1-R5)
 
-This document maps Upper Bicutan National High School (UBNHS) operational requirements (`R1`–`R5`) to database tables, Laravel modules, and sprint deliverables.
-
----
+This document maps the Upper Bicutan National High School operational requirements to the normalized database, Laravel modules, and the authoritative sprint order in `SPRINT_STATUS.md`.
 
 ## R1: Centralized Database Management
-- **Operational Goal:** Replace fragmented paper logbooks and standalone spreadsheets with a unified, role-secured relational database for staff, library members (students and faculty), books, attendance, circulation, and inventory audits.
-- **Mapped Schema Tables:** `users`, `members`, `books`, `attendance_logs`, `borrow_transactions`, `inventory_audits`, `inventory_audit_items`, `roles`, `activity_log`.
+
+- **Operational Goal:** Replace paper logbooks and separate spreadsheets with one role-secured database for accounts, members, personnel, visitors, books, attendance, circulation, inventory audits, and system activity.
+- **Mapped Tables:** `user_account`, `library_member`, `library_personnel`, `department`, `walk_in_visitor`, Spatie permission tables, and `activity_log`.
+- **Required Roles:** `superadmin`, `admin`, `staff`, `student`, `faculty`, `visitor`, and `maintenance`.
 - **Key Features:**
-  - Role-Based Access Control (`head_librarian`, `library_staff`, `student_staff`) enforced via `spatie/laravel-permission`.
-  - Master record management for UBNHS students (LRN, grade level 7–12, section) and faculty (Employee ID, department).
-  - System-wide audit trail via `spatie/laravel-activitylog`.
-- **Target Sprint:** Sprint 1 (Core Schema, Auth/RBAC & Member/Book CRUD).
+  - Separate authentication credentials from member, personnel, and visitor profiles.
+  - Enforce fixed role permissions with `spatie/laravel-permission`.
+  - Retain archived master records for six months before pruning.
+  - Record critical actions with `spatie/laravel-activitylog`.
+- **Target Sprints:** Sprint 1 for accounts, authentication, RBAC, members, and the database foundation; Sprint 5 for the audit-trail viewer.
 
----
+## R2: Digital Cataloging and Circulation Management
 
-## R2: Digital Cataloging & Circulation Management
-- **Operational Goal:** Streamline book cataloging, availability lookup, borrowing (checkout), returning (check-in), and overdue tracking without manual borrower cards.
-- **Mapped Schema Tables:** `books`, `members`, `borrow_transactions`.
+- **Operational Goal:** Manage physical-book cataloging, availability, borrowing, returning, and overdue tracking without borrower cards.
+- **Mapped Tables:** `book`, `genre`, `author`, `book_author`, `publisher`, `book_publisher`, and `borrow_transaction`.
 - **Key Features:**
-  - Physical copy cataloging by unique `accession_number` (`ACC-00001`), ISBN, title, author, publisher, publication year, category, and shelf location.
-  - Real-time book status transitions (`available`, `borrowed`, `missing`, `damaged`).
-  - Borrow/return circulation processing (`TRX-YYYYMMDD-XXXX`) linking `book_id`, `member_id`, and `processed_by` (`users.id`).
-  - Automatic flagging of overdue transactions by `due_date` and `status` (`overdue`) — **strictly zero fines or payment processing**.
-  - Public book availability lookup at `/kiosk`.
-- **Target Sprints:** Sprint 1 (Book CRUD), Sprint 2 (Public Kiosk Search), Sprint 3 (Borrowing/Returning Circulation & Dashboard).
+  - Catalog each physical book with a unique accession number/QR value, ISBN, title, author, publisher, publication date, genre, and availability state.
+  - Support `available`, `borrowed`, `missing`, and `damaged` operational states.
+  - Process borrow/return transactions using `TRX-YYYYMMDD-XXXX`, a borrower, the processing account, due dates, and real-time book-state changes.
+  - Flag overdue transactions and block additional borrowing while an overdue item remains unresolved.
+  - Provide public book-availability lookup at `/kiosk`.
+  - Do not implement fines, payments, or reservations.
+- **Target Sprints:** Sprint 2 for cataloging and Book QR; Sprint 3 for public kiosk lookup; Sprint 4 for circulation, overdue tracking, and notifications; Sprint 5 for dashboard metrics and reports.
 
----
+## R3: Digital Inventory and Book Auditing
 
-## R3: Digital Inventory & Book Auditing
-- **Operational Goal:** Enable structured physical stocktaking of the library collection using QR scanning to rapidly identify verified, missing, or misplaced books.
-- **Mapped Schema Tables:** `inventory_audits`, `inventory_audit_items`, `books`.
+- **Operational Goal:** Conduct physical stocktaking with QR scanning and identify verified, missing, misplaced, or damaged books.
+- **Planned Tables:** `inventory_audits` and `inventory_audit_items`, linked to `book` and the responsible `user_account`.
 - **Key Features:**
-  - Creation of `inventory_audits` sessions (`in_progress` -> `completed`) by authorized library staff.
-  - Pre-population of `inventory_audit_items` for cataloged books with default `scanned_status = 'missing'`.
-  - Rapid QR scan verification updating `scanned_status` to `'verified'` (or `'misplaced'`) and recording `scanned_at`.
-  - Discrepancy summary comparing expected catalog holdings against scanned physical copies.
-- **Target Sprint:** Sprint 4 (Inventory Auditing & PDF/Excel Reports).
-
----
+  - Create an audit session with `in_progress` and `completed` states.
+  - Prepopulate audit items from the active catalog.
+  - Record QR scan results as `verified`, `missing`, or `misplaced`, with scan timestamps.
+  - Present a discrepancy summary for review.
+- **Target Sprints:** Sprint 2 for auditing workflows and tests; Sprint 5 for PDF/Excel inventory and discrepancy reports.
 
 ## R4: Automated Report Generation
-- **Operational Goal:** Generate accurate, printable, and exportable administrative reports for UBNHS library leadership and DepEd documentation.
-- **Mapped Schema Tables:** `attendance_logs`, `borrow_transactions`, `books`, `members`, `inventory_audits`, `inventory_audit_items`.
-- **Key Features:**
-  - Exportable PDF reports (`barryvdh/laravel-dompdf`) and Excel spreadsheets (`maatwebsite/excel`).
-  - Daily/monthly Library Attendance Reports (filtered by date range, member type, grade level).
-  - Circulation & Overdue Book Reports (`borrowed`, `returned`, `overdue`).
-  - Book Inventory & Audit Discrepancy Reports (`verified`, `missing`, `misplaced`, `damaged`).
-- **Target Sprint:** Sprint 4 (Inventory Auditing & PDF/Excel Reports).
 
----
-
-## R5: QR Code Integration (Generation & Scanning)
-- **Operational Goal:** Eliminate manual typing errors during library entry/exit, book borrowing/returning, and physical inventory auditing through offline-capable QR code generation and scanning.
-- **Mapped Schema Tables:** `members` (`member_code`, `qr_code_path`), `books` (`accession_number`, `qr_code_path`), `attendance_logs`, `borrow_transactions`, `inventory_audit_items`.
+- **Operational Goal:** Produce accurate administrative reports for library leadership and DepEd documentation.
+- **Mapped Data:** `attendance_log`, `borrow_transaction`, `book`, `library_member`, `inventory_audits`, and `inventory_audit_items`.
 - **Key Features:**
-  - Local server-side QR code PNG generation (`simplesoftwareio/simple-qrcode`) stored under `storage/app/public/` (`public/storage/`) for every registered member (`member_code`) and cataloged book (`accession_number`).
-  - Printable QR ID cards/stickers for members and book spine/cover labels.
-  - Browser-based webcam and USB scanner QR decoding using local `public/vendor/html5-qrcode/html5-qrcode.min.js` across:
-    1. Public Kiosk (`/kiosk`) rapid entry/exit attendance (`time_in` / `time_out`).
-    2. Staff Circulation desk instant member + book lookup.
-    3. Inventory Audit rapid book verification.
-- **Target Sprints:** Sprint 1 (Member/Book QR Generation), Sprint 2 (Kiosk QR Attendance), Sprint 3 (QR Circulation), Sprint 4 (QR Inventory Auditing).
+  - Export PDF reports with `barryvdh/laravel-dompdf`.
+  - Export Excel reports with `maatwebsite/excel`.
+  - Report attendance by date range, role/member type, and grade level where available.
+  - Report borrowed, returned, and overdue circulation activity.
+  - Report catalog status and inventory-audit discrepancies.
+- **Target Sprint:** Sprint 5.
+
+## R5: QR Code Integration
+
+- **Operational Goal:** Reduce manual entry errors during attendance, circulation, and inventory operations using webcam or USB QR scanners.
+- **Mapped Data:** account/member QR values, Book QR values, `attendance_log`, `borrow_transaction`, and `inventory_audit_items`.
+- **Key Features:**
+  - Generate member and Book QR images locally with `milon/barcode`.
+  - Enter QR code values manually. Camera scanning is deferred.
+  - Provide printable member cards and Book labels.
+  - Use QR scanning at the public kiosk, circulation desk, and inventory-audit workflow.
+- **Target Sprints:** Sprint 1 for Member QR; Sprint 2 for Book QR and inventory scanning; Sprint 3 for kiosk attendance; Sprint 4 for circulation scanning.
+
+## Traceability Rule
+
+If a sprint assignment here conflicts with `SPRINT_STATUS.md`, follow `SPRINT_STATUS.md` and update this matrix in the same pull request.

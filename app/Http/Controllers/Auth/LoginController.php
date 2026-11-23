@@ -16,31 +16,30 @@ class LoginController extends Controller
     public function login(Request $request, OtpService $otpService)
     {
         $credentials = $request->validate([
-            'login' => ['required', 'string'],
+            'login' => ['required', 'string', 'email', 'max:254'],
             'password' => ['required', 'string'],
-        ]);
+        ], [], ['login' => 'email address']);
 
-        $login = trim($credentials['login']);
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $user = User::findForLogin(trim($credentials['login']));
 
-        $user = User::where($field, $login)->first();
-
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            throw ValidationException::withMessages(['login' => 'Invalid username/email or password.']);
+        if (! $user || ! Hash::check($credentials['password'], $user->password_hash)) {
+            throw ValidationException::withMessages(['login' => 'Invalid sign-in details.']);
         }
 
-        if (! $user->isActive() || $user->hasRole('visitor')) {
+        if ($user->hasRole('visitor') || (! $user->isActive() && $user->account_status !== User::STATUS_PENDING)) {
             abort(403, 'Account is inactive or locked.');
         }
 
-        if ($user->email_verified_at === null) {
+        if ($user->account_status === User::STATUS_PENDING) {
             $otpService->issue($user);
-            $request->session()->put('otp_user_id', $user->id);
+            $request->session()->put('otp_user_id', $user->getKey());
 
-            return response()->json(['message' => 'Please verify your email with the 6-digit OTP we just sent.']);
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Please verify your email with the 6-digit OTP we just sent.'])
+                : to_route('otp.form')->with('status', 'Enter the code sent to your email.');
         }
 
-        Auth::login($user, $request->boolean('remember'));
+        Auth::login($user);
         $request->session()->regenerate();
 
         activity('auth')
@@ -49,7 +48,11 @@ class LoginController extends Controller
             ->withProperties(['ip' => $request->ip()])
             ->log('User logged in');
 
-        return new UserResource($user);
+        if ($request->expectsJson()) {
+            return new UserResource($user);
+        }
+
+        return $user->can('books.view') ? redirect()->intended(route('books.index')) : to_route('profile.edit');
     }
 
     public function logout(Request $request)
@@ -68,6 +71,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'You have been logged out.']);
+        return $request->expectsJson() ? response()->json(['message' => 'You have been logged out.']) : to_route('login');
     }
 }

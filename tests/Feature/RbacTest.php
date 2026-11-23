@@ -73,6 +73,7 @@ class RbacTest extends TestCase
         $staff = User::factory()->withRole(Rbac::STAFF)->create();
 
         $this->assertFalse($staff->can('members.delete'));
+        $this->assertFalse($staff->can('books.manage'));
         $this->assertFalse($staff->can('books.delete'));
         $this->assertFalse($staff->can('personnel.delete'));
         $this->assertFalse($staff->can('audit.view'));
@@ -83,7 +84,8 @@ class RbacTest extends TestCase
         $admin = User::factory()->withRole(Rbac::ADMIN)->create();
 
         $this->assertTrue($admin->can('members.manage'));
-        $this->assertTrue($admin->can('members.delete'));
+        $this->assertTrue($admin->can('books.manage'));
+        $this->assertFalse($admin->can('members.delete'));
         $this->assertTrue($admin->can('reports.generate'));
         $this->assertTrue($admin->can('inventory.audit'));
         $this->assertTrue($admin->can('audit.view'));

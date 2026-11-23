@@ -13,13 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-/** ERD: library_member — Student and Faculty profiles linked to user_account. */
 #[Fillable([
     'account_id',
-    'department_id',
-    'member_role',
-    'reference_number',
-    'member_code',
     'last_name',
     'first_name',
     'middle_initial',
@@ -39,14 +34,15 @@ class LibraryMember extends Model
     {
         return LogOptions::defaults()
             ->useLogName('library_member')
-            ->logOnly(['member_role', 'reference_number', 'member_code', 'last_name', 'first_name', 'middle_initial'])
+            ->logOnly(['account_id', 'last_name', 'first_name', 'middle_initial'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
     public function prunable(): Builder
     {
-        return static::onlyTrashed()->where('deleted_at', '<=', now()->subMonths(6));
+        return static::onlyTrashed()->where('deleted_at', '<=', now()->subMonthsNoOverflow(6))
+            ->whereHas('user', fn (Builder $query) => $query->withTrashed()->withoutLibraryHistory());
     }
 
     public function user(): BelongsTo
@@ -54,9 +50,31 @@ class LibraryMember extends Model
         return $this->belongsTo(User::class, 'account_id');
     }
 
-    public function department(): BelongsTo
+    public function getDepartmentAttribute(): ?Department
     {
-        return $this->belongsTo(Department::class, 'department_id', 'department_id');
+        return $this->user?->personnel?->department;
+    }
+
+    public function getDepartmentIdAttribute(): ?int
+    {
+        return $this->user?->personnel?->department_id;
+    }
+
+    public function getReferenceNumberAttribute(): ?string
+    {
+        return $this->user?->reference_number;
+    }
+
+    public function getMemberCodeAttribute(): ?string
+    {
+        return $this->user?->user_qr_value;
+    }
+
+    public function getMemberRoleAttribute(): string
+    {
+        return strlen((string) $this->reference_number) === 7
+            ? self::ROLE_FACULTY
+            : self::ROLE_STUDENT;
     }
 
     public function fullName(): string
@@ -66,18 +84,4 @@ class LibraryMember extends Model
         return trim("{$this->first_name}{$mi} {$this->last_name}");
     }
 
-    /** Generates the next sequential UBNHS-YYYY-XXXX code (counting archived rows too). */
-    public static function generateMemberCode(?int $year = null): string
-    {
-        $prefix = 'UBNHS-'.($year ?? now()->year).'-';
-
-        $latest = static::withTrashed()
-            ->where('member_code', 'like', $prefix.'%')
-            ->orderByDesc('member_code')
-            ->value('member_code');
-
-        $next = $latest ? ((int) substr($latest, strlen($prefix))) + 1 : 1;
-
-        return $prefix.str_pad((string) $next, 4, '0', STR_PAD_LEFT);
-    }
 }

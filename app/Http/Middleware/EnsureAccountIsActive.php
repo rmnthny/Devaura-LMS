@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-/** Logs out any authenticated user whose account is not Active. */
 class EnsureAccountIsActive
 {
     public function handle(Request $request, Closure $next): Response
