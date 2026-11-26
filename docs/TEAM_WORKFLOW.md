@@ -12,7 +12,7 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
 | **Kyle** | Document Analyst / Database Developer | Normalized MySQL (`devaura_lms`) schema, ERD/DFD/Flowchart/Use Case documentation, migrations |
 | **Kristine** | Project Manager / QA | Notion sprint tracking, QA checklist (RBAC, CSRF, XSS, SQLi, Postman, mobile responsiveness) |
 
-> **AI Tool Rule (Antigravity / Codex / Claude):** Respect these boundaries—when working on a backend-only task, do not overwrite Kyle's DB schema or Shaina's Blade views unless explicitly asked.
+> **AI Tool Rule (Antigravity / Codex / Claude):** Read `AGENTS.md` and `docs/ACTIVE_HANDOFF.md` before working. Respect team ownership, inspect the current implementation, and change a teammate's area only when the requested feature requires it.
 
 ---
 
@@ -24,7 +24,7 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
    - **Postman API Verification** passes (`GET`, `POST`, `PUT/PATCH`, `DELETE`, CSRF token handling, expected `200`/`201`/`403`/`422` codes).
    - **Security Checks** pass (3/min login rate limit, `PreventBackHistory`, active check, no raw SQL, Blade escaping).
    - **Responsiveness Check** passes (Chrome DevTools / mobile screen viewer for grids, cards, and inputs).
-4. **Sprint Handoff:** Generate `docs/handoffs/SPRINT_<N>_HANDOFF.md`, update `docs/SPRINT_STATUS.md`, merge to `main`, and start a fresh AI chat for the next sprint.
+4. **Sprint Handoff:** Generate `docs/handoffs/SPRINT_<N>_HANDOFF.md`, update `docs/ACTIVE_HANDOFF.md` and `docs/SPRINT_STATUS.md`, merge to `main`, and start a fresh AI chat for the next sprint. The first prompt in that chat must tell the assistant to read `AGENTS.md` before changing code.
 
 ---
 

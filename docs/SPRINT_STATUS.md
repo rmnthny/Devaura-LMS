@@ -11,7 +11,7 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 - [x] **0.1:** Set up Laravel 13 (`Devaura-LMS`) and install `spatie/laravel-permission`, `spatie/laravel-activitylog`, `milon/barcode`, `barryvdh/laravel-dompdf`, and `maatwebsite/excel`.
 - [x] **0.2:** Publish Spatie migrations/config, link `public/storage`, configure `.env` for MySQL (`devaura_lms`), and run base migrations.
 - [x] **0.3:** Add offline Bootstrap CSS and Bootstrap Icons to `public/vendor/`.
-- [x] **0.4:** Add team docs (`docs/`), `AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, and repo guidelines.
+- [x] **0.4:** Add team documentation, the root `AGENTS.md` AI working agreement, and repository guidelines.
 
 ---
 
@@ -31,7 +31,7 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 
 ---
 
-## Current Sprint
+## Sprint 2 implementation
 
 ### Sprint 2 — Book Inventory, Archiving, Audits & Personnel Schedules
 - [x] **2.1 Catalog:** Manage books, authors, genres, and publishers. Track copies and each copy's status.
@@ -41,13 +41,24 @@ Only work on tasks under **Current Sprint**. Do not build anything under **Upcom
 - [x] **Bulk import:** Accept CSV and Excel files for members and books. Queue larger imports and send welcome emails through a separate worker.
 - [ ] **2.5 Final gate:** Confirm hosted CI, verify endpoints in Postman or Apidog, get Kristine's QA sign-off, and record the handoff before merging.
 
-## Upcoming Sprints
+## Current Sprint
 
 ### Sprint 3 — Public Kiosk & Attendance Monitoring
-- [ ] **3.1:** Build the public `/kiosk` endpoint and page for manual QR code or ID entry (`time_in` / `time_out`). Camera scanning is deferred.
-- [ ] **3.2:** Add manual attendance entry for all user types (Head Librarian, Assigned Teacher, Student Staff, Students, Faculty, and Walk-In Visitors via `walk_in_visitor` + `attendance_log`).
-- [ ] **3.3:** Build staff attendance monitoring and filter views + Sprint 3 tests.
-- [ ] **3.4:** QA Review & Fixes *(QA: Kristine + Team)* before merging to `main`.
+- [x] **3.1:** Public kiosk with manual QR value or ID entry. It opens while the Head Librarian is timed in today or while assigned personnel are timed in during their shift. Camera scanning is deferred.
+- [x] **3.2:** Protected staff attendance and assisted entry. Walk-in purposes are stored per visit.
+- [x] **3.3:** Attendance monitoring, date and status filters, and audited Force Time Out for Superadmin and Admin.
+- [x] **3.4:** Separate public kiosk origin with isolated kiosk session, staff-route blocking, safe redirects, no staff navigation, and a staff availability check before public attendance.
+- [ ] **3.5:** QA Review & Fixes *(QA: Kristine + Team)*, endpoint verification, final handoff, and merge to `main`.
+
+Kiosk coverage uses Manila time. The initial defaults are 08:00–12:00 for Morning,
+12:00–17:00 for Afternoon, and 08:00–17:00 for Whole Day. Set
+`LIBRARY_OPENS_AT`, `LIBRARY_AFTERNOON_AT`, and `LIBRARY_CLOSES_AT` when official hours are confirmed.
+Local QA passed with 10 focused tests, 79 total tests, and HTTP checks on both origins.
+The dedicated kiosk device walkthrough and Kristine's QA decision are pending.
+The visit-purpose migration is additive. Run it before opening the Sprint 3 screens.
+See `docs/ACTIVE_HANDOFF.md` for the exact behavior, local addresses, last known tests, and remaining QA.
+
+## Upcoming Sprints
 
 ### Sprint 4 — Book Circulation & Notifications
 - [ ] **4.1:** Build QR-assisted borrow and return flows (`TRX-YYYYMMDD-XXXX`) recording `borrower_id` and `processed_by` (`account_id`) for accountability, updating `book_status` in real time.

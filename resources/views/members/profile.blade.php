@@ -3,6 +3,13 @@
 @section('content')
 <h1 class="h2">My profile</h1>
 <p>{{ $account->email }} · {{ $account->reference_number }}</p>
+@role('maintenance')
+    <form class="d-flex gap-2 mb-3" method="post" action="{{ route('attendance.own') }}">
+        @csrf
+        <button class="btn btn-outline-primary" name="action" value="in">Time In</button>
+        <button class="btn btn-outline-primary" name="action" value="out">Time Out</button>
+    </form>
+@endrole
 <form method="post" action="{{ route('api.v1.profile.update') }}" class="card card-body">
     @csrf
     @method('PUT')

@@ -13,6 +13,7 @@
     @stack('styles')
 </head>
 <body class="bg-body-tertiary">
+    @unless(request()->routeIs('kiosk.*'))
     <header class="border-bottom bg-white d-print-none">
         <nav class="container py-3 d-flex align-items-center flex-wrap gap-3" aria-label="Main navigation">
             <a href="{{ route('books.index') }}" class="fw-semibold text-decoration-none text-dark">
@@ -22,7 +23,7 @@
                 <span class="text-body-tertiary" title="Coming in Sprint 5" aria-disabled="true">Dashboard <span class="badge text-bg-light border fw-normal">Soon</span></span>
             @endcanany
             @can('attendance.view')
-                <span class="text-body-tertiary" title="Coming in Sprint 3" aria-disabled="true">Public Kiosk <span class="badge text-bg-light border fw-normal">Soon</span></span>
+                <a href="{{ route('attendance.index') }}" class="text-decoration-none {{ request()->routeIs('attendance.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Attendance</a>
             @endcan
             @can('circulation.process')
                 <span class="text-body-tertiary" title="Coming in Sprint 4" aria-disabled="true">Book Borrowing <span class="badge text-bg-light border fw-normal">Soon</span></span>
@@ -71,6 +72,7 @@
             @endauth
         </nav>
     </header>
+    @endunless
     <main class="container py-4">
         @if (session('status'))
             <div class="alert alert-success d-print-none" role="status">{{ session('status') }}</div>

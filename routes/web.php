@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/inventory.php';
+require __DIR__.'/attendance.php';
 
 Route::get('/', fn () => request()->user()?->cannot('books.view')
     ? to_route('profile.edit') : to_route('books.index'));
