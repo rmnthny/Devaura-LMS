@@ -30,13 +30,14 @@ This document maps the Upper Bicutan National High School operational requiremen
 ## R3: Digital Inventory and Book Auditing
 
 - **Operational Goal:** Conduct physical stocktaking with QR scanning and identify verified, missing, misplaced, or damaged books.
-- **Planned Tables:** `inventory_audits` and `inventory_audit_items`, linked to `book` and the responsible `user_account`.
+- **Sprint 2 implementation:** Head Librarian per-copy verification updates `book` and records each outcome in `activity_log`.
+- **Deferred session schema:** `inventory_audit` and `inventory_audit_item`, linked to `book` and the responsible `user_account`.
 - **Key Features:**
   - Create an audit session with `in_progress` and `completed` states.
   - Prepopulate audit items from the active catalog.
   - Record QR scan results as `verified`, `missing`, or `misplaced`, with scan timestamps.
   - Present a discrepancy summary for review.
-- **Target Sprints:** Sprint 2 for auditing workflows and tests; Sprint 5 for PDF/Excel inventory and discrepancy reports.
+- **Target Sprints:** Sprint 2 for individual copy checks. Sprint 5 for audit sessions, approval, and PDF/Excel inventory and discrepancy reports.
 
 ## R4: Automated Report Generation
 
@@ -59,7 +60,7 @@ This document maps the Upper Bicutan National High School operational requiremen
   - Enter QR code values manually. Camera scanning is deferred.
   - Provide printable member cards and Book labels.
   - Accept QR values from manual entry or keyboard-style scanners. Camera scanning remains deferred.
-- **Target Sprints:** Sprint 1 for Member QR; Sprint 2 for Book QR and inventory scanning; Sprint 3 for kiosk attendance; Sprint 4 for circulation scanning.
+- **Target Sprints:** Sprint 1 for Member QR; Sprint 2 for Book QR and inventory scanning; Sprint 3 for kiosk attendance; Sprint 4 for QR-assisted circulation using manually entered values and search fallback. Camera scanning is deferred.
 
 ## Traceability Rule
 

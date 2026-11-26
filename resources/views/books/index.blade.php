@@ -118,6 +118,9 @@
                     @endif
                     <td>
                         <span class="fw-semibold">{{ $book->book_title }}</span>
+                        @can('circulation.process')
+                            <small class="d-block text-body-secondary">Copy #{{ $book->getKey() }}</small>
+                        @endcan
                         <small class="d-block text-body-secondary">{{ $book->authors->map->fullName()->join(', ') }}</small>
                     </td>
                     <td>{{ $book->isbn ?? '—' }}</td>

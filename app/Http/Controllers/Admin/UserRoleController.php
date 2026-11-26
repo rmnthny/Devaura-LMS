@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\LibraryAlerts;
 use App\Services\RoleAssignmentService;
 use App\Support\Rbac;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UserRoleController extends Controller
@@ -89,16 +91,21 @@ class UserRoleController extends Controller
             : to_route('profile.edit')->with('status', $message);
     }
 
-    public function updateStatus(Request $request, User $user)
+    public function updateStatus(Request $request, User $user, LibraryAlerts $alerts)
     {
         $data = $request->validate(['account_status' => ['required', Rule::in([
             User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_LOCKED,
         ])]]);
 
         abort_if($request->user()->is($user), 422, 'You cannot change your own account status.');
-        abort_if($user->account_status === User::STATUS_PENDING, 422, 'The member must verify their email first.');
-
-        $user->update($data);
+        DB::transaction(function () use ($user, $data, $alerts): void {
+            $account = User::lockForUpdate()->findOrFail($user->getKey());
+            abort_if($account->account_status === User::STATUS_PENDING, 422, 'The member must verify their email first.');
+            $account->update($data);
+            if ($account->wasChanged('account_status')) {
+                $alerts->accountUpdated($account, 'Your library account status changed to '.$account->account_status.'.');
+            }
+        });
         $message = "{$user->fullName()} is now {$data['account_status']}.";
 
         return $request->expectsJson()

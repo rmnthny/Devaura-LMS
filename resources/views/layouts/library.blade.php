@@ -19,15 +19,12 @@
             <a href="{{ route('books.index') }}" class="fw-semibold text-decoration-none text-dark">
                 <i class="bi bi-book" aria-hidden="true"></i> UBNHS Library
             </a>
-            @canany(['reports.generate', 'books.manage'])
-                <span class="text-body-tertiary" title="Coming in Sprint 5" aria-disabled="true">Dashboard <span class="badge text-bg-light border fw-normal">Soon</span></span>
-            @endcanany
             @can('attendance.view')
                 <a href="{{ route('attendance.index') }}" class="text-decoration-none {{ request()->routeIs('attendance.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Attendance</a>
             @endcan
             @can('circulation.process')
-                <span class="text-body-tertiary" title="Coming in Sprint 4" aria-disabled="true">Book Borrowing <span class="badge text-bg-light border fw-normal">Soon</span></span>
-                <span class="text-body-tertiary" title="Coming in Sprint 4" aria-disabled="true">Book Returns <span class="badge text-bg-light border fw-normal">Soon</span></span>
+                <a href="{{ route('circulation.borrow.form') }}" class="text-decoration-none {{ request()->routeIs('circulation.borrow*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Book Borrowing</a>
+                <a href="{{ route('circulation.return.form') }}" class="text-decoration-none {{ request()->routeIs('circulation.return*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Book Returns</a>
             @endcan
             @can('books.manage')
                 <a href="{{ route('books.index') }}" class="text-decoration-none {{ request()->routeIs('books.*', 'catalog.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Book Management</a>
@@ -40,15 +37,9 @@
             @canany(['roles.manage', 'schedules.view-own'])
                 <a href="{{ auth()->user()->hasAnyRole(['superadmin', 'admin']) ? route('accounts.index') : route('schedules.index') }}" class="text-decoration-none {{ request()->routeIs('accounts.*', 'schedules.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Personnel Management</a>
             @endcanany
-            @can('inventory.audit')
-                <a href="{{ route('inventory.index') }}" class="text-decoration-none {{ request()->routeIs('inventory.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Inventory Management</a>
-            @endcan
-            @can('reports.generate')
-                <span class="text-body-tertiary" title="Coming in Sprint 5" aria-disabled="true">Operational Reports <span class="badge text-bg-light border fw-normal">Soon</span></span>
-            @endcan
-            @can('audit.view')
-                <span class="text-body-tertiary" title="Coming in Sprint 5" aria-disabled="true">Audit Trail <span class="badge text-bg-light border fw-normal">Soon</span></span>
-            @endcan
+            @role('superadmin')
+                <a href="{{ route('inventory.index') }}" class="text-decoration-none {{ request()->routeIs('inventory.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Inventory Audits</a>
+            @endrole
             @role('superadmin')
                 <a href="{{ route('archive.index') }}" class="text-decoration-none {{ request()->routeIs('archive.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Archive</a>
             @endrole
@@ -59,6 +50,7 @@
                 <a href="{{ route('members.my-qr-card') }}" class="text-decoration-none {{ request()->routeIs('members.my-qr-card') ? 'fw-semibold text-dark' : 'text-secondary' }}">My QR Card</a>
             @endcan
             @auth
+                <a href="{{ route('notifications.index') }}" class="text-decoration-none {{ request()->routeIs('notifications.*') ? 'fw-semibold text-dark' : 'text-secondary' }}">Notifications</a>
                 <div class="ms-auto d-flex align-items-center gap-2">
                     <span class="small text-body-secondary">
                         {{ auth()->user()->fullName() }}

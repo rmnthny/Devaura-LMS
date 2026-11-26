@@ -9,6 +9,7 @@ use App\Models\LibraryMember;
 use App\Models\User;
 use App\Services\ArchiveBin;
 use App\Services\ImportedMember;
+use App\Services\LibraryAlerts;
 use App\Services\QrCodeService;
 use App\Services\MemberProfileService;
 use App\Support\Rbac;
@@ -106,7 +107,7 @@ class MemberController extends Controller
             : to_route('members.index')->with('status', $message);
     }
 
-    public function update(SaveMemberRequest $request, LibraryMember $member, MemberProfileService $profiles)
+    public function update(SaveMemberRequest $request, LibraryMember $member, MemberProfileService $profiles, LibraryAlerts $alerts)
     {
         $this->authorizeMemberEdit($request, $member);
         $data = $request->validated();
@@ -116,8 +117,9 @@ class MemberController extends Controller
             ]);
         }
 
-        DB::transaction(function () use ($member, $data, $profiles): void {
-            $user = $member->user;
+        DB::transaction(function () use ($member, $data, $profiles, $alerts): void {
+            $member = LibraryMember::lockForUpdate()->findOrFail($member->getKey());
+            $user = $member->user()->lockForUpdate()->first();
             if ($user) {
                 $user->email = $data['email'];
                 $user->reference_number = $data['reference_number'];
@@ -125,13 +127,18 @@ class MemberController extends Controller
                     && ! $user->hasRole(Rbac::SUPERADMIN)) {
                     $user->account_status = $data['account_status'];
                 }
+                $previousDepartment = $user->personnel?->department_id;
                 $user->save();
-                $profiles->save($user, $data);
+                $updatedMember = $profiles->save($user, $data);
 
                 // Updating membership must not remove a staff or admin assignment.
                 $currentRole = $user->getRoleNames()->first();
                 if (in_array($currentRole, Rbac::MEMBER_ROLES, true)) {
                     $user->syncRoles([strtolower($data['member_role'])]);
+                }
+                if ($user->wasChanged(['email', 'reference_number', 'account_status']) || $updatedMember->wasChanged()
+                    || $previousDepartment !== $user->personnel()->first()?->department_id) {
+                    $alerts->accountUpdated($user, 'Your library membership information was updated.');
                 }
             }
         });

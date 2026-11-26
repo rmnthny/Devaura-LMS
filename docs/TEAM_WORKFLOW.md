@@ -18,10 +18,10 @@ Aligned with the **Nov 18, 2026 Architecture & Security Review** and our **Lucid
 
 ## 2. Sprint & Notion Workflow
 1. **Notion Board Statuses:** `Not Started` → `In Progress` → `Postponed` / `Done`.
-2. **Branch per Task:** Create a short-lived branch from `main` (e.g., `feat/anthony-sprint-1-rbac`, `feat/shaina-sprint-1-ui`, `feat/kyle-db-schema`).
+2. **Branch per Task:** Start from the branch containing the required sprint work. Use a dedicated Sprint 4 review branch for the existing changes and verify its base before opening a pull request.
 3. **Pull Request & QA Gate:** Never merge directly to `main` until:
    - `php artisan test` passes (100% green).
-   - **Postman API Verification** passes (`GET`, `POST`, `PUT/PATCH`, `DELETE`, CSRF token handling, expected `200`/`201`/`403`/`422` codes).
+   - **Postman or Apidog Verification** passes (`GET`, `POST`, `PUT/PATCH`, `DELETE`, CSRF token handling, expected `200`/`201`/`403`/`422` codes).
    - **Security Checks** pass (3/min login rate limit, `PreventBackHistory`, active check, no raw SQL, Blade escaping).
    - **Responsiveness Check** passes (Chrome DevTools / mobile screen viewer for grids, cards, and inputs).
 4. **Sprint Handoff:** Generate `docs/handoffs/SPRINT_<N>_HANDOFF.md`, update `docs/ACTIVE_HANDOFF.md` and `docs/SPRINT_STATUS.md`, merge to `main`, and start a fresh AI chat for the next sprint. The first prompt in that chat must tell the assistant to read `AGENTS.md` before changing code.

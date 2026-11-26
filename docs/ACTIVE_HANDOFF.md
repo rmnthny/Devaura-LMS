@@ -4,14 +4,17 @@ Updated November 26, 2026.
 
 ## Resume point
 
-- Branch: `feat/sprint-3-attendance`
-- Sprint: Sprint 3, Public Kiosk and Attendance Monitoring
-- Status: Implementation is present. Team QA and final handoff are still required before merge.
-- Latest automated result: 79 tests passed with 818 assertions after the personnel coverage review.
+- Branch: `feat/sprint-4-backend`, base `f946aee`
+- Current release: Sprints 1–4. Authentication, predefined RBAC, catalog and individual inventory checks, kiosk attendance, and circulation with notifications are active locally.
+- Sprint 3 closeout: Kristine's sign-off and merge are still pending.
+- Latest automated result: 94 tests passed with 1,051 assertions on the dedicated `devaura_lms_test` database on November 27, 2026.
+- [Sprint 4 handoff](handoffs/SPRINT_4_HANDOFF.md) records the circulation rules, migration, mail worker, scheduler, and verification.
+- [Diagram crosswalk](DIAGRAMS.md) maps the finalized flows, use cases, DFDs, and ERD to the local system.
+- [Deferred Sprint 5 source](../deferred/sprint-5/README.md) preserves dashboard, personal history, report exports, audit-trail viewing, inventory sessions, and scheduled repairs outside Laravel discovery.
 
 Always verify the branch and rerun the tests because this document records the last known result and cannot guarantee that later local changes still pass.
 
-## Implemented attendance behavior
+## Sprint 3 attendance behavior
 
 - Eligible personnel record their own Time In and Time Out from the protected Attendance page.
 - The Head Librarian can provide kiosk coverage without a schedule.
@@ -73,7 +76,7 @@ Walk-in visitors use the same email to time out. Purpose is recorded per visit a
 
 ## Local operation
 
-Use `composer dev` to start the staff server, kiosk server, import listener, and welcome-email worker.
+Use `composer dev` to start the staff server, kiosk server, import listener, and member-mail worker. Run `php artisan schedule:work` separately for due and overdue reminders.
 
 When running services individually:
 
@@ -84,7 +87,7 @@ php artisan serve --host=127.0.0.1 --port=8001 --tries=1
 
 The default staff URL may appear as either `localhost:8000` or `127.0.0.1:8000`. Keep `APP_URL` and `KIOSK_URL` consistent with the addresses used during testing.
 
-## QA results
+## Sprint 3 QA results
 
 - The latest QA used a disposable MySQL 8.0.30 instance. The dedicated database `devaura_lms_test` was rebuilt by the feature tests. The attendance table, visit-purpose column, and attendance indexes were confirmed through migration status.
 - `php artisan test --compact --filter SprintThreeAttendanceTest` passed 10 tests with 165 assertions. `php artisan test --compact` passed 79 tests with 818 assertions.
@@ -101,8 +104,8 @@ The default staff URL may appear as either `localhost:8000` or `127.0.0.1:8000`.
 
 ## Deferred work
 
+- Sprint 5 routes, assets, migrations, and tests remain outside the active application and default migration/test discovery. Any tables from an earlier draft migration remain intact.
+
 - Camera-based QR scanning
 - Public book-catalog lookup on the kiosk
-- Circulation and overdue workflows
-- Dashboard and formal reports
 - Production web-server configuration for a dedicated kiosk hostname

@@ -87,7 +87,7 @@ class RbacTest extends TestCase
         $this->assertTrue($admin->can('books.manage'));
         $this->assertFalse($admin->can('members.delete'));
         $this->assertTrue($admin->can('reports.generate'));
-        $this->assertTrue($admin->can('inventory.audit'));
+        $this->assertFalse($admin->can('inventory.audit'));
         $this->assertTrue($admin->can('audit.view'));
 
         $this->assertFalse($admin->can('roles.manage'));

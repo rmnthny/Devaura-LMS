@@ -4,6 +4,8 @@ Status: Working handoff pending team QA and merge.
 
 The authoritative live summary is `docs/ACTIVE_HANDOFF.md`. Update both files when Sprint 3 behavior changes.
 
+For the current release status, see the [active handoff](../ACTIVE_HANDOFF.md). This page records the Sprint 3 implementation and QA.
+
 ## Delivered
 
 - Personnel Time In and Time Out

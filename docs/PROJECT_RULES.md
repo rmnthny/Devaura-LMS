@@ -15,13 +15,13 @@
 - **Backend:** PHP 8.4+, Laravel 13 (MVC, Eloquent ORM, Form Requests, Middleware, Services)
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+), Laravel Blade, Bootstrap 5 (local assets in `public/vendor/` — **no external CDNs**)
 - **Database:** MySQL 8.4+ (`devaura_lms`) — normalized tables separating credentials (`user_account`), students and faculty (`library_member`), personnel (`library_personnel`, `department`, and schedules), and walk-in visitors (`walk_in_visitor`)
-- **Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `milon/barcode` (QR generation), `barryvdh/laravel-dompdf`, `maatwebsite/excel` (PhpSpreadsheet), Laravel Mail / Symfony Mailer (Gmail SMTP for Email OTP)
+- **Packages:** `spatie/laravel-permission`, `spatie/laravel-activitylog`, `milon/barcode` (QR generation), `barryvdh/laravel-dompdf`, `maatwebsite/excel` (PhpSpreadsheet), Laravel Mail / Symfony Mailer (SMTP for account and circulation email)
 - **Project Management & Testing:** Notion (sprint tracking), Postman (API/HTTP endpoint testing), PHPUnit (`php artisan test`)
 
 ## 3. Roles, Permissions & Security Standards
 We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges per role aligned with the Use Case Diagrams) enforced in controllers, route middleware, and Blade `@can` directives:
 1. `superadmin` (Head Librarian) — Single active superadmin (a Faculty teacher with a subject Department). Full access; promotes Faculty → `admin`, Student → `staff`, or `maintenance` (with strict password confirmation); can transfer `superadmin` to another Faculty member (reverting to `faculty`); runs batched CSV/Excel bulk imports; views audit trail and archives.
-2. `admin` (Assigned Teacher — Faculty only) — Can add and edit books, edit members, conduct inventory audits, generate operational reports, assign or revoke the Staff role for Students with password confirmation, and manage Staff schedules.
+2. `admin` (Assigned Teacher — Faculty only) — Can add and edit books, edit members, assign or revoke the Staff role for Students with password confirmation, and manage Staff schedules.
 3. `staff` (Student Staff — Student only) — Handles attendance monitoring, borrowing/returning, book inventory & QR, and catalog lookup. Cannot manage/archive members, delete books/personnel, view audit trail, or change roles.
 4. `student` — Library member. An official import requires a **12-digit LRN**. Members sign in with email and can view their QR card and update their profile.
 5. `faculty` — Library member. An official import requires a **7-digit DepEd employee number** and a **subject department**.
@@ -32,6 +32,7 @@ We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges p
 - **Account setup:** The Head Librarian adds Student and Faculty accounts individually or by importing official records. Previously created pending accounts can still complete email OTP verification. The Head Librarian manages elevated roles. Admins can assign and revoke the Staff role for Students. Both changes require password confirmation.
 - **Brute-Force & Session Protection:** Enforce **3 login attempts per minute** (1-minute cooldown), active account checks, `PreventBackHistory` middleware on authenticated routes, and database sessions.
 - **Web Security:** Always protect against **CSRF** (`@csrf` / token checks), **SQL Injection** (Eloquent/parameterized queries only — never raw concatenated SQL), and **XSS** (Blade `{{ }}` escaping).
+- **Inventory audits:** Only the Head Librarian conducts individual copy checks in the Sprint 1–4 release. Inventory audit sessions and approval are deferred.
 - **Archive and audit trail:** Only the Head Librarian can archive and restore records or open the Archive. A daily cleanup removes eligible records after six months. The Head Librarian may confirm permanent deletion for eligible archived members. Retain records linked to library history and log archive actions.
 - **Bulk User Import:** Restricted to `superadmin` via CSV/Excel (`maatwebsite/excel`), processed in **100-record batches** with automated email error handling.
 - **Public Kiosk:** Attendance-only terminal on a dedicated origin. It accepts a member reference number or QR value and visitor details. It opens only while eligible personnel coverage is active. Local default is `http://127.0.0.1:8001/kiosk`. Public catalog lookup and camera scanning are deferred.
@@ -44,7 +45,15 @@ We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges p
 - **No External School APIs:** Standalone database — no DepEd LIS, enrollment, or grading integrations.
 - **No Embedded AI:** Keep AI out of the Laravel app itself.
 
-## 5. Git, Boundaries & Testing Workflow
+## 5. Circulation rules
+
+- Authorized personnel process checkout, returns, damage, and loss. Personnel cannot process their own transactions.
+- The due date is three calendar days after checkout in Manila time. Open overdue loans block new checkout.
+- The database inbox and mail queue record notifications. SMTP delivery is processed separately.
+
+## 6. Git, Boundaries & Testing Workflow
+
+The active release is limited to Sprints 1–4. Dashboard, personal history, reporting, audit-trail viewing, inventory sessions, and repair scheduling are deferred. Audit events continue to be recorded.
 - **Respect Role Boundaries:** Do not overwrite Kyle's database schema/migrations or Shaina's Blade UI unless explicitly requested. Keep backend controllers/services modular so frontend and DB integrate cleanly.
 - **Branching:** Keep `main` clean. Build each task on a short-lived branch (e.g., `feat/anthony-sprint-1-rbac`) and merge to `main` after QA.
 - **Secrets:** Never commit `.env`, database passwords, mail/SMTP credentials, or private keys — keep all sensitive files in `.gitignore`.

@@ -22,6 +22,7 @@
             <div aria-label="QR code for {{ $book->book_qr_value }}" role="img">{!! $qrSvg !!}</div>
             <h1 class="h6 mt-2 mb-1">{{ $book->book_title }}</h1>
             <div class="font-monospace">{{ $book->book_qr_value }}</div>
+            <div class="small text-body-secondary">Copy #{{ $book->getKey() }}</div>
         </article>
     @endcan
 @endsection

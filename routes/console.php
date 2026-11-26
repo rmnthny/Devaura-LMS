@@ -5,6 +5,7 @@ use App\Models\LibraryMember;
 use App\Models\LibraryPersonnel;
 use App\Models\User;
 use App\Services\ImportRows;
+use App\Services\LibraryAlerts;
 use App\Services\RoleAssignmentService;
 use Illuminate\Foundation\DevCommands;
 use Illuminate\Foundation\Inspiring;
@@ -12,6 +13,22 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Validation\ValidationException;
+
+Artisan::command('library:check-database', function (): int {
+    $connection = \Illuminate\Support\Facades\DB::connection();
+
+    try {
+        $connection->selectOne('SELECT 1');
+    } catch (\Illuminate\Database\QueryException $error) {
+        $this->error('Database unavailable at '.$connection->getConfig('host').':'.$connection->getConfig('port').'. Start the configured MySQL instance before running composer dev.');
+
+        return 1;
+    }
+
+    $this->info('Library database connection is ready.');
+
+    return 0;
+})->purpose('Check MySQL before starting local services');
 
 DevCommands::artisan('queue:work member-mail --sleep=1', 'welcome-mail');
 DevCommands::artisan('serve --host=127.0.0.1 --port=8001 --tries=1', 'kiosk');
@@ -59,6 +76,12 @@ Artisan::command('library:bootstrap-head {reference : Faculty DepEd Employee Num
 
     return 0;
 })->purpose('Appoint the first Head Librarian from an eligible faculty account or import file');
+
+Artisan::command('library:circulation-notifications', function (LibraryAlerts $alerts): void {
+    $alerts->remind();
+})->purpose('Flag overdue loans and queue due and overdue notifications');
+
+Schedule::command('library:circulation-notifications')->everyMinute()->withoutOverlapping();
 
 Schedule::command('model:prune', [
     '--model' => [

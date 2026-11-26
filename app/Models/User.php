@@ -90,7 +90,9 @@ class User extends Authenticatable
             ->whereNotIn('account_id', fn ($query) => $query->select('account_id')->from('attendance_log')->whereNotNull('account_id'))
             ->whereNotIn('account_id', fn ($query) => $query->select('borrower_id')->from('borrow_transaction'))
             ->whereNotIn('account_id', fn ($query) => $query->select('borrow_processed_by')->from('borrow_transaction'))
-            ->whereNotIn('account_id', fn ($query) => $query->select('return_processed_by')->from('borrow_transaction')->whereNotNull('return_processed_by'));
+            ->whereNotIn('account_id', fn ($query) => $query->select('return_processed_by')->from('borrow_transaction')->whereNotNull('return_processed_by'))
+            ->when($this->getConnection()->getSchemaBuilder()->hasTable('inventory_audit'), fn (Builder $query) => $query
+                ->whereNotIn('account_id', fn ($audits) => $audits->select('conducted_by')->from('inventory_audit')));
     }
 
     public function member(): HasOne

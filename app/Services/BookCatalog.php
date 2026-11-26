@@ -45,6 +45,9 @@ class BookCatalog
             return DB::transaction(function () use ($book, $data): Book {
                 if ($book->exists) {
                     $book = Book::lockForUpdate()->findOrFail($book->getKey());
+                    if ($data['book_status'] !== 'Damaged' && $book->hasPendingRepair()) {
+                        throw ValidationException::withMessages(['book_status' => 'Record the repair outcome before changing this copy status.']);
+                    }
                     if ($data['book_status'] !== 'Borrowed' && $book->hasOpenLoan()) {
                         throw ValidationException::withMessages(['book_status' => 'Resolve the active loan through circulation before changing this status.']);
                     }
@@ -73,6 +76,10 @@ class BookCatalog
             $book = Book::lockForUpdate()->findOrFail($book->getKey());
             if ($book->book_status === 'Borrowed' || $book->hasOpenLoan()) {
                 throw ValidationException::withMessages(['book' => 'Resolve the active loan before archiving this copy.']);
+            }
+
+            if ($book->hasPendingRepair()) {
+                throw ValidationException::withMessages(['book' => 'Record the repair outcome before archiving this copy.']);
             }
 
             $book->delete();

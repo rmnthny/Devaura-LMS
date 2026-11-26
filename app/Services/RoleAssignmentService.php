@@ -99,6 +99,10 @@ class RoleAssignmentService
         activity('roles')->causedBy($actor)->performedOn($target)
             ->withProperties(['from' => $old, 'to' => $role])
             ->log("Changed role from {$old} to {$role}");
+
+        if ($old !== $role) {
+            app(LibraryAlerts::class)->accountUpdated($target, 'Your library account role changed to '.ucfirst($role).'.');
+        }
     }
 
     public function transferSuperadmin(User $actor, User $target): void
@@ -142,6 +146,9 @@ class RoleAssignmentService
 
             activity('roles')->causedBy($actor)->performedOn($target)
                 ->log('Transferred superadmin (Head Librarian) privilege');
+            $alerts = app(LibraryAlerts::class);
+            $alerts->accountUpdated($target, 'Your library account now has the Head Librarian role.');
+            $alerts->accountUpdated($actor, 'Your library account now has the Faculty role.');
         });
     }
 

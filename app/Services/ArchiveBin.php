@@ -141,9 +141,7 @@ class ArchiveBin
         }
 
         $id = $user->getKey();
-        if (DB::table('attendance_log')->where('account_id', $id)->exists()
-            || DB::table('borrow_transaction')->where('borrower_id', $id)
-                ->orWhere('borrow_processed_by', $id)->orWhere('return_processed_by', $id)->exists()
+        if (User::withTrashed()->whereKey($id)->withoutLibraryHistory()->doesntExist()
             || ($personnel && DB::table('personnel_schedule')->where('personnel_id', $personnel->getKey())->exists())) {
             return 'This account is linked to library history and must stay in the archive.';
         }

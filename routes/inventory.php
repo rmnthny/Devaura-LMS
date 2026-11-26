@@ -42,9 +42,10 @@ Route::middleware('secure')->group(function () {
             ->middleware('permission:books.delete')->name('destroy');
     });
 
-    Route::middleware('permission:inventory.audit')->prefix('/inventory/audit')->name('inventory.')->group(function () {
+    Route::middleware(['role:superadmin', 'permission:inventory.audit'])->prefix('/inventory/audit')->name('inventory.')->group(function () {
         Route::get('/', [InventoryAuditController::class, 'index'])->name('index');
         Route::post('/', [InventoryAuditController::class, 'store'])->name('store');
+
     });
 
     Route::prefix('/personnel/schedules')->name('schedules.')->group(function () {

@@ -36,7 +36,6 @@ class BorrowTransactionFactory extends Factory
             'book_id' => Book::factory(),
             'borrow_date' => today()->toDateString(),
             'return_date' => null,
-            // Provisional 3 CALENDAR days; revisit if the team chooses exact 72 hours.
             'due_date' => today()->addDays(3)->toDateString(),
             'transaction_status' => 'Borrowed',
             // Test-only code generator. Production must ensure collision-free codes.
