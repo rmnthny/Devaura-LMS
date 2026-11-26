@@ -1,0 +1,298 @@
+
+/* ==================================================
+   UBNHS LMS — PERMANENT DELETION REVIEW
+   Modern Academic Glass 2.1
+   ================================================== */
+
+.purge-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 45rem;
+    margin: 0 auto;
+}
+
+/* NAVIGATION */
+
+.purge-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+
+    color: var(--ws-blue, #2468b6);
+    background: var(--ws-surface, #fff);
+
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.625rem;
+
+    box-shadow: var(
+        --ws-button-shadow,
+        0 3px 9px rgba(23,45,99,.06)
+    );
+
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: background 180ms ease;
+}
+
+/* MAIN CARD */
+
+.purge-card {
+    padding: clamp(1rem, 2vw, 1.5rem);
+
+    background: var(--ws-surface, #fff);
+
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.875rem;
+
+    box-shadow: var(
+        --ws-shadow,
+        0 6px 20px rgba(23,45,99,.06)
+    );
+}
+
+.purge-header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+.purge-header-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 3.25rem;
+    height: 3.25rem;
+
+    color: #b82232;
+    background: #fde9ec;
+
+    border-radius: 0.75rem;
+    font-size: 1.5rem;
+}
+
+.purge-header h1 {
+    margin: 0;
+
+    color: var(--ws-heading, #172d63);
+
+    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+    font-weight: 700;
+}
+
+.purge-header p {
+    margin: 0.25rem 0 0;
+
+    color: var(--ws-muted, #64748b);
+    font-size: 0.8125rem;
+}
+
+/* MEMBER INFORMATION */
+
+.purge-member {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    padding: 1rem;
+
+    background: var(--ws-surface-secondary, #f3f7fc);
+
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.625rem;
+}
+
+.purge-field-label {
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.purge-member-name {
+    color: var(--ws-heading, #172d63);
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.purge-member-email {
+    color: var(--ws-muted, #64748b);
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+}
+
+/* WARNING / BLOCKED STATE */
+
+.purge-warning,
+.purge-blocked {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    margin-top: 1.125rem;
+    padding: 0.875rem 1rem;
+
+    background: var(--ws-danger-soft, #fff3f5);
+    border: 1px solid rgba(184,34,50,.22);
+    border-radius: 0.625rem;
+}
+
+.purge-warning > i,
+.purge-blocked > i {
+    flex-shrink: 0;
+    color: var(--ws-danger, #b82232);
+    font-size: 1.2rem;
+}
+
+.purge-warning strong,
+.purge-blocked strong {
+    color: var(--ws-danger, #b82232);
+    font-size: 0.8125rem;
+}
+
+.purge-warning p,
+.purge-blocked p {
+    margin: 0.3rem 0 0;
+    color: var(--ws-text, #1b2941);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+}
+
+/* CONFIRMATION FORM */
+
+.purge-form {
+    margin-top: 1.25rem;
+}
+
+.purge-form .form-label {
+    margin-bottom: 0.5rem;
+    color: var(--ws-text, #1b2941);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.purge-form .form-control {
+    min-height: 2.75rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.035em;
+}
+
+.purge-help {
+    margin: 0.375rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+/* ACTIONS */
+
+.purge-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+
+    margin-top: 1.25rem;
+    padding-top: 1.125rem;
+
+    border-top: 1px solid var(--ws-border, #dce5f0);
+}
+
+.purge-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 2.75rem;
+    padding: 0.6rem 1rem;
+
+    font-size: 0.8125rem;
+}
+
+.purge-submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+}
+
+/* HOVER / ACCESSIBILITY */
+
+@media (hover: hover) {
+    .purge-back:hover {
+        background: var(--ws-surface-hover, #edf4fd);
+        color: var(--ws-blue, #2468b6);
+    }
+}
+
+.purge-back:focus-visible,
+.purge-actions .btn:focus-visible {
+    outline: 3px solid var(--ws-blue, #2468b6);
+    outline-offset: 3px;
+}
+
+/* DARK MODE */
+
+html[data-theme="dark"] .purge-header-icon {
+    background: #542c36;
+    color: #ffc0c8;
+}
+
+html[data-theme="dark"] .purge-warning strong,
+html[data-theme="dark"] .purge-blocked strong,
+html[data-theme="dark"] .purge-warning > i,
+html[data-theme="dark"] .purge-blocked > i {
+    color: #ffc0c8;
+}
+
+/* MOBILE */
+
+@media (max-width: 47.99rem) {
+    .purge-page {
+        max-width: 100%;
+    }
+
+    .purge-header-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 1.25rem;
+    }
+
+    .purge-actions {
+        align-items: stretch;
+    }
+
+    .purge-actions .btn {
+        flex: 1 1 100%;
+    }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .purge-page *,
+    .purge-page *::before,
+    .purge-page *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* PRINT */
+
+@media print {
+    .purge-back,
+    .purge-form,
+    .purge-actions {
+        display: none !important;
+    }
+
+    .purge-card {
+        box-shadow: none;
+    }
+}

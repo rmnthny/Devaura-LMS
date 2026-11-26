@@ -1,0 +1,644 @@
+
+/* ==================================================
+   UBNHS LMS — PERSONNEL MANAGEMENT
+   Modern Academic Glass 2.1
+   ================================================== */
+
+.personnel-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+/* PAGE HEADING */
+
+.personnel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.personnel-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
+}
+
+.personnel-heading-icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    color: var(--ws-blue, #2468b6);
+    background: linear-gradient(145deg, #eaf3ff, #ccdef5);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.875rem;
+    box-shadow: 0 5px 14px rgba(20, 47, 91, 0.06);
+    font-size: 1.5rem;
+}
+
+.personnel-heading h1 {
+    margin: 0;
+    color: var(--ws-heading, #172d63);
+    font-size: var(--ws-page-title, 1.75rem);
+    font-weight: 700;
+}
+
+.personnel-heading p {
+    margin: 0.2rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.875rem;
+}
+
+/* PERSONNEL NAVIGATION */
+
+.personnel-tabs {
+    display: inline-flex;
+    align-self: flex-start;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    background: var(--ws-surface, #fff);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.85rem;
+    box-shadow: 0 4px 16px rgba(23, 45, 99, 0.05);
+}
+
+.personnel-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.1rem;
+    color: var(--ws-muted, #526884);
+    border-radius: 0.6rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 180ms ease, color 180ms ease;
+}
+
+.personnel-tab:hover {
+    color: var(--ws-heading, #172d63);
+    background: var(--ws-info-soft, #eaf2fb);
+}
+
+.personnel-tab.is-active {
+    color: #fff;
+    background: linear-gradient(145deg, #3284d6, #07539f);
+    box-shadow: 0 4px 12px rgba(36, 104, 182, 0.2);
+}
+
+.personnel-tab.is-active:hover {
+    color: #fff;
+}
+
+/* DIRECTORY */
+
+.personnel-directory {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--ws-surface, #fff);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.9rem;
+    box-shadow: var(--ws-shadow, 0 6px 20px rgba(23, 45, 99, 0.06));
+}
+
+.personnel-directory-top {
+    padding: 1.125rem 1.25rem 0;
+}
+
+.personnel-directory-top h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--ws-heading, #172d63);
+}
+
+.personnel-directory-top p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.8125rem;
+}
+
+/* FILTERS */
+
+.personnel-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 2.3fr) minmax(10rem, 1fr) auto;
+    align-items: end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.personnel-field {
+    min-width: 0;
+}
+
+.personnel-field .form-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.personnel-search-box {
+    position: relative;
+}
+
+.personnel-search-box > i {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ws-muted, #64748b);
+    pointer-events: none;
+}
+
+.personnel-search-box .form-control {
+    padding-left: 2.5rem;
+}
+
+.personnel-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* RESULT SUMMARY */
+
+.personnel-results {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--ws-border, #dce5f0);
+    border-bottom: 1px solid var(--ws-border, #dce5f0);
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.personnel-filter-chip {
+    display: inline-flex;
+    padding: 0.3rem 0.625rem;
+    background: var(--ws-info-soft, #eaf2fb);
+    color: var(--ws-blue, #2468b6);
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+/* ACCOUNT LIST */
+
+.personnel-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.personnel-account {
+    min-width: 0;
+    border-bottom: 1px solid var(--ws-border, #dce5f0);
+    transition: background-color 180ms ease;
+}
+
+.personnel-account:last-child {
+    border-bottom: 0;
+}
+
+.personnel-account-main {
+    display: grid;
+    grid-template-columns: minmax(13rem, 2fr) minmax(7rem, 1fr) auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.25rem;
+}
+
+.personnel-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.personnel-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.65rem;
+    height: 2.65rem;
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 50%;
+    background: var(--ws-info-soft, #eaf2fb);
+    color: var(--ws-blue, #2468b6);
+    font-size: 0.8125rem;
+    font-weight: 700;
+}
+
+.personnel-identity-copy {
+    min-width: 0;
+}
+
+.personnel-identity-copy h3 {
+    margin: 0;
+    color: var(--ws-text, #1b2941);
+    font-size: 0.875rem;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.personnel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.625rem;
+    row-gap: 0.15rem;
+    margin-top: 0.25rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.personnel-meta code {
+    color: var(--ws-blue, #2468b6);
+    font-size: 0.75rem;
+}
+
+.personnel-reference {
+    font-variant-numeric: tabular-nums;
+}
+
+.personnel-roles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.personnel-role-chip {
+    padding: 0.3rem 0.6rem;
+    color: var(--ws-heading, #172d63);
+    background: var(--ws-info-soft, #eaf2fb);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.personnel-status .badge {
+    padding: 0.45rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+}
+
+.personnel-manage-hint {
+    display: none;
+}
+
+.personnel-department {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1.25rem 0.8rem 4.65rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.personnel-department strong {
+    color: var(--ws-text, #1b2941);
+    font-weight: 600;
+}
+
+.personnel-department i {
+    color: var(--ws-blue, #2468b6);
+}
+
+/* EXPANDABLE ROLE MANAGEMENT */
+
+.personnel-details {
+    border-top: 1px solid var(--ws-border, #dce5f0);
+}
+
+.personnel-details > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.65rem 1.25rem;
+    color: var(--ws-blue, #2468b6);
+    background: var(--ws-info-soft, #eaf2fb);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    cursor: pointer;
+    list-style: none;
+}
+
+.personnel-details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.personnel-details > summary > span {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.personnel-chevron {
+    transition: transform 180ms ease;
+}
+
+.personnel-details[open] .personnel-chevron {
+    transform: rotate(180deg);
+}
+
+.personnel-details-body {
+    display: grid;
+    gap: 0.875rem;
+    padding: 1rem 1.25rem;
+}
+
+/* ROLE FORMS */
+
+.personnel-action-form {
+    min-width: 0;
+    padding: 1rem;
+    background: var(--ws-surface-secondary, #f3f7fc);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.75rem;
+}
+
+.personnel-action-heading h4 {
+    margin: 0;
+    color: var(--ws-heading, #172d63);
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.personnel-action-heading p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.personnel-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.875rem;
+}
+
+.personnel-action-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.875rem;
+}
+
+.personnel-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+    font-size: 0.8125rem;
+}
+
+.personnel-confirm input {
+    margin: 0;
+}
+
+.personnel-action-footer .btn {
+    min-height: 2.75rem;
+}
+
+/* SENSITIVE TRANSFER */
+
+.personnel-transfer {
+    border-color: rgba(184, 34, 50, 0.24);
+    background: var(--ws-danger-soft, #fff4f5);
+}
+
+.personnel-transfer .personnel-action-heading h4 {
+    color: var(--ws-danger, #b82232);
+}
+
+/* EMPTY STATE */
+
+.personnel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.personnel-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--ws-info-soft, #eaf2fb);
+    color: var(--ws-blue, #2468b6);
+    border-radius: 0.875rem;
+    font-size: 1.5rem;
+}
+
+.personnel-empty h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.personnel-empty p {
+    margin: 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.8125rem;
+}
+
+/* PAGINATION */
+
+.personnel-pagination {
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--ws-border, #dce5f0);
+}
+
+.personnel-pagination .pagination {
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+/* INTERACTIONS */
+
+@media (hover: hover) {
+    .personnel-account:hover {
+        background: var(--ws-surface-hover, #f8fbff);
+    }
+
+    .personnel-tab:not(.is-active):hover i {
+        transform: translateY(-1px);
+    }
+
+    .personnel-details > summary:hover {
+        background: var(--ws-surface-active, #e1edfb);
+    }
+}
+
+.personnel-tab:focus-visible,
+.personnel-details > summary:focus-visible {
+    outline: 3px solid var(--ws-blue, #2468b6);
+    outline-offset: 3px;
+}
+
+/* DARK THEME */
+
+html[data-theme="dark"] .personnel-heading-icon {
+    background: linear-gradient(145deg, #29415e, #20334e);
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .personnel-avatar,
+html[data-theme="dark"] .personnel-meta code,
+html[data-theme="dark"] .personnel-details > summary {
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .personnel-transfer .personnel-action-heading h4 {
+    color: #ffbdc5;
+}
+
+/* TABLET */
+
+@media (max-width: 70rem) {
+    .personnel-account-main {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+    }
+
+    .personnel-manage-hint {
+        display: none;
+    }
+
+    .personnel-filters {
+        grid-template-columns: minmax(0, 2fr) minmax(9rem, 1fr);
+    }
+
+    .personnel-filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 47.99rem) {
+    .personnel-heading-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 1.25rem;
+    }
+
+    .personnel-heading p {
+        font-size: 0.75rem;
+    }
+
+    .personnel-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-self: stretch;
+    }
+
+    .personnel-tab {
+        padding: 0.65rem;
+        font-size: 0.8rem;
+    }
+
+    .personnel-directory-top,
+    .personnel-details-body {
+        padding: 0.875rem;
+    }
+
+    .personnel-filters {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0.875rem;
+    }
+
+    .personnel-filter-actions {
+        grid-column: auto;
+    }
+
+    .personnel-filter-actions .btn {
+        flex: 1;
+    }
+
+    .personnel-results {
+        padding: 0.75rem 0.875rem;
+    }
+
+    .personnel-account-main {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.625rem;
+        padding: 0.875rem;
+    }
+
+    .personnel-identity {
+        grid-column: 1 / -1;
+    }
+
+    .personnel-roles {
+        grid-column: 1;
+    }
+
+    .personnel-status {
+        grid-column: 2;
+    }
+
+    .personnel-department {
+        padding: 0 0.875rem 0.75rem;
+    }
+
+    .personnel-details > summary {
+        padding: 0.75rem 0.875rem;
+    }
+
+    .personnel-action-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .personnel-action-footer {
+        align-items: stretch;
+    }
+
+    .personnel-action-footer .btn {
+        width: 100%;
+    }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .personnel-page *,
+    .personnel-page *::before,
+    .personnel-page *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+@media print {
+    .personnel-tabs,
+    .personnel-filters,
+    .personnel-details,
+    .personnel-pagination {
+        display: none !important;
+    }
+
+    .personnel-directory {
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,153 @@
+/* ==========================================
+   UBNHS LMS
+   Catalog Navigation
+   Modern Academic Glass 2.1
+   ========================================== */
+
+.catalog-page-navigation {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin-bottom: 1rem;
+}
+
+/* Segmented navigation container */
+
+.catalog-nav {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    max-width: 100%;
+    padding: 0.375rem;
+
+    background: var(--ws-glass-card);
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+    box-shadow: var(--ws-shadow);
+}
+
+/* Navigation links */
+
+.catalog-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 2.75rem;
+    padding: 0.625rem 1.125rem;
+
+    background: transparent;
+    color: var(--ws-muted);
+
+    border: 1px solid transparent;
+    border-radius: var(--ws-radius-sm);
+
+    font-size: var(--ws-font-sm);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition:
+        color var(--ws-transition),
+        background-color var(--ws-transition),
+        box-shadow var(--ws-transition),
+        transform var(--ws-transition-fast);
+}
+
+.catalog-nav-link i {
+    font-size: 1rem;
+    transition: transform var(--ws-transition);
+}
+
+/* Active tab */
+
+.catalog-nav-link.is-active {
+    color: #ffffff;
+
+    background: linear-gradient(
+        155deg,
+        #3284d6,
+        #07539f
+    );
+
+    border-color: var(--ws-blue);
+
+    box-shadow:
+        var(--ws-primary-shadow),
+        inset 0 1px 0 #ffffff30;
+}
+
+/* Hover effects */
+
+@media (hover: hover) {
+    .catalog-nav-link:not(.is-active):hover {
+        background: var(--ws-surface-hover);
+        color: var(--ws-heading);
+    }
+
+    .catalog-nav-link:hover i {
+        transform: translateY(var(--ws-hover-lift));
+    }
+
+    .catalog-nav-link.is-active:hover {
+        color: #ffffff;
+        box-shadow: var(--ws-button-hover-shadow);
+    }
+}
+
+/* Press feedback */
+
+.catalog-nav-link:active {
+    transform: scale(var(--ws-press-scale));
+}
+
+/* Keyboard accessibility */
+
+.catalog-nav-link:focus-visible {
+    outline: 3px solid var(--ws-focus-outline);
+    outline-offset: 3px;
+}
+
+/* Responsive navigation */
+
+@media (max-width: 47.99rem) {
+    .catalog-nav {
+        display: grid;
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .catalog-nav-link {
+        padding: 0.625rem 0.5rem;
+        font-size: 0.8125rem;
+    }
+}
+
+@media (max-width: 30rem) {
+    .catalog-nav {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .catalog-nav-link,
+    .catalog-nav-link i {
+        transition: none;
+        transform: none !important;
+    }
+}
+
+/* Print support */
+
+@media print {
+    .catalog-page-navigation,
+    .catalog-nav {
+        display: none !important;
+    }
+}

@@ -1,0 +1,201 @@
+/* ==========================================
+   FLOATING GLASS TOPBAR
+   Modern Academic Glass 2.0
+   ========================================== */
+
+.workspace-topbar {
+    position: sticky;
+
+    top: var(--ws-canvas-gap);
+
+    min-height: var(--ws-topbar-height);
+
+    padding: 0.85rem 1.25rem;
+
+    background: var(--ws-surface);
+
+    border: 1px solid var(--ws-glass-border);
+    border-radius: var(--ws-radius-xl);
+
+    box-shadow: var(--ws-shadow-floating);
+
+    z-index: 1030;
+}
+
+@supports (
+    (backdrop-filter: blur(1px)) or
+    (-webkit-backdrop-filter: blur(1px))
+) {
+    .workspace-topbar {
+        background: var(--ws-glass);
+
+        -webkit-backdrop-filter:
+            blur(var(--ws-blur));
+
+        backdrop-filter:
+            blur(var(--ws-blur));
+    }
+}
+
+
+/* BREADCRUMB */
+
+.workspace-breadcrumb {
+    gap: 0.65rem;
+
+    font-size: var(--ws-font-sm);
+}
+
+.breadcrumb-root {
+    color: var(--ws-muted);
+    font-weight: 400;
+}
+
+.breadcrumb-current {
+    color: var(--ws-text);
+    font-weight: 600;
+}
+
+
+/* ACTION BUTTONS */
+
+.workspace-topbar-actions {
+    gap: 0.75rem;
+}
+
+.workspace-icon-button {
+    width: 2.875rem;
+    height: 2.875rem;
+
+    border: 1px solid var(--ws-border);
+
+    background: var(--ws-surface-secondary);
+
+    transition:
+        background-color var(--ws-transition),
+        box-shadow var(--ws-transition),
+        transform var(--ws-transition-fast);
+}
+
+@media (hover: hover) {
+    .workspace-icon-button:hover {
+        background: var(--ws-surface);
+
+        box-shadow: var(--ws-shadow-hover);
+
+        transform: translateY(-1px);
+    }
+}
+
+.workspace-icon-button:active {
+    transform: scale(0.97);
+}
+
+.topbar-divider {
+    height: 1.75rem;
+    opacity: 0.85;
+}
+
+
+/* PROFILE TRIGGER */
+
+.workspace-profile-trigger {
+    gap: 0.75rem;
+
+    padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+
+    background: var(--ws-surface-secondary);
+
+    border: 1px solid transparent;
+    border-radius: 3rem;
+
+    transition:
+        background-color var(--ws-transition),
+        border-color var(--ws-transition);
+}
+
+.workspace-profile-trigger:hover {
+    background: var(--ws-surface);
+    border-color: var(--ws-border);
+}
+
+.workspace-avatar {
+    width: 2.625rem;
+    height: 2.625rem;
+
+    background: #dce9f8;
+
+    color: var(--ws-navy);
+
+    font-size: 0.9375rem;
+}
+
+.workspace-profile-info strong {
+    font-size: 0.8125rem;
+    font-weight: 650;
+}
+
+.workspace-profile-info small {
+    font-size: 0.6875rem;
+}
+
+
+/* PROFILE DROPDOWN */
+
+.workspace-profile-menu {
+    width: min(18rem, 85vw);
+
+    padding: 0.6rem;
+
+    background: var(--ws-surface);
+
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+
+    box-shadow: var(--ws-shadow-overlay);
+
+    transform-origin: top right;
+
+    animation:
+        ws-dropdown-enter 180ms ease both;
+}
+
+.profile-menu-header {
+    margin-bottom: 0.35rem;
+    padding: 0.9rem;
+
+    background: var(--ws-surface-secondary);
+    border-radius: var(--ws-radius);
+}
+
+.profile-menu-header strong {
+    font-size: var(--ws-font-sm);
+}
+
+.profile-menu-header small {
+    font-size: var(--ws-font-xs);
+}
+
+.profile-menu-item {
+    min-height: 2.875rem;
+
+    font-size: var(--ws-font-sm);
+
+    border-radius: var(--ws-radius);
+
+    transition:
+        background-color var(--ws-transition-fast),
+        color var(--ws-transition-fast);
+}
+
+@keyframes ws-dropdown-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

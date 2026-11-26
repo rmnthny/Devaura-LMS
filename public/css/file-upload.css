@@ -1,0 +1,542 @@
+/* ==================================================
+   UBNHS LMS
+   Unified File Upload — Modern Academic Glass 2.1
+   ================================================== */
+
+/* Shared import card */
+
+.ws-import-panel {
+    min-width: 0;
+    margin: 0;
+    padding: clamp(1rem, 1.5vw, 1.25rem);
+
+    background: linear-gradient(
+        145deg,
+        #ffffffed,
+        #edf4fdeb
+    );
+
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+    box-shadow: var(--ws-shadow);
+
+    transition:
+        border-color var(--ws-transition),
+        box-shadow var(--ws-transition);
+}
+
+html[data-theme="dark"] .ws-import-panel {
+    background: linear-gradient(
+        145deg,
+        #223148,
+        #1b2739
+    );
+}
+
+/* Import header */
+
+.ws-import-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+}
+
+.ws-import-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.ws-import-heading-icon {
+    display: grid;
+    place-items: center;
+
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+
+    background: var(--ws-info-soft);
+    color: var(--ws-blue);
+
+    border-radius: var(--ws-radius);
+    box-shadow: var(--ws-button-shadow);
+
+    font-size: 1.35rem;
+}
+
+.ws-import-heading h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.ws-import-heading p {
+    margin: 0.2rem 0 0;
+    color: var(--ws-muted);
+    font-size: 0.8125rem;
+}
+
+.ws-import-templates {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.ws-import-templates .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.5rem;
+}
+
+.ws-import-templates .bi-file-earmark-excel {
+    color: var(--ws-success);
+}
+
+.ws-import-templates .bi-file-earmark-text {
+    color: var(--ws-blue);
+}
+
+/* Component foundation */
+
+.fu-component {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+.fu-component [hidden] {
+    display: none !important;
+}
+
+/* Keep native file input available to the form */
+
+.fu-component.is-enhanced .fu-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Compact horizontal layout */
+
+.fu-enhanced {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(0, 1fr);
+
+    align-items: stretch;
+    gap: 0.875rem;
+}
+
+/* Dropzone */
+
+.fu-dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 5.75rem;
+
+    padding: 0.875rem 1.125rem;
+
+    background: var(--ws-surface-secondary);
+    color: var(--ws-text);
+
+    border: 1.5px dashed #9ab9df;
+    border-radius: var(--ws-radius-lg);
+
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        background-color var(--ws-transition),
+        border-color var(--ws-transition),
+        box-shadow var(--ws-transition);
+}
+
+.fu-upload-icon {
+    display: grid;
+    place-items: center;
+
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+
+    background: var(--ws-info-soft);
+    color: var(--ws-blue);
+
+    border-radius: var(--ws-radius);
+    font-size: 1.65rem;
+
+    transition:
+        transform var(--ws-transition);
+}
+
+.fu-dropzone-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.fu-dropzone-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.fu-dropzone-title strong {
+    color: var(--ws-blue);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.fu-hint {
+    color: var(--ws-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+/* File details */
+
+.fu-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.fu-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+
+    min-width: 0;
+    min-height: 3rem;
+
+    padding: 0.5rem 0.75rem;
+
+    background: var(--ws-surface);
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius);
+
+    transition:
+        background-color var(--ws-transition),
+        border-color var(--ws-transition);
+}
+
+.fu-file-icon {
+    display: grid;
+    place-items: center;
+
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+
+    color: var(--ws-muted);
+    font-size: 1.3rem;
+}
+
+.fu-file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.fu-filename {
+    display: block;
+
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.5;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fu-file-meta {
+    display: block;
+    color: var(--ws-muted);
+    font-size: 0.6875rem;
+}
+
+.fu-remove {
+    display: grid;
+    place-items: center;
+
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    flex-shrink: 0;
+
+    padding: 0;
+
+    background: transparent;
+    color: var(--ws-muted);
+
+    border: 0;
+    border-radius: var(--ws-radius-sm);
+
+    cursor: pointer;
+
+    transition:
+        color var(--ws-transition),
+        background-color var(--ws-transition);
+}
+
+.fu-remove:hover {
+    background: var(--ws-danger-soft);
+    color: var(--ws-danger);
+}
+
+/* Import button */
+
+.fu-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    width: 100%;
+    min-height: 2.75rem;
+}
+
+/* Valid selected file */
+
+.fu-component.has-file .fu-preview {
+    background: var(--ws-success-soft);
+    border-color: #21855b45;
+}
+
+.fu-component.has-file .fu-file-icon,
+.fu-component.has-file .fu-file-meta {
+    color: var(--ws-success);
+}
+
+/* Drag-over state */
+
+.fu-dropzone.is-dragging {
+    background: var(--ws-surface-active);
+    border-color: var(--ws-blue);
+
+    box-shadow: var(--ws-focus-ring);
+}
+
+.fu-dropzone.is-dragging .fu-upload-icon {
+    transform: translateY(-3px);
+}
+
+/* Error state */
+
+.fu-component.has-error .fu-dropzone {
+    border-color: var(--ws-danger);
+}
+
+.fu-error {
+    margin: 0.5rem 0 0;
+
+    color: var(--ws-danger);
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* Supporting information */
+
+.ws-import-limits {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+
+    margin: 0.75rem 0 0;
+    color: var(--ws-muted);
+
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+.ws-import-errors {
+    margin: 0.75rem 0 0;
+    padding: 0.75rem 1.75rem;
+
+    color: var(--ws-danger);
+    background: var(--ws-danger-soft);
+
+    border: 1px solid #b8223225;
+    border-radius: var(--ws-radius-sm);
+
+    font-size: 0.8125rem;
+}
+
+.ws-import-status {
+    margin-top: 0.875rem;
+    margin-bottom: 0;
+}
+
+/* Avatar and image variants */
+
+.fu-avatar .fu-enhanced {
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+}
+
+.fu-avatar .fu-file-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    background: var(--ws-info-soft);
+}
+
+.fu-file-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Compact attachment variant */
+
+.fu-compact .fu-enhanced {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+}
+
+.fu-compact .fu-dropzone {
+    min-height: 3.75rem;
+    padding: 0.625rem 0.875rem;
+}
+
+.fu-compact .fu-upload-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.25rem;
+}
+
+/* Document variant */
+
+.fu-document .fu-dropzone {
+    min-height: 4.5rem;
+}
+
+/* Hover effects */
+
+@media (hover: hover) {
+    .ws-import-panel:hover {
+        box-shadow: var(--ws-shadow-hover);
+    }
+
+    .fu-dropzone:hover {
+        background: var(--ws-surface-hover);
+        border-color: var(--ws-blue);
+
+        box-shadow: var(--ws-focus-ring);
+    }
+
+    .fu-dropzone:hover .fu-upload-icon {
+        transform: translateY(-3px);
+    }
+}
+
+/* Dark mode */
+
+html[data-theme="dark"] .fu-dropzone {
+    border-color: #49678c;
+}
+
+html[data-theme="dark"] .fu-upload-icon,
+html[data-theme="dark"] .fu-dropzone-title strong,
+html[data-theme="dark"] .ws-import-heading-icon {
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .fu-component.has-file .fu-file-icon,
+html[data-theme="dark"] .fu-component.has-file .fu-file-meta {
+    color: #a7e5c2;
+}
+
+html[data-theme="dark"] .fu-error,
+html[data-theme="dark"] .ws-import-errors,
+html[data-theme="dark"] .fu-remove:hover {
+    color: #ffc0c8;
+}
+
+/* Keyboard focus */
+
+.fu-dropzone:focus-visible,
+.fu-remove:focus-visible {
+    outline: 3px solid var(--ws-focus-outline);
+    outline-offset: 3px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 63.99rem) {
+    .fu-enhanced {
+        grid-template-columns:
+            minmax(0, 1.3fr)
+            minmax(0, 1fr);
+    }
+
+    .fu-dropzone {
+        padding: 0.75rem;
+        gap: 0.625rem;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    .ws-import-panel {
+        padding: 1rem;
+    }
+
+    .fu-enhanced,
+    .fu-avatar .fu-enhanced {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.625rem;
+    }
+
+    .fu-dropzone {
+        min-height: 4.5rem;
+    }
+
+    .ws-import-templates {
+        flex-wrap: wrap;
+    }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .fu-component *,
+    .ws-import-panel {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+@media print {
+    .ws-import-panel {
+        display: none !important;
+    }
+}

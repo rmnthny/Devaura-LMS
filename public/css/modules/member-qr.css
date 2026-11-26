@@ -1,0 +1,490 @@
+
+/* ==================================================
+   UBNHS LMS — DIGITAL MEMBER PASS
+   Modern Academic Glass 2.1
+   ================================================== */
+
+.member-pass-page {
+    --pass-navy: #172d63;
+    --pass-blue: #2468b6;
+    --pass-text: #1b2941;
+    --pass-muted: #60738e;
+    --pass-border: #dce5f0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-width: 0;
+}
+
+/* PAGE HEADER */
+
+.member-pass-page-header {
+    width: 100%;
+}
+
+.member-pass-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.member-pass-page-icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+
+    color: var(--pass-blue);
+    background: linear-gradient(145deg, #eaf3ff, #ccdef5);
+
+    border: 1px solid var(--pass-border);
+    border-radius: 0.875rem;
+
+    font-size: 1.5rem;
+}
+
+.member-pass-heading h1 {
+    margin: 0;
+    color: var(--ws-heading, var(--pass-navy));
+    font-size: var(--ws-page-title, 1.75rem);
+    font-weight: 700;
+}
+
+.member-pass-heading p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted, var(--pass-muted));
+    font-size: 0.875rem;
+}
+
+/* PASS CARD */
+
+.member-pass {
+    width: min(100%, 25rem);
+    overflow: hidden;
+
+    color: var(--pass-text);
+    background: #fff;
+
+    border: 1px solid var(--pass-border);
+    border-radius: 1.125rem;
+
+    box-shadow:
+        0 12px 34px rgba(23, 45, 99, 0.12),
+        0 2px 6px rgba(23, 45, 99, 0.04);
+}
+
+/* SCHOOL BRAND */
+
+.member-pass-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.25rem;
+
+    color: #fff;
+    background: linear-gradient(
+        135deg,
+        #172d63 0%,
+        #214781 68%,
+        #2468b6 100%
+    );
+}
+
+.member-pass-school {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.member-pass-logo {
+    display: block;
+    width: 2.9rem;
+    height: 2.9rem;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
+.member-pass-school-name {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.member-pass-school-name strong {
+    color: #fff;
+    font-size: 0.725rem;
+    font-weight: 800;
+    line-height: 1.45;
+    letter-spacing: 0.025em;
+}
+
+.member-pass-school-name span {
+    color: #dce9fa;
+    font-size: 0.6875rem;
+}
+
+.member-pass-document-label {
+    align-self: flex-start;
+    padding: 0.35rem 0.625rem;
+
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+
+    font-size: 0.625rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+}
+
+/* CENTER CONTENT */
+
+.member-pass-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1.5rem 1.25rem 1.25rem;
+    text-align: center;
+}
+
+.member-pass-identity {
+    min-width: 0;
+}
+
+.member-pass-identity h2 {
+    margin: 0;
+    color: var(--pass-navy);
+    font-size: 1.25rem;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.member-pass-identity p {
+    margin: 0.375rem 0 0;
+    color: var(--pass-muted);
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+}
+
+/* QR IMAGE: KEEP HIGH CONTRAST */
+
+.member-pass-qr-frame {
+    display: grid;
+    place-items: center;
+    padding: 0.875rem;
+
+    background: #fff;
+    border: 1px solid #dce5f0;
+    border-radius: 0.875rem;
+
+    box-shadow: 0 4px 16px rgba(23, 45, 99, 0.06);
+}
+
+.member-pass-qr-image {
+    display: block;
+    width: 196px;
+    height: 196px;
+    max-width: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+/* COPY AREA */
+
+.member-pass-code-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.member-pass-code-label {
+    color: var(--pass-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+.member-pass-code-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.member-pass-code-line code {
+    color: var(--pass-navy);
+    font-size: 0.875rem;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+    user-select: all;
+}
+
+.member-pass-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+
+    color: var(--pass-blue);
+    background: #eef5fd;
+    border: 1px solid #cbdcf1;
+    border-radius: 0.6rem;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.member-pass-copy-feedback {
+    color: #176841;
+    font-size: 0.75rem;
+}
+
+.member-pass-copy-feedback:empty {
+    display: none;
+}
+
+.member-pass-scan-note {
+    max-width: 18rem;
+    margin: 0;
+    color: var(--pass-muted);
+    font-size: 0.75rem;
+    line-height: 1.55;
+}
+
+/* MEMBER DETAILS */
+
+.member-pass-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 1.25rem;
+
+    background: #f3f7fc;
+    border-top: 1px solid var(--pass-border);
+}
+
+.member-pass-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0;
+
+    border-bottom: 1px solid #dce5f0;
+}
+
+.member-pass-detail:last-child {
+    border-bottom: 0;
+}
+
+.member-pass-detail > span {
+    color: var(--pass-muted);
+    font-size: 0.75rem;
+}
+
+.member-pass-detail > strong {
+    color: var(--pass-text);
+    font-size: 0.775rem;
+    font-weight: 650;
+    text-align: right;
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+
+.member-pass-status {
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+}
+
+.member-pass-status.is-active {
+    color: #176841;
+    background: #e2f4e9;
+}
+
+.member-pass-status.is-pending {
+    color: #80510c;
+    background: #fff0ce;
+}
+
+.member-pass-status.is-inactive {
+    color: #a22736;
+    background: #fce9ec;
+}
+
+.member-pass-status.is-neutral {
+    color: #526884;
+    background: #e7edf6;
+}
+
+/* PAGE ACTIONS */
+
+.member-pass-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    width: 100%;
+}
+
+.member-pass-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1rem;
+}
+
+.member-pass-help {
+    margin: 0;
+    color: var(--ws-muted, var(--pass-muted));
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* HOVER / ACCESSIBILITY */
+
+@media (hover: hover) {
+    .member-pass-copy-btn:hover {
+        background: #dceafe;
+    }
+
+    .member-pass {
+        transition: box-shadow 180ms ease;
+    }
+
+    .member-pass:hover {
+        box-shadow: 0 16px 38px rgba(23, 45, 99, 0.15);
+    }
+}
+
+.member-pass-copy-btn:focus-visible,
+.member-pass-actions .btn:focus-visible {
+    outline: 3px solid var(--pass-blue);
+    outline-offset: 3px;
+}
+
+/* DARK WORKSPACE: PASS REMAINS WHITE FOR QR SCANNING */
+
+html[data-theme="dark"] .member-pass {
+    color: var(--pass-text);
+    background: #fff;
+}
+
+html[data-theme="dark"] .member-pass-heading h1 {
+    color: var(--ws-heading, #eaf2ff);
+}
+
+/* MOBILE */
+
+@media (max-width: 30rem) {
+    .member-pass-page-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 1.25rem;
+    }
+
+    .member-pass {
+        width: 100%;
+    }
+
+    .member-pass-brand {
+        padding: 1rem;
+    }
+
+    .member-pass-content {
+        padding: 1.25rem 0.875rem;
+    }
+
+    .member-pass-details {
+        padding-inline: 0.875rem;
+    }
+
+    .member-pass-actions .btn {
+        flex: 1 1 100%;
+    }
+}
+
+/* PRINT ONLY THE PASS */
+
+@page {
+    size: auto;
+    margin: 12mm;
+}
+
+@media print {
+    html,
+    body {
+        background: #fff !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    .member-pass,
+    .member-pass * {
+        visibility: visible !important;
+    }
+
+    .member-pass-page {
+        display: block !important;
+    }
+
+    .member-pass {
+        position: fixed !important;
+        top: 0 !important;
+        left: 50% !important;
+
+        width: 100mm !important;
+        max-width: 100% !important;
+
+        margin: 0 !important;
+        transform: translateX(-50%) !important;
+
+        border: 1px solid #dce5f0 !important;
+        border-radius: 0.875rem !important;
+        box-shadow: none !important;
+
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .member-pass-page-header,
+    .member-pass-actions,
+    .member-pass-help,
+    .member-pass-copy-btn,
+    .member-pass-copy-feedback {
+        display: none !important;
+    }
+
+    .member-pass-brand {
+        background: #172d63 !important;
+        color: #fff !important;
+    }
+
+    .member-pass-qr-image {
+        width: 196px !important;
+        height: 196px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .member-pass,
+    .member-pass-copy-btn {
+        transition: none !important;
+    }
+}

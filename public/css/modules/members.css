@@ -1,0 +1,549 @@
+
+/* ==================================================
+   UBNHS LMS — MEMBER MANAGEMENT
+   Modern Academic Glass 2.1
+   ================================================== */
+
+/* PAGE LAYOUT */
+
+.members-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.members-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.members-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
+}
+
+.members-heading-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--ws-blue);
+    background: linear-gradient(145deg, #eaf3ff, #ccdef5);
+    border: 1px solid var(--ws-glass-border);
+    border-radius: var(--ws-radius-lg);
+    box-shadow: var(--ws-button-shadow);
+    font-size: 1.65rem;
+}
+
+.members-page .members-heading h1 {
+    margin: 0;
+    color: var(--ws-heading);
+    font-size: var(--ws-page-title);
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.members-heading p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted);
+    font-size: var(--ws-font-sm);
+}
+
+.members-add-button,
+.members-print-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* SHARED IMPORT */
+
+.members-page .ws-import-panel {
+    margin: 0;
+}
+
+/* DIRECTORY CARD */
+
+.members-directory {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--ws-surface);
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+    box-shadow: var(--ws-shadow);
+    transition: box-shadow var(--ws-transition);
+}
+
+.members-directory-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1.125rem 1.25rem 0;
+}
+
+.members-page .members-section-heading h2 {
+    margin: 0;
+    color: var(--ws-heading);
+    font-size: 1.125rem;
+    font-weight: 650;
+}
+
+.members-section-heading p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted);
+    font-size: 0.8125rem;
+}
+
+/* FILTERS */
+
+.members-filter-section {
+    padding: 1rem 1.25rem;
+}
+
+.members-filter-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 2.5fr)
+        minmax(9rem, 1fr)
+        minmax(8rem, 0.8fr)
+        auto;
+    align-items: end;
+    gap: 0.75rem;
+}
+
+.members-field {
+    min-width: 0;
+}
+
+.members-field .form-label {
+    margin-bottom: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.members-input-icon {
+    position: relative;
+    min-width: 0;
+}
+
+.members-input-icon > i {
+    position: absolute;
+    top: 50%;
+    left: 0.875rem;
+    transform: translateY(-50%);
+    color: var(--ws-muted);
+    pointer-events: none;
+}
+
+.members-page .members-input-icon .form-control {
+    padding-left: 2.5rem;
+}
+
+.members-input-icon:focus-within > i {
+    color: var(--ws-blue);
+}
+
+.members-filter-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* RESULTS BAR */
+
+.members-results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--ws-border);
+    color: var(--ws-muted);
+    font-size: 0.75rem;
+}
+
+.members-results-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+
+.members-filter-indicator {
+    padding: 0.3rem 0.625rem;
+    color: var(--ws-blue);
+    background: var(--ws-info-soft);
+    border-radius: var(--ws-radius-full);
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+.members-selected-count {
+    font-variant-numeric: tabular-nums;
+}
+
+/* TABLE */
+
+.members-page .members-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border: 0;
+    border-top: 1px solid var(--ws-border);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.members-page .members-table {
+    width: 100%;
+    margin: 0;
+    font-size: 0.8125rem;
+}
+
+.members-page .members-table thead th {
+    padding: 0.875rem 1rem;
+    color: var(--ws-heading);
+    background: var(--ws-surface-active);
+    font-size: 0.75rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.members-page .members-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+.members-checkbox-cell {
+    width: 2.75rem;
+    text-align: center;
+}
+
+.members-table .form-check-input {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* MEMBER NAME AND AVATAR */
+
+.members-name-cell {
+    min-width: 14rem;
+    max-width: 25rem;
+}
+
+.members-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.members-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.625rem;
+    height: 2.625rem;
+    background: var(--ws-info-soft);
+    color: #245b99;
+    border: 1px solid var(--ws-border);
+    border-radius: 50%;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition:
+        transform var(--ws-transition),
+        box-shadow var(--ws-transition);
+}
+
+.members-avatar.is-faculty {
+    background: var(--ws-special-soft);
+    color: #7055b5;
+}
+
+.members-identity-details {
+    min-width: 0;
+}
+
+.members-name {
+    display: block;
+    color: var(--ws-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.members-email {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--ws-muted);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+/* QR AND MEMBER TYPE */
+
+.members-page code.members-qr-code {
+    display: inline-block;
+    padding: 0.35rem 0.55rem;
+    background: var(--ws-info-soft);
+    color: #245b99;
+    border-radius: var(--ws-radius-xs);
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+.members-reference {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.members-type {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.members-type > span {
+    font-weight: 500;
+}
+
+.members-type > small {
+    color: var(--ws-muted);
+    font-size: 0.75rem;
+}
+
+.members-page .members-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: var(--ws-radius-full);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ACTION BUTTONS */
+
+.members-row-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.375rem;
+    white-space: nowrap;
+}
+
+.members-row-actions form {
+    margin: 0;
+}
+
+.members-row-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 2.25rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.75rem;
+}
+
+/* SELECTED ROWS */
+
+.members-page .members-table tbody tr.is-selected td {
+    background: var(--ws-info-soft);
+}
+
+/* EMPTY STATE */
+
+.members-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 1.75rem 1rem;
+    border-top: 1px solid var(--ws-border);
+    text-align: center;
+}
+
+.members-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    color: var(--ws-blue);
+    background: var(--ws-info-soft);
+    border-radius: var(--ws-radius-lg);
+    font-size: 1.5rem;
+}
+
+.members-page .members-empty-state h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.members-empty-state p {
+    max-width: 28rem;
+    margin: 0;
+    color: var(--ws-muted);
+    font-size: 0.8125rem;
+}
+
+/* PAGINATION */
+
+.members-pagination {
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--ws-border);
+}
+
+.members-pagination .pagination {
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+/* HOVER */
+
+@media (hover: hover) {
+    .members-directory:hover {
+        box-shadow: var(--ws-shadow-hover);
+    }
+
+    .members-table tbody tr:hover .members-avatar {
+        transform: translateY(-2px);
+        box-shadow: var(--ws-button-shadow);
+    }
+}
+
+/* DARK MODE */
+
+html[data-theme="dark"] .members-heading-icon {
+    background: linear-gradient(145deg, #29415e, #20334e);
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .members-avatar.is-student,
+html[data-theme="dark"] .members-page code.members-qr-code,
+html[data-theme="dark"] .members-filter-indicator {
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .members-avatar.is-faculty {
+    color: #d8c4ff;
+}
+
+/* TABLET */
+
+@media (max-width: 79.99rem) {
+    .members-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .members-search-field,
+    .members-filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .members-filter-actions {
+        justify-content: flex-end;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 47.99rem) {
+    .members-page {
+        gap: 0.875rem;
+    }
+
+    .members-heading-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 1.25rem;
+    }
+
+    .members-heading p {
+        font-size: 0.75rem;
+    }
+
+    .members-directory-header {
+        padding: 0.875rem 0.875rem 0;
+    }
+
+    .members-filter-section {
+        padding: 0.875rem;
+    }
+
+    .members-results-bar {
+        padding: 0.75rem 0.875rem;
+    }
+
+    .members-row-actions .btn {
+        min-height: 2.75rem;
+    }
+}
+
+@media (max-width: 30rem) {
+    .members-add-button,
+    .members-print-button {
+        width: 100%;
+    }
+
+    .members-filter-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .members-search-field,
+    .members-filter-actions {
+        grid-column: auto;
+    }
+
+    .members-filter-actions .btn {
+        flex: 1;
+    }
+}
+
+/* ACCESSIBILITY */
+
+.members-page .form-check-input:focus-visible {
+    outline: 3px solid var(--ws-focus-outline);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .members-page *,
+    .members-page *::before,
+    .members-page *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* PRINT */
+
+@media print {
+    .members-add-button,
+    .members-print-button,
+    .members-filter-section,
+    .members-pagination,
+    .members-row-actions {
+        display: none !important;
+    }
+
+    .members-directory {
+        border: 0;
+        box-shadow: none;
+    }
+}

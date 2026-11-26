@@ -1,0 +1,834 @@
+/* ==================================================
+   UBNHS LIBRARY MANAGEMENT SYSTEM
+   Modern Academic Glass 2.1
+   Global Glass and Visual Effects
+   ================================================== */
+
+/* 01. ATMOSPHERIC APPLICATION CANVAS */
+
+.workspace-body {
+    background-color: var(--ws-background);
+    background-image:
+        radial-gradient(
+            ellipse at 0% 0%,
+            #f7fbff 0%,
+            transparent 48%
+        ),
+        radial-gradient(
+            ellipse at 100% 20%,
+            #a8c9ef80 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            ellipse at 20% 100%,
+            #c4dbf5 0%,
+            transparent 55%
+        ),
+        linear-gradient(
+            135deg,
+            #e8f2fd 0%,
+            #d3e3f6 48%,
+            #eaf2fc 100%
+        );
+
+    background-attachment: fixed;
+    background-size: cover;
+
+    min-height: 100vh;
+    isolation: isolate;
+}
+
+/* Abstract curves — PURE CSS, NO IMAGE */
+
+.workspace-body::before,
+.workspace-body::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.workspace-body::before {
+    width: 115vw;
+    height: 55vh;
+    top: -30vh;
+    right: -25vw;
+
+    border-radius: 0 0 50% 60%;
+    border-bottom: 1px solid #ffffff80;
+
+    background: linear-gradient(
+        155deg,
+        #ffffff90,
+        #77a8e326
+    );
+
+    transform: rotate(-13deg);
+}
+
+.workspace-body::after {
+    width: 130vw;
+    height: 45vh;
+    bottom: -32vh;
+    left: -30vw;
+
+    border-radius: 50%;
+    border-top: 1px solid #ffffff80;
+
+    background: linear-gradient(
+        120deg,
+        #ffffff75,
+        #80afe330
+    );
+
+    transform: rotate(-9deg);
+}
+
+/* Dark canvas */
+
+html[data-theme="dark"] .workspace-body {
+    background-image:
+        radial-gradient(
+            ellipse at 100% 0%,
+            #28477165,
+            transparent 55%
+        ),
+        radial-gradient(
+            ellipse at 0% 100%,
+            #244c7950,
+            transparent 60%
+        ),
+        linear-gradient(
+            135deg,
+            #101827,
+            #192a40,
+            #0d1523
+        );
+}
+
+html[data-theme="dark"] .workspace-body::before,
+html[data-theme="dark"] .workspace-body::after {
+    opacity: 0.08;
+}
+
+
+/* 02. WORKSPACE SPACING */
+
+.workspace-main {
+    min-width: 0;
+    gap: 1rem;
+}
+
+.workspace-content {
+    position: relative;
+    flex: 0 0 auto;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    padding: var(--ws-content-padding);
+
+    background: rgba(239, 246, 255, 0.84);
+
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: var(--ws-radius-xl);
+
+    box-shadow:
+        0 8px 24px #172d6310,
+        0 20px 45px #172d630c,
+        inset 0 1px 0 #ffffffb0;
+}
+
+.workspace-content > * {
+    min-width: 0;
+}
+
+html[data-theme="dark"] .workspace-content {
+    background: var(--ws-glass);
+    border-color: var(--ws-glass-border);
+    box-shadow: var(--ws-shadow-floating);
+}
+
+
+/* 03. TYPOGRAPHY */
+
+.workspace-content h1,
+.workspace-content .h1 {
+    font-size: var(--ws-page-title);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+    color: var(--ws-heading);
+}
+
+.workspace-content h2,
+.workspace-content .h2 {
+    font-size: var(--ws-section-title);
+    font-weight: 650;
+    color: var(--ws-heading);
+}
+
+.workspace-content h3,
+.workspace-content h4,
+.workspace-content h5 {
+    color: var(--ws-heading);
+    font-weight: 600;
+}
+
+
+/* 04. SEPARATE FLOATING TOPBAR CARDS */
+
+.workspace-topbar {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+
+    padding: 0;
+    gap: 1rem;
+
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.workspace-topbar-left,
+.workspace-topbar-actions {
+    min-height: 4.25rem;
+
+    padding: 0.65rem 1rem;
+
+    background: var(--ws-outer);
+    border: 1px solid var(--ws-glass-border);
+    border-radius: 999px;
+
+    box-shadow:
+        var(--ws-shadow-floating),
+        inset 0 1px 0 var(--ws-glass-highlight);
+}
+
+.workspace-topbar-actions {
+    flex-shrink: 0;
+    padding: 0.4rem 0.65rem;
+}
+
+@supports (backdrop-filter: blur(1px)) {
+    .workspace-topbar-left,
+    .workspace-topbar-actions {
+        background: var(--ws-glass);
+        backdrop-filter: blur(var(--ws-blur));
+    }
+}
+
+.workspace-profile-trigger {
+    background: transparent;
+    border-radius: 999px;
+}
+
+.workspace-profile-trigger:hover {
+    background: var(--ws-surface-secondary);
+}
+
+.workspace-icon-button {
+    background: var(--ws-surface);
+    box-shadow: var(--ws-button-shadow);
+
+    transition:
+        transform var(--ws-transition),
+        box-shadow var(--ws-transition);
+}
+
+.workspace-profile-menu {
+    box-shadow: var(--ws-shadow-overlay);
+}
+
+
+/* 05. CARD-ON-CARD GLASS SURFACES */
+
+.workspace-content .card,
+.ws-card,
+.ws-glass-card {
+    min-width: 0;
+
+    background: var(--ws-surface);
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+
+    box-shadow:
+        var(--ws-shadow),
+        inset 0 1px 0 var(--ws-glass-highlight);
+
+    transition:
+        box-shadow var(--ws-transition),
+        border-color var(--ws-transition);
+}
+
+.workspace-content .card {
+    background: linear-gradient(
+        145deg,
+        #ffffffed,
+        #edf4fdeb
+    );
+}
+
+html[data-theme="dark"] .workspace-content .card {
+    background: linear-gradient(
+        145deg,
+        #223148,
+        #1b2739
+    );
+}
+
+.workspace-content .card-body {
+    padding: clamp(1rem, 1.5vw, 1.5rem);
+}
+
+.workspace-content .card-header {
+    background: transparent;
+    padding: 1rem 1.25rem;
+}
+
+.ws-card,
+.ws-glass-card {
+    padding: var(--ws-card-padding);
+}
+
+.ws-glass-card {
+    background: var(--ws-glass-card);
+}
+
+
+/* 06. ELEVATED BUTTONS */
+
+.workspace-content .btn {
+    min-height: var(--ws-control-height);
+    padding: 0.65rem 1rem;
+
+    border-radius: var(--ws-radius);
+    font-size: var(--ws-font-sm);
+    font-weight: 600;
+
+    transition:
+        transform var(--ws-transition-fast),
+        box-shadow var(--ws-transition),
+        background-color var(--ws-transition),
+        border-color var(--ws-transition),
+        color var(--ws-transition);
+}
+
+/* Primary action */
+
+.workspace-content .btn-primary {
+    background: linear-gradient(
+        155deg,
+        #3284d6,
+        #07539f
+    );
+
+    border-color: #2468b6;
+    color: #ffffff;
+
+    box-shadow:
+        0 3px 7px #2468b62b,
+        0 7px 16px #2468b621,
+        inset 0 1px 0 #ffffff40;
+}
+
+/* Secondary actions */
+
+.workspace-content .btn-outline-primary,
+.workspace-content .btn-outline-secondary {
+    background: var(--ws-surface);
+    box-shadow: var(--ws-button-shadow);
+}
+
+/* Functional actions */
+
+.workspace-content .btn-success,
+.workspace-content .btn-warning,
+.workspace-content .btn-danger,
+.workspace-content .btn-outline-danger {
+    box-shadow: var(--ws-button-shadow);
+}
+
+.workspace-content .btn-outline-danger {
+    background: var(--ws-danger-soft);
+    color: var(--ws-danger);
+}
+
+html[data-theme="dark"] .workspace-content .btn-outline-danger {
+    color: #ffc0c8;
+}
+
+/* Compact table actions */
+
+.workspace-content .btn-sm {
+    min-height: var(--ws-control-height-sm);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: var(--ws-radius-sm);
+}
+
+/* Press feedback */
+
+.workspace-content
+.btn:not(:disabled):not(.disabled):not(.btn-link):active {
+    transform: scale(var(--ws-press-scale));
+    box-shadow: var(--ws-button-active-shadow);
+}
+
+/* Disabled buttons */
+
+.workspace-content .btn:disabled,
+.workspace-content .btn.disabled,
+.workspace-content .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.workspace-content .btn i {
+    display: inline-block;
+    transition: transform var(--ws-transition);
+}
+
+
+/* 07. FORMS AND FILTERS */
+
+.workspace-content .form-label {
+    color: var(--ws-text);
+    font-size: var(--ws-font-sm);
+    font-weight: 550;
+    margin-bottom: 0.5rem;
+}
+
+.workspace-content .form-control,
+.workspace-content .form-select {
+    min-height: var(--ws-control-height);
+    padding: 0.7rem 0.9rem;
+
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-sm);
+
+    background-color: var(--ws-surface-secondary);
+    color: var(--ws-text);
+
+    box-shadow: var(--ws-shadow-inset);
+    font-size: var(--ws-font-sm);
+
+    transition:
+        background-color var(--ws-transition),
+        border-color var(--ws-transition),
+        box-shadow var(--ws-transition);
+}
+
+.workspace-content .form-select {
+    padding-right: 2.25rem;
+}
+
+.workspace-content .form-control:focus,
+.workspace-content .form-select:focus {
+    background-color: var(--ws-surface);
+    border-color: var(--ws-border-focus);
+    box-shadow: var(--ws-focus-ring);
+}
+
+.workspace-content .form-control::placeholder {
+    color: var(--ws-muted);
+}
+
+.workspace-content .form-control[type="file"] {
+    padding: 0.5rem 0.85rem;
+}
+
+.workspace-content .form-control::file-selector-button {
+    background: var(--ws-surface);
+    color: var(--ws-text);
+}
+
+.workspace-content .form-text {
+    font-size: 0.8125rem;
+    color: var(--ws-muted);
+}
+
+
+/* 08. MODERN TABLE DESIGN */
+
+.workspace-content .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid var(--ws-border);
+    border-radius: var(--ws-radius-lg);
+
+    background: var(--ws-surface);
+    box-shadow: var(--ws-shadow);
+}
+
+.workspace-content .table {
+    margin-bottom: 0;
+    font-size: var(--ws-font-sm);
+
+    --bs-table-bg: var(--ws-surface);
+    --bs-table-color: var(--ws-text);
+    --bs-table-border-color: var(--ws-border);
+    --bs-table-hover-bg: var(--ws-surface-hover);
+    --bs-table-hover-color: var(--ws-text);
+}
+
+.workspace-content .table thead th {
+    padding: 0.9rem 1rem;
+    white-space: nowrap;
+
+    background: var(--ws-surface-active);
+    color: var(--ws-heading);
+
+    font-size: 0.8125rem;
+    font-weight: 650;
+}
+
+.workspace-content .table tbody td {
+    padding: 0.875rem 1rem;
+    vertical-align: middle;
+
+    transition:
+        background-color var(--ws-transition-fast);
+}
+
+/* QR and identifier labels */
+
+.workspace-content code {
+    display: inline-block;
+    padding: 0.3rem 0.55rem;
+
+    background: var(--ws-info-soft);
+    color: #245b99;
+
+    border-radius: var(--ws-radius-xs);
+    font-size: 0.75rem;
+
+    overflow-wrap: anywhere;
+}
+
+html[data-theme="dark"] .workspace-content code {
+    color: #b2d2ff;
+}
+
+
+/* 09. STATUS BADGES */
+
+.workspace-content .badge {
+    padding: 0.45em 0.75em;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.workspace-content .text-bg-success {
+    background: var(--ws-success-soft) !important;
+    color: #176841 !important;
+}
+
+.workspace-content .text-bg-danger {
+    background: var(--ws-danger-soft) !important;
+    color: #a62130 !important;
+}
+
+.workspace-content .text-bg-warning {
+    background: var(--ws-warning-soft) !important;
+    color: #80510c !important;
+}
+
+html[data-theme="dark"] .workspace-content .text-bg-success {
+    color: #a7e5c2 !important;
+}
+
+html[data-theme="dark"] .workspace-content .text-bg-danger {
+    color: #ffc0c8 !important;
+}
+
+html[data-theme="dark"] .workspace-content .text-bg-warning {
+    color: #ffd694 !important;
+}
+
+
+/* 10. ADAPTIVE COMPONENT LAYOUTS */
+
+.ws-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+
+    gap: var(--ws-card-gap);
+    align-items: start;
+}
+
+.ws-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ws-section-gap);
+    min-width: 0;
+}
+
+.ws-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--ws-toolbar-gap);
+}
+
+.ws-toolbar-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.ws-filter-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+
+    align-items: end;
+    gap: var(--ws-filter-gap);
+}
+
+/* No decorative gold heading lines */
+
+.ws-section-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border: 0;
+    margin: 0;
+}
+
+.ws-section-heading h1,
+.ws-section-heading h2,
+.ws-section-heading h3 {
+    margin: 0;
+}
+
+.ws-section-heading p {
+    margin: 0;
+    color: var(--ws-muted);
+    font-size: var(--ws-font-sm);
+}
+
+
+/* 11. CREATIVE MICROINTERACTIONS */
+
+.ws-interactive-card {
+    transition:
+        transform var(--ws-transition),
+        box-shadow var(--ws-transition),
+        border-color var(--ws-transition);
+}
+
+@media (hover: hover) {
+    .workspace-content .card:hover {
+        box-shadow: var(--ws-shadow-hover);
+    }
+
+    .ws-interactive-card:hover {
+        transform: translateY(var(--ws-card-lift));
+        box-shadow: var(--ws-shadow-hover);
+        border-color: var(--ws-border-hover);
+    }
+
+    .workspace-content
+    .btn:not(:disabled):not(.disabled):not(.btn-link):not([aria-disabled="true"]):hover {
+        transform: translateY(var(--ws-hover-lift));
+        box-shadow: var(--ws-button-hover-shadow);
+    }
+
+    .workspace-content .btn-primary:hover:not(:disabled):not(.disabled) {
+        background: linear-gradient(
+            155deg,
+            #2468b6,
+            #164d90
+        );
+    }
+
+    .workspace-content .btn-outline-primary:hover:not(:disabled) {
+        background: var(--ws-blue);
+        color: #ffffff;
+    }
+
+    .workspace-content .btn-outline-danger:hover:not(:disabled) {
+        background: var(--ws-danger);
+        color: #ffffff;
+    }
+
+    .workspace-content .btn-outline-secondary:hover:not(:disabled) {
+        background: var(--ws-surface-hover);
+        color: var(--ws-text);
+    }
+
+    .workspace-content .btn:not(:disabled):not(.disabled):hover i {
+        transform: translateY(-1px);
+    }
+
+    .workspace-content .form-control:not(:disabled):hover,
+    .workspace-content .form-select:not(:disabled):hover {
+        border-color: var(--ws-border-hover);
+    }
+
+    .workspace-content .table tbody tr:hover td {
+        background-color: var(--ws-surface-hover);
+    }
+
+    .workspace-icon-button:hover {
+        transform: translateY(var(--ws-hover-lift));
+        box-shadow: var(--ws-button-hover-shadow);
+    }
+}
+
+
+/* 12. FOOTER */
+
+.workspace-footer {
+    margin-top: auto;
+    border: 0;
+
+    padding: 0.25rem 0.75rem;
+    font-size: var(--ws-font-xs);
+}
+
+.workspace-footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.workspace-footer-logo {
+    width: 2rem;
+    height: 1.5rem;
+    object-fit: contain;
+}
+
+.workspace-footer-credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+
+/* 13. RESPONSIVE ADJUSTMENTS */
+
+@media (max-width: 47.99rem) {
+    .workspace-body {
+        background-attachment: scroll;
+    }
+
+    .workspace-main {
+        gap: 0.75rem;
+    }
+
+    .workspace-topbar {
+        gap: 0.5rem;
+    }
+
+    .workspace-topbar-left,
+    .workspace-topbar-actions {
+        min-width: 0;
+        min-height: 3.75rem;
+        padding: 0.4rem 0.65rem;
+    }
+
+    .workspace-content {
+        padding: 1rem;
+        border-radius: 1.125rem;
+    }
+
+    .workspace-content .card-body,
+    .ws-card,
+    .ws-glass-card {
+        padding: 1rem;
+    }
+
+    .workspace-content .form-control,
+    .workspace-content .form-select {
+        font-size: 1rem;
+    }
+
+    .ws-grid,
+    .ws-stack {
+        gap: 0.75rem;
+    }
+
+    .workspace-footer-brand {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 30rem) {
+    .workspace-content {
+        padding: 0.85rem;
+    }
+
+    .workspace-topbar-left {
+        flex: 1;
+    }
+
+    .breadcrumb-root,
+    .workspace-breadcrumb > i {
+        display: none;
+    }
+}
+
+
+/* 14. ACCESSIBILITY */
+
+.workspace-body :focus-visible {
+    outline: 3px solid var(--ws-focus-outline);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-body *,
+    .workspace-body *::before,
+    .workspace-body *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .workspace-content .btn,
+    .ws-interactive-card,
+    .workspace-icon-button {
+        transform: none !important;
+    }
+}
+
+
+/* 15. PRINT SUPPORT */
+
+@media print {
+    .workspace-body {
+        background: #ffffff !important;
+    }
+
+    .workspace-body::before,
+    .workspace-body::after {
+        display: none !important;
+    }
+
+    .workspace-content {
+        background: #ffffff !important;
+        border: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .workspace-content .card,
+    .workspace-content .table-responsive,
+    .ws-card,
+    .ws-glass-card {
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
+}

@@ -1,0 +1,164 @@
+/* reusable ui components*/
+
+
+/* Primary button */
+
+.lms-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    min-height: var(--control-height);
+    padding: 0.75rem 1.25rem;
+
+    border: 0.0625rem solid transparent;
+    border-radius: var(--radius-sm);
+
+    font-family: inherit;
+    font-size: var(--font-small);
+    font-weight: 700;
+
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.lms-btn-primary {
+    background: var(--blue);
+    color: #FFFFFF;
+}
+
+.lms-btn-primary:hover {
+    background: var(--blue-hover);
+    color: #FFFFFF;
+    box-shadow: var(--shadow-hover);
+}
+
+.lms-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Inputs */
+
+.lms-label {
+    display: block;
+    margin-bottom: var(--space-2);
+
+    color: var(--text);
+    font-size: var(--font-small);
+    font-weight: 600;
+}
+
+.lms-input {
+    width: 100%;
+    min-height: var(--control-height);
+
+    padding: 0.75rem 1rem;
+
+    border: 0.0625rem solid var(--border);
+    border-radius: var(--radius-sm);
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.lms-input::placeholder {
+    color: var(--text-muted);
+}
+
+.lms-input:focus {
+    border-color: var(--blue);
+    outline: none;
+    box-shadow:
+        0 0 0 0.2rem rgba(36, 104, 182, 0.15);
+}
+
+.lms-input[aria-invalid="true"] {
+    border-color: var(--danger);
+}
+
+/* Input icons */
+
+.lms-input-group {
+    position: relative;
+}
+
+.lms-input-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+
+    transform: translateY(-50%);
+    color: var(--text-muted);
+
+    pointer-events: none;
+}
+
+.lms-input-group .lms-input {
+    padding-left: 2.75rem;
+}
+
+.lms-input-group.has-action .lms-input {
+    padding-right: 3.25rem;
+}
+
+/* Icon buttons */
+
+.lms-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.75rem;
+    height: 2.75rem;
+
+    background: transparent;
+    color: var(--text-muted);
+
+    border: 0;
+    border-radius: var(--radius-sm);
+
+    font-size: 1.125rem;
+    cursor: pointer;
+}
+
+.lms-icon-btn:hover {
+    background: var(--light-blue);
+    color: var(--heading);
+}
+
+.lms-icon-btn:focus-visible {
+    outline: 0.125rem solid #78B8FF;
+}
+
+/* Feedback */
+
+.lms-feedback {
+    padding: 0.875rem 1rem;
+    margin-bottom: 1rem;
+
+    border: 0.0625rem solid currentColor;
+    border-radius: var(--radius-sm);
+
+    font-size: var(--font-small);
+}
+
+.lms-feedback-error {
+    color: var(--danger);
+    background: var(--surface);
+}
+
+.lms-feedback-success {
+    color: var(--success);
+    background: var(--surface);
+}
+
+.lms-feedback-warning {
+    color: var(--warning);
+    background: var(--surface);
+}

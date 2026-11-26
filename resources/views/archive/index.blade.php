@@ -1,49 +1,167 @@
+
 @extends('layouts.library')
+
 @section('title', 'Archive')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/modules/archive.css') }}">
+@endpush
+
 @section('content')
-    <h1 class="h2 mb-3">Archive</h1>
-    <nav class="d-flex flex-wrap gap-2 mb-3" aria-label="Archive sections">
-        @foreach ($sections as $type => $entry)
-            <a class="btn {{ $type === $section ? 'btn-primary' : 'btn-outline-secondary' }}"
-                href="{{ route('archive.index', ['section' => $type]) }}" @if ($type === $section) aria-current="page" @endif>
-                {{ $entry['title'] }} <span class="badge text-bg-light ms-1">{{ $entry['records']->total() }}</span>
+
+<section class="archive-page">
+
+    <!-- PAGE HEADER -->
+
+    <header class="archive-header">
+        <div class="archive-heading">
+            <span class="archive-heading-icon" aria-hidden="true">
+                <i class="bi bi-archive"></i>
+            </span>
+
+            <div>
+                <h1>Archive</h1>
+                <p>
+                    Review archived library records and restore items
+                    when needed.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ARCHIVE SECTION NAVIGATION -->
+
+    <nav class="archive-tabs" aria-label="Archive sections">
+        @foreach($sections as $type => $entry)
+            @php
+                $icon = match ($type) {
+                    'books' => 'bi-book',
+                    'members' => 'bi-people',
+                    'accounts' => 'bi-person-badge',
+                    default => 'bi-archive',
+                };
+            @endphp
+
+            <a
+                class="archive-tab {{ $type === $section ? 'is-active' : '' }}"
+                href="{{ route('archive.index', ['section' => $type]) }}"
+                @if($type === $section)
+                    aria-current="page"
+                @endif
+            >
+                <i class="bi {{ $icon }}" aria-hidden="true"></i>
+
+                <span>{{ $entry['title'] }}</span>
+
+                <span class="archive-tab-count">
+                    {{ $entry['records']->total() }}
+                </span>
             </a>
         @endforeach
     </nav>
 
-    @if ($section !== null)
+    <!-- SELECTED ARCHIVE -->
+
+    @if($section !== null)
+
         @php
             $records = $sections[$section]['records'];
+            $sectionTitle = $sections[$section]['title'];
         @endphp
-        <section class="border rounded-3 bg-white mb-3" aria-labelledby="archive-section-title">
-            <div class="p-3 p-md-4">
-                <h2 class="h5 mb-1" id="archive-section-title">Archived {{ strtolower($sections[$section]['title']) }}</h2>
-                @if ($records->count())
-                    <p class="text-body-secondary small mb-0">Showing {{ $records->firstItem() }}–{{ $records->lastItem() }} of {{ $records->total() }}</p>
-                @endif
-            </div>
-            @if ($records->isEmpty())
-                <div class="border-top p-4 text-body-secondary">
-                    @if ($records->total())
-                        <a href="{{ $records->appends(['section' => $section])->url(1) }}">Back to the first page</a>
+
+        <section
+            class="archive-directory"
+            aria-labelledby="archive-section-title"
+        >
+
+            <!-- DIRECTORY HEADER -->
+
+            <header class="archive-directory-header">
+                <div>
+                    <h2 id="archive-section-title">
+                        Archived {{ strtolower($sectionTitle) }}
+                    </h2>
+
+                    <p>
+                        @if($records->count())
+                            Showing
+                            {{ $records->firstItem() }}–{{ $records->lastItem() }}
+                            of {{ $records->total() }} archived records.
+                        @else
+                            View the records in this archive section.
+                        @endif
+                    </p>
+                </div>
+
+                <span class="archive-record-count">
+                    {{ $records->total() }}
+                    {{ $records->total() === 1 ? 'record' : 'records' }}
+                </span>
+            </header>
+
+            <!-- EMPTY STATE -->
+
+            @if($records->isEmpty())
+
+                <div class="archive-empty">
+                    <span class="archive-empty-icon" aria-hidden="true">
+                        <i class="bi bi-archive"></i>
+                    </span>
+
+                    @if($records->total())
+
+                        <h3>No records on this page</h3>
+
+                        <p>
+                            Return to the first page to see archived records.
+                        </p>
+
+                        <a
+                            class="btn btn-outline-primary"
+                            href="{{ $records->appends(['section' => $section])->url(1) }}"
+                        >
+                            Back to first page
+                        </a>
+
                     @else
-                        No archived {{ strtolower($sections[$section]['title']) }}.
+
+                        <h3>No archived {{ strtolower($sectionTitle) }}</h3>
+
+                        <p>
+                            Archived records will appear here when available.
+                        </p>
+
                     @endif
                 </div>
+
             @else
-                <div class="table-responsive border-top">
-                    <table class="table align-middle mb-0">
-                        <thead class="table-light">
-                            <tr><th scope="col" class="ps-3">Record</th><th scope="col">Archived on</th><th scope="col">Six-month mark</th><th scope="col">Actions</th></tr>
+
+                <!-- ARCHIVE TABLE -->
+
+                <div class="table-responsive archive-table-wrap">
+
+                    <table class="table align-middle archive-table">
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Record</th>
+                                <th scope="col">Archived on</th>
+                                <th scope="col">Six-month mark</th>
+                                <th scope="col">Actions</th>
+                            </tr>
                         </thead>
+
                         <tbody>
-                            @foreach ($records as $record)
+
+                            @foreach($records as $record)
+
                                 @php
                                     $label = match ($section) {
                                         'books' => $record->book_title,
                                         'accounts' => $record->email,
                                         default => $record->fullName(),
                                     };
+
                                     $detail = match ($section) {
                                         'books' => $record->book_qr_value,
                                         'members' => $record->user?->email,
@@ -51,34 +169,127 @@
                                         default => null,
                                     };
                                 @endphp
+
                                 <tr>
-                                    <th scope="row" class="ps-3 fw-semibold">
-                                        {{ $label }}
-                                        @if ($detail)<small class="d-block text-body-secondary fw-normal text-break">{{ $detail }}</small>@endif
-                                    </th>
-                                    <td class="text-nowrap">{{ $record->deleted_at->format('M j, Y') }}</td>
-                                    <td class="text-nowrap text-body-secondary">{{ $record->deleted_at->copy()->addMonthsNoOverflow(6)->format('M j, Y') }}</td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <form method="post" action="{{ route('archive.restore', [$section, $record->getKey()]) }}">
-                                                @csrf
-                                                <button class="btn btn-sm btn-outline-primary" aria-label="Restore {{ $label }}">Restore</button>
-                                            </form>
-                                            @if ($section === 'members' && auth()->user()->hasRole(\App\Support\Rbac::SUPERADMIN))
-                                                <a href="{{ route('archive.members.confirm-purge', $record->getKey()) }}" class="btn btn-sm btn-outline-danger"
-                                                    aria-label="Review permanent deletion for {{ $label }}">Delete permanently</a>
+
+                                    <!-- RECORD INFORMATION -->
+
+                                    <th scope="row" class="archive-record-cell">
+
+                                        <div class="archive-record-info">
+                                            <span class="archive-record-name">
+                                                {{ $label }}
+                                            </span>
+
+                                            @if($detail)
+                                                <small class="archive-record-detail">
+                                                    {{ $detail }}
+                                                </small>
                                             @endif
                                         </div>
+
+                                    </th>
+
+                                    <!-- ARCHIVED DATE -->
+
+                                    <td class="archive-date">
+                                        {{ $record->deleted_at->format('M j, Y') }}
                                     </td>
+
+                                    <!-- SIX-MONTH MARK -->
+
+                                    <td class="archive-date archive-retention">
+                                        {{ $record->deleted_at
+                                            ->copy()
+                                            ->addMonthsNoOverflow(6)
+                                            ->format('M j, Y') }}
+                                    </td>
+
+                                    <!-- ORIGINAL ACTIONS -->
+
+                                    <td>
+
+                                        <div class="archive-row-actions">
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route('archive.restore', [
+                                                    $section,
+                                                    $record->getKey()
+                                                ]) }}"
+                                            >
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    aria-label="Restore {{ $label }}"
+                                                >
+                                                    <i
+                                                        class="bi bi-arrow-counterclockwise"
+                                                        aria-hidden="true"
+                                                    ></i>
+
+                                                    Restore
+                                                </button>
+                                            </form>
+
+                                            @if(
+                                                $section === 'members' &&
+                                                auth()->user()->hasRole(
+                                                    \App\Support\Rbac::SUPERADMIN
+                                                )
+                                            )
+
+                                                <a
+                                                    href="{{ route(
+                                                        'archive.members.confirm-purge',
+                                                        $record->getKey()
+                                                    ) }}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    aria-label="Review permanent deletion for {{ $label }}"
+                                                >
+                                                    <i
+                                                        class="bi bi-trash3"
+                                                        aria-hidden="true"
+                                                    ></i>
+
+                                                    Delete permanently
+                                                </a>
+
+                                            @endif
+
+                                        </div>
+
+                                    </td>
+
                                 </tr>
+
                             @endforeach
+
                         </tbody>
+
                     </table>
                 </div>
-                @if ($records->hasPages())
-                    <div class="px-3 pt-3">{{ $records->appends(['section' => $section])->links('pagination::bootstrap-5') }}</div>
+
+                <!-- PAGINATION -->
+
+                @if($records->hasPages())
+                    <div class="archive-pagination">
+
+                        {{ $records
+                            ->appends(['section' => $section])
+                            ->links('pagination::bootstrap-5') }}
+
+                    </div>
                 @endif
+
             @endif
+
         </section>
+
     @endif
+
+</section>
+
 @endsection

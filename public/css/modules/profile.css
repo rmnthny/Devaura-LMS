@@ -1,0 +1,414 @@
+
+/* ==================================================
+   UBNHS LMS — MY PROFILE
+   Modern Academic Glass 2.1
+   ================================================== */
+
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+/* PAGE HEADER */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.profile-header-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--ws-blue, #2468b6);
+    background: linear-gradient(145deg, #eaf3ff, #ccdef5);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.875rem;
+    box-shadow: 0 5px 14px rgba(23, 45, 99, 0.06);
+    font-size: 1.5rem;
+}
+
+.profile-header h1 {
+    margin: 0;
+    color: var(--ws-heading, #172d63);
+    font-size: var(--ws-page-title, 1.75rem);
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.profile-header p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.875rem;
+}
+
+/* MAIN LAYOUT */
+
+.profile-form {
+    min-width: 0;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.65fr);
+    align-items: start;
+    gap: 1rem;
+}
+
+.profile-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.profile-overview-card,
+.profile-section,
+.profile-form-actions {
+    min-width: 0;
+    background: var(--ws-surface, #ffffff);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.875rem;
+    box-shadow: var(
+        --ws-shadow,
+        0 6px 20px rgba(23, 45, 99, 0.06)
+    );
+}
+
+.profile-overview-card,
+.profile-section {
+    padding: 1.125rem;
+}
+
+.profile-card-heading {
+    margin-bottom: 1.125rem;
+}
+
+.profile-card-heading h2 {
+    margin: 0;
+    color: var(--ws-heading, #172d63);
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.profile-card-heading p {
+    margin: 0.25rem 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+/* ACCOUNT OVERVIEW */
+
+.profile-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
+    padding: 1rem;
+    background: var(--ws-surface-secondary, #f3f7fc);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 0.75rem;
+}
+
+.profile-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 3.4rem;
+    height: 3.4rem;
+    color: var(--ws-blue, #2468b6);
+    background: var(--ws-info-soft, #eaf2fb);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 50%;
+    font-size: 1.05rem;
+    font-weight: 750;
+}
+
+.profile-identity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.profile-identity-details strong {
+    color: var(--ws-heading, #172d63);
+    font-size: 0.9375rem;
+    overflow-wrap: anywhere;
+}
+
+.profile-identity-details span {
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.profile-account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0.875rem 0 0;
+}
+
+.profile-account-row {
+    padding: 0.875rem 0.125rem;
+    border-bottom: 1px solid var(--ws-border, #dce5f0);
+}
+
+.profile-account-row dt {
+    margin-bottom: 0.375rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.profile-account-row dd {
+    margin: 0;
+    color: var(--ws-text, #1b2941);
+    font-size: 0.875rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.profile-reference {
+    font-variant-numeric: tabular-nums;
+}
+
+.profile-overview-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--ws-info-soft, #eaf2fb);
+    border-radius: 0.625rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+    line-height: 1.55;
+}
+
+.profile-overview-note i {
+    flex-shrink: 0;
+    color: var(--ws-blue, #2468b6);
+}
+
+/* PERSONAL INFORMATION */
+
+.profile-name-grid {
+    margin-top: 0;
+}
+
+.profile-name-grid > [class*="col-"] {
+    min-width: 0;
+}
+
+.profile-page .form-label {
+    margin-bottom: 0.375rem;
+    color: var(--ws-text, #1b2941);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.profile-page .form-control,
+.profile-page .form-select {
+    min-width: 0;
+    min-height: 2.75rem;
+}
+
+.profile-department-field {
+    margin-top: 1rem;
+}
+
+/* PASSWORD FIELDS */
+
+.profile-security {
+    min-width: 0;
+    margin: 0;
+}
+
+.profile-password-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.875rem;
+}
+
+.profile-field {
+    min-width: 0;
+}
+
+.profile-password-group {
+    flex-wrap: nowrap;
+}
+
+.profile-password-group .form-control {
+    min-width: 0;
+}
+
+.profile-password-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+}
+
+.profile-field .form-text {
+    margin-top: 0.375rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+.profile-field-error {
+    margin: 0.375rem 0 0;
+    color: var(--ws-danger, #b82232);
+    font-size: 0.8125rem;
+}
+
+/* ACTION BAR */
+
+.profile-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    padding: 0.875rem 1.125rem;
+}
+
+.profile-save-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ws-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.profile-save-note i {
+    color: var(--ws-blue, #2468b6);
+}
+
+.profile-save-button {
+    min-height: 2.75rem;
+    padding-inline: 1.25rem;
+}
+
+/* HOVER AND FOCUS */
+
+@media (hover: hover) {
+    .profile-overview-card:hover,
+    .profile-section:hover {
+        box-shadow: var(
+            --ws-shadow-hover,
+            0 9px 25px rgba(23, 45, 99, 0.09)
+        );
+    }
+}
+
+.profile-password-toggle:focus-visible,
+.profile-save-button:focus-visible {
+    outline: 3px solid var(--ws-blue, #2468b6);
+    outline-offset: 2px;
+}
+
+/* DARK THEME */
+
+html[data-theme="dark"] .profile-header-icon {
+    background: linear-gradient(145deg, #29415e, #20334e);
+    color: #a4caff;
+}
+
+html[data-theme="dark"] .profile-avatar,
+html[data-theme="dark"] .profile-overview-note i,
+html[data-theme="dark"] .profile-save-note i {
+    color: #a4caff;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 72rem) {
+    .profile-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .profile-overview-card {
+        width: 100%;
+    }
+
+    .profile-account-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.875rem;
+    }
+
+    .profile-account-row {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    .profile-header-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 1.25rem;
+    }
+
+    .profile-header p {
+        font-size: 0.75rem;
+    }
+
+    .profile-overview-card,
+    .profile-section,
+    .profile-form-actions {
+        padding: 0.875rem;
+    }
+
+    .profile-account-details {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .profile-identity {
+        padding: 0.875rem;
+    }
+
+    .profile-save-note {
+        width: 100%;
+    }
+
+    .profile-save-button {
+        width: 100%;
+    }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .profile-page *,
+    .profile-page *::before,
+    .profile-page *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* PRINT */
+
+@media print {
+    .profile-security,
+    .profile-form-actions,
+    .profile-password-toggle {
+        display: none !important;
+    }
+
+    .profile-overview-card,
+    .profile-section {
+        box-shadow: none !important;
+    }
+}

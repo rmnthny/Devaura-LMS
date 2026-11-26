@@ -1,0 +1,195 @@
+/* ==========================================
+   RESPONSIVE WORKSPACE
+   Modern Academic Glass 2.0
+   ========================================== */
+
+
+/* COMPACT DESKTOP AND TABLETS */
+
+@media (min-width: 48rem)
+    and (max-width: 79.99rem) {
+
+    :root {
+        --ws-canvas-gap: 1rem;
+    }
+
+    .workspace-content {
+        padding: 1.25rem;
+    }
+
+    .workspace-topbar {
+        padding-inline: 1rem;
+    }
+
+    .workspace-profile-info strong {
+        max-width: 8rem;
+    }
+
+}
+
+
+/* MOBILE DEVICES */
+
+@media (max-width: 47.99rem) {
+
+    :root {
+        --ws-canvas-gap: 0.75rem;
+    }
+
+    .workspace-shell {
+        padding: var(--ws-canvas-gap);
+    }
+
+    .workspace-main {
+        margin-left: 0;
+
+        gap: 0.75rem;
+
+        min-height: calc(100vh - 1.5rem);
+    }
+
+    .workspace-sidebar {
+        top: 0.75rem;
+        bottom: 0.75rem;
+        left: 0.75rem;
+
+        width: min(17.5rem, calc(100vw - 3rem));
+
+        height: auto;
+
+        border-radius: 1.25rem;
+
+        transform:
+            translateX(calc(-100% - 1.5rem));
+
+        z-index: 1080;
+    }
+
+    html.sidebar-mobile-open .workspace-sidebar {
+        transform: translateX(0);
+    }
+
+    .workspace-backdrop:not([hidden]) {
+        background: rgba(10, 20, 40, 0.38);
+
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+
+        z-index: 1070;
+    }
+
+    .workspace-topbar {
+        top: 0.75rem;
+
+        min-height: 4.25rem;
+
+        padding: 0.65rem 0.85rem;
+
+        border-radius: 1.125rem;
+    }
+
+    .workspace-content {
+        padding: 1rem;
+
+        border-radius: 1.25rem;
+    }
+
+    .workspace-content .card-body {
+        padding: 1rem;
+    }
+
+    .workspace-content .form-control,
+    .workspace-content .form-select {
+        font-size: 1rem;
+    }
+
+    .workspace-profile-trigger {
+        padding: 0.25rem;
+    }
+
+    .workspace-profile-info,
+    .profile-chevron,
+    .topbar-divider {
+        display: none;
+    }
+
+    .workspace-footer {
+        text-align: center;
+
+        flex-direction: column;
+
+        gap: 0.25rem;
+    }
+
+    /* Restore full navigation labels on mobile */
+
+    .sidebar-collapsed .sidebar-brand {
+        justify-content: flex-start;
+        padding-inline: 0.65rem;
+    }
+
+    .sidebar-collapsed .sidebar-navigation {
+        padding-inline: 0.25rem;
+    }
+
+    .sidebar-collapsed .sidebar-link {
+        justify-content: flex-start;
+        padding-inline: 0.75rem;
+    }
+
+    .sidebar-collapsed .sidebar-link-text,
+    .sidebar-collapsed .sidebar-brand-text,
+    .sidebar-collapsed .sidebar-section-label,
+    .sidebar-collapsed .sidebar-soon,
+    .sidebar-collapsed .sidebar-footer-text {
+        display: block;
+    }
+
+    .sidebar-collapsed .sidebar-footer {
+        justify-content: flex-start;
+        padding-inline: 0.9rem;
+    }
+}
+
+
+/* SMALL MOBILE */
+
+@media (max-width: 30rem) {
+
+    .breadcrumb-root,
+    .workspace-breadcrumb > i {
+        display: none;
+    }
+
+    .workspace-breadcrumb {
+        font-size: 0.8125rem;
+    }
+
+    .workspace-topbar-actions {
+        gap: 0.35rem;
+    }
+
+    .workspace-content h1,
+    .workspace-content .h1,
+    .workspace-content h2,
+    .workspace-content .h2 {
+        font-size: 1.5rem;
+    }
+
+    .workspace-content {
+        padding: 0.85rem;
+    }
+
+}
+
+
+/* PRINT OVERRIDES */
+
+@media print {
+    .workspace-shell,
+    .workspace-main,
+    .workspace-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}

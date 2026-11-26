@@ -1,70 +1,240 @@
+
 @extends('layouts.library')
+
 @section('title', 'Member QR card')
+
 @push('styles')
-    <style>
-        .qr-pass { max-width: 24rem; }
-        .qr-pass-header { background: linear-gradient(135deg, #0d6efd, #0a58ca); }
-        .qr-frame { background: #fff; border: 1px solid #e9ecef; border-radius: 1rem; padding: 1rem; display: inline-block; }
-        @media print {
-            body { background: #fff !important; }
-            .qr-pass { box-shadow: none !important; border: 1px solid #dee2e6 !important; margin: 0 auto; }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/modules/member-qr.css') }}">
 @endpush
+
 @section('content')
-@php($department = $member->user?->personnel?->department?->department_name)
-@php($idLabel = $member->member_role === \App\Models\LibraryMember::ROLE_FACULTY ? 'DepEd Employee No.' : 'Student LRN')
-<div class="qr-pass mx-auto">
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-        <div class="qr-pass-header text-white px-4 py-3 d-flex justify-content-between align-items-center">
+
+@php
+    $department = $member->user?->personnel?->department?->department_name;
+
+    $idLabel = $member->member_role === \App\Models\LibraryMember::ROLE_FACULTY
+        ? 'DepEd Employee No.'
+        : 'Student LRN';
+
+    $status = $member->user?->account_status ?? 'Active';
+
+    $statusClass = match ($status) {
+        'Active' => 'is-active',
+        'Pending' => 'is-pending',
+        'Inactive', 'Locked' => 'is-inactive',
+        default => 'is-neutral'
+    };
+@endphp
+
+<section class="member-pass-page">
+
+    <!-- PAGE HEADER -->
+
+    <header class="member-pass-page-header d-print-none">
+        <div class="member-pass-heading">
+            <span class="member-pass-page-icon" aria-hidden="true">
+                <i class="bi bi-qr-code"></i>
+            </span>
+
             <div>
-                <div class="small text-uppercase opacity-75 fw-semibold" style="letter-spacing: 0.06em;">UBNHS Library</div>
-                <div class="fw-bold">Digital Member Pass</div>
+                <h1>My QR Card</h1>
+                <p>
+                    Your digital library identification pass.
+                </p>
             </div>
-            <span class="badge rounded-pill text-bg-light text-primary">{{ $member->user?->account_status ?? 'Active' }}</span>
         </div>
-        <div class="card-body p-4 text-center bg-white">
-            <h1 class="h4 fw-bold mb-1">{{ $member->fullName() }}</h1>
-            <p class="text-body-secondary small mb-3">
-                {{ $member->member_role }}@if ($department) · {{ $department }} @endif
+    </header>
+
+    <!-- ACTUAL DIGITAL MEMBER PASS -->
+
+    <article class="member-pass" aria-label="UBNHS digital library member pass">
+
+        <!-- SCHOOL BRAND HEADER -->
+
+        <header class="member-pass-brand">
+            <div class="member-pass-school">
+                <img
+                    class="member-pass-logo"
+                    src="{{ asset('images/school-logo.png') }}"
+                    alt="UBNHS school seal"
+                >
+
+                <div class="member-pass-school-name">
+                    <strong>UPPER BICUTAN NATIONAL HIGH SCHOOL</strong>
+                    <span>Library Management System</span>
+                </div>
+            </div>
+
+            <span class="member-pass-document-label">
+                DIGITAL MEMBER PASS
+            </span>
+        </header>
+
+        <!-- IDENTITY -->
+
+        <div class="member-pass-content">
+
+            <div class="member-pass-identity">
+                <h2>{{ $member->fullName() }}</h2>
+
+                <p>
+                    {{ $member->member_role }}
+
+                    @if($department)
+                        <span aria-hidden="true">·</span>
+                        {{ $department }}
+                    @endif
+                </p>
+            </div>
+
+            <!-- REAL QR CODE -->
+
+            <div class="member-pass-qr-frame">
+
+                <img
+                    class="member-pass-qr-image"
+                    src="data:image/png;base64,{{ $png }}"
+                    alt="Library member QR code for {{ $member->fullName() }}"
+                    width="196"
+                    height="196"
+                >
+
+            </div>
+
+            <!-- COPYABLE CODE -->
+
+            <div class="member-pass-code-area">
+                <span class="member-pass-code-label">
+                    Member QR code
+                </span>
+
+                <div class="member-pass-code-line">
+
+                    <code id="member-qr-code">{{ $code }}</code>
+
+                    <button
+                        type="button"
+                        class="member-pass-copy-btn d-print-none"
+                        id="copy-qr-code"
+                        aria-label="Copy member QR code"
+                    >
+                        <i class="bi bi-copy" aria-hidden="true"></i>
+                        <span>Copy</span>
+                    </button>
+
+                </div>
+
+                <span
+                    class="member-pass-copy-feedback d-print-none"
+                    id="copy-qr-feedback"
+                    role="status"
+                    aria-live="polite"
+                ></span>
+            </div>
+
+            <p class="member-pass-scan-note">
+                Present or scan this code at the library kiosk
+                or circulation desk.
             </p>
-            <div class="qr-frame shadow-sm mb-3">
-                <img src="data:image/png;base64,{{ $png }}" class="img-fluid d-block mx-auto" style="width: 190px; height: 190px; image-rendering: pixelated;" alt="Member QR code">
-            </div>
-            <div class="d-flex justify-content-center align-items-center gap-2 mb-1">
-                <code class="fs-6 fw-semibold text-dark" id="member-qr-code">{{ $code }}</code>
-                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 d-print-none" id="copy-qr-code" title="Copy code">Copy</button>
-            </div>
-            <p class="small text-body-secondary mb-0">Scan this QR code at the library kiosk or circulation desk.</p>
+
         </div>
-        <div class="card-footer bg-body-tertiary px-4 py-3 border-top">
-            <dl class="row small mb-0 gy-1">
-                <dt class="col-5 text-body-secondary fw-normal">{{ $idLabel }}</dt>
-                <dd class="col-7 text-end fw-semibold mb-0 font-monospace">{{ $member->reference_number }}</dd>
-                <dt class="col-5 text-body-secondary fw-normal">Email</dt>
-                <dd class="col-7 text-end mb-0 text-truncate" title="{{ $member->user?->email }}">{{ $member->user?->email }}</dd>
-            </dl>
-        </div>
-    </div>
-    <div class="d-flex gap-2 justify-content-center mt-3 d-print-none">
-        <button type="button" class="btn btn-primary" onclick="window.print()">
-            <i class="bi bi-printer me-1" aria-hidden="true"></i>Print QR card
+
+        <!-- MEMBER INFORMATION -->
+
+        <footer class="member-pass-details">
+
+            <div class="member-pass-detail">
+                <span>{{ $idLabel }}</span>
+                <strong>{{ $member->reference_number }}</strong>
+            </div>
+
+            <div class="member-pass-detail">
+                <span>Account status</span>
+                <strong class="member-pass-status {{ $statusClass }}">
+                    {{ $status }}
+                </strong>
+            </div>
+
+            <div class="member-pass-detail member-pass-email">
+                <span>Email address</span>
+                <strong>{{ $member->user?->email ?? '—' }}</strong>
+            </div>
+
+        </footer>
+
+    </article>
+
+    <!-- ACTIONS -->
+
+    <div class="member-pass-actions d-print-none">
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="print-member-pass"
+        >
+            <i class="bi bi-printer" aria-hidden="true"></i>
+            Print QR card
         </button>
-        <a class="btn btn-outline-secondary" href="data:image/png;base64,{{ $png }}" download="{{ $code }}.png">
-            <i class="bi bi-download me-1" aria-hidden="true"></i>Download PNG
+
+        <a
+            class="btn btn-outline-secondary"
+            href="data:image/png;base64,{{ $png }}"
+            download="{{ $code }}.png"
+        >
+            <i class="bi bi-download" aria-hidden="true"></i>
+            Download PNG
         </a>
+
     </div>
-</div>
-<script>
-    (() => {
-        const btn = document.getElementById('copy-qr-code');
-        const code = document.getElementById('member-qr-code')?.textContent?.trim();
-        if (!btn || !code || !navigator.clipboard) return;
-        btn.addEventListener('click', async () => {
-            await navigator.clipboard.writeText(code);
-            btn.textContent = 'Copied';
-            setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
-        });
-    })();
-</script>
+
+    <p class="member-pass-help d-print-none">
+        Download PNG saves the QR image. Print QR card prints
+        the complete digital member pass.
+    </p>
+
+</section>
+
 @endsection
+
+@push('scripts')
+<script>
+(() => {
+    "use strict";
+
+    const copyButton = document.getElementById("copy-qr-code");
+    const codeElement = document.getElementById("member-qr-code");
+    const copyFeedback = document.getElementById("copy-qr-feedback");
+    const printButton = document.getElementById("print-member-pass");
+
+    printButton?.addEventListener("click", () => {
+        window.print();
+    });
+
+    if (!copyButton || !codeElement) return;
+
+    copyButton.addEventListener("click", async () => {
+        const code = codeElement.textContent.trim();
+
+        if (!code) return;
+
+        try {
+            if (!navigator.clipboard?.writeText) {
+                throw new Error("Clipboard is not available");
+            }
+
+            await navigator.clipboard.writeText(code);
+
+            if (copyFeedback) {
+                copyFeedback.textContent = "QR code copied.";
+            }
+        } catch (error) {
+            if (copyFeedback) {
+                copyFeedback.textContent =
+                    "Unable to copy automatically. Select the code to copy it.";
+            }
+        }
+    });
+})();
+</script>
+@endpush
