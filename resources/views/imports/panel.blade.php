@@ -245,7 +245,7 @@
 
 <!-- Preserve actual backend status polling -->
 
-<script>
+<script type="text/javascript">
 (() => {
     const statusId = @js('import-' . $kind . '-status');
 

@@ -23,9 +23,9 @@ This document maps the Upper Bicutan National High School operational requiremen
   - Support `available`, `borrowed`, `missing`, and `damaged` operational states.
   - Process borrow/return transactions using `TRX-YYYYMMDD-XXXX`, a borrower, the processing account, due dates, and real-time book-state changes.
   - Flag overdue transactions and block additional borrowing while an overdue item remains unresolved.
-  - Provide public book-availability lookup at `/kiosk`.
+  - Provide public book-availability lookup in a later kiosk enhancement. Sprint 3 currently provides attendance only.
   - Do not implement fines, payments, or reservations.
-- **Target Sprints:** Sprint 2 for cataloging and Book QR; Sprint 3 for public kiosk lookup; Sprint 4 for circulation, overdue tracking, and notifications; Sprint 5 for dashboard metrics and reports.
+- **Target Sprints:** Sprint 2 for cataloging and Book QR; Sprint 4 for circulation, overdue tracking, and notifications; Sprint 5 for dashboard metrics and reports. Public kiosk catalog lookup is deferred until scheduled.
 
 ## R3: Digital Inventory and Book Auditing
 
@@ -58,7 +58,7 @@ This document maps the Upper Bicutan National High School operational requiremen
   - Generate member and Book QR images locally with `milon/barcode`.
   - Enter QR code values manually. Camera scanning is deferred.
   - Provide printable member cards and Book labels.
-  - Use QR scanning at the public kiosk, circulation desk, and inventory-audit workflow.
+  - Accept QR values from manual entry or keyboard-style scanners. Camera scanning remains deferred.
 - **Target Sprints:** Sprint 1 for Member QR; Sprint 2 for Book QR and inventory scanning; Sprint 3 for kiosk attendance; Sprint 4 for circulation scanning.
 
 ## Traceability Rule

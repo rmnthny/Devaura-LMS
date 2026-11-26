@@ -21,11 +21,11 @@
 ## 3. Roles, Permissions & Security Standards
 We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges per role aligned with the Use Case Diagrams) enforced in controllers, route middleware, and Blade `@can` directives:
 1. `superadmin` (Head Librarian) — Single active superadmin (a Faculty teacher with a subject Department). Full access; promotes Faculty → `admin`, Student → `staff`, or `maintenance` (with strict password confirmation); can transfer `superadmin` to another Faculty member (reverting to `faculty`); runs batched CSV/Excel bulk imports; views audit trail and archives.
-2. `admin` (Assigned Teacher — Faculty only) — Can add and edit books, edit members, conduct inventory audits, assign or revoke the Staff role for Students with password confirmation, and manage Staff schedules. Operational Reports access is reserved for the reports sprint.
+2. `admin` (Assigned Teacher — Faculty only) — Can add and edit books, edit members, conduct inventory audits, generate operational reports, assign or revoke the Staff role for Students with password confirmation, and manage Staff schedules.
 3. `staff` (Student Staff — Student only) — Handles attendance monitoring, borrowing/returning, book inventory & QR, and catalog lookup. Cannot manage/archive members, delete books/personnel, view audit trail, or change roles.
 4. `student` — Library member. An official import requires a **12-digit LRN**. Members sign in with email and can view their QR card and update their profile.
 5. `faculty` — Library member. An official import requires a **7-digit DepEd employee number** and a **subject department**.
-6. `visitor` — Walk-in guest (no login). Logs attendance at `/kiosk` or manual entry with **Last Name, First Name, Middle Initial, Organization, Email, and Purpose**.
+6. `visitor` — Walk-in guest with no account. Logs attendance at the kiosk or through assisted entry using **Last Name, First Name, optional Middle Initial, Email, and Purpose**.
 7. `maintenance` — System/facility maintenance role assigned exclusively by `superadmin`.
 
 ### Non-Negotiable Security & Data Rules
@@ -34,7 +34,7 @@ We use **7 predefined roles** in `spatie/laravel-permission` (fixed privileges p
 - **Web Security:** Always protect against **CSRF** (`@csrf` / token checks), **SQL Injection** (Eloquent/parameterized queries only — never raw concatenated SQL), and **XSS** (Blade `{{ }}` escaping).
 - **Archive and audit trail:** Only the Head Librarian can archive and restore records or open the Archive. A daily cleanup removes eligible records after six months. The Head Librarian may confirm permanent deletion for eligible archived members. Retain records linked to library history and log archive actions.
 - **Bulk User Import:** Restricted to `superadmin` via CSV/Excel (`maatwebsite/excel`), processed in **100-record batches** with automated email error handling.
-- **Public Kiosk (`/kiosk`):** Open terminal for quick QR attendance (`time_in` / `time_out`) and book availability search.
+- **Public Kiosk:** Attendance-only terminal on a dedicated origin. It accepts a member reference number or QR value and visitor details. It opens only while eligible personnel coverage is active. Local default is `http://127.0.0.1:8001/kiosk`. Public catalog lookup and camera scanning are deferred.
 
 ## 4. Out of Scope (Do Not Build for Dec 1 Prototype)
 - **No Fines or Payments:** Track overdue items by status and date only.

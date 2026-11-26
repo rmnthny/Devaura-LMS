@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\KioskOnly;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\RequireHttps;
 use Illuminate\Auth\AuthenticationException;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(RequireHttps::class);
+        $middleware->append(KioskOnly::class);
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('books.index'));
         $middleware->alias([

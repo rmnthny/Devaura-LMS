@@ -39,6 +39,63 @@
         </div>
     </header>
 
+
+    {{-- Sprint 3: Maintenance personnel attendance --}}
+
+    @role('maintenance')
+
+        <section class="profile-section mb-3"
+                 aria-labelledby="maintenance-attendance-title">
+
+            <header class="profile-card-heading">
+                <h2 id="maintenance-attendance-title">
+                    <i class="bi bi-clock-history me-2"
+                       aria-hidden="true"></i>
+                    My Attendance
+                </h2>
+
+                <p>
+                    Record your library duty attendance.
+                </p>
+            </header>
+
+            <form method="POST"
+                  action="{{ route('attendance.own') }}"
+                  class="d-flex flex-wrap gap-2 mt-3">
+
+                @csrf
+
+                <button type="submit"
+                        name="action"
+                        value="in"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-box-arrow-in-right me-1"
+                       aria-hidden="true"></i>
+
+                    Time In
+
+                </button>
+
+                <button type="submit"
+                        name="action"
+                        value="out"
+                        class="btn btn-outline-primary">
+
+                    <i class="bi bi-box-arrow-right me-1"
+                       aria-hidden="true"></i>
+
+                    Time Out
+
+                </button>
+
+            </form>
+
+        </section>
+
+    @endrole
+
+
     <!-- EXISTING PROFILE UPDATE FORM -->
 
     <form

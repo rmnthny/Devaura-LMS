@@ -114,6 +114,9 @@
                     type="text"
                     class="form-control @error('confirmation') is-invalid @enderror"
                     id="purge-confirmation"
+                    <label class="form-label" for="purge-confirmation">
+                        Type DELETE to confirm
+                    </label>
                     name="confirmation"
                     maxlength="6"
                     minlength="6"

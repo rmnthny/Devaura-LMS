@@ -293,13 +293,35 @@
 
                 <!-- LIBRARY OPERATIONS -->
 
-                @canany(['circulation.process', 'reports.generate', 'audit.view'])
 
-                    <div class="sidebar-section-label">
-                        Library Operations
-                    </div>
+                    @canany(['attendance.view', 'circulation.process', 'reports.generate', 'audit.view'])
 
-                @endcanany
+                        <div class="sidebar-section-label">
+                            Library Operations
+                        </div>
+
+                    @endcanany
+
+                    <!-- ATTENDANCE MONITORING -->
+
+                    @can('attendance.view')
+
+                        <a href="{{ route('attendance.index') }}"
+                        title="Attendance Monitoring"
+                        aria-label="Attendance Monitoring"
+                        class="sidebar-link {{ request()->routeIs('attendance.*') ? 'is-active' : '' }}">
+
+                            <i class="bi bi-calendar2-check"
+                            aria-hidden="true"></i>
+
+                            <span class="sidebar-link-text">
+                                Attendance Monitoring
+                            </span>
+
+                        </a>
+
+                    @endcan
+
 
                 <!-- BOOK BORROWING AND RETURNS -->
 

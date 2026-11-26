@@ -1,11 +1,7 @@
 # Sprint Handoffs
 
-Create one handoff after every sprint passes its completion gate:
+Each completed sprint receives a handoff that records the implementation, configuration, migrations, verification evidence, deferred work, and known limitations.
 
-- `SPRINT_1_HANDOFF.md`
-- `SPRINT_2_HANDOFF.md`
-- `SPRINT_3_HANDOFF.md`
-- `SPRINT_4_HANDOFF.md`
-- `SPRINT_5_HANDOFF.md`
+- [Sprint 3 working handoff](SPRINT_3_HANDOFF.md)
 
-Each handoff must list completed tasks, created and updated files, routes, migrations, test and Postman results, unresolved risks, and the exact starting point for the next sprint. Do not create a sprint handoff until PHPUnit, Postman, and Kristine's QA review have passed.
+Create the next file as `SPRINT_<N>_HANDOFF.md` before merging that sprint.

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Schedule;
 use Illuminate\Validation\ValidationException;
 
 DevCommands::artisan('queue:work member-mail --sleep=1', 'welcome-mail');
+DevCommands::artisan('serve --host=127.0.0.1 --port=8001 --tries=1', 'kiosk');
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
