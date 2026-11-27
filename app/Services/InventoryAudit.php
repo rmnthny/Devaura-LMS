@@ -21,6 +21,10 @@ class InventoryAudit
                 throw ValidationException::withMessages(['book_qr_value' => 'Resolve the active loan through circulation before auditing this copy.']);
             }
 
+            if ($condition !== 'Damaged' && $book->hasPendingRepair()) {
+                throw ValidationException::withMessages(['condition' => 'Record the repair outcome before changing this copy status.']);
+            }
+
             $previous = $book->book_status;
             $book->update(['book_status' => $condition]);
 

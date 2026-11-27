@@ -84,7 +84,19 @@ class Book extends Model
         // The circulation history still needs its original book record.
         return static::onlyTrashed()
             ->where('deleted_at', '<=', now()->subMonthsNoOverflow(6))
-            ->whereNotIn('book_id', fn ($query) => $query->select('book_id')->from('borrow_transaction'));
+            ->whereNotIn('book_id', fn ($query) => $query->select('book_id')->from('borrow_transaction'))
+            ->when($this->getConnection()->getSchemaBuilder()->hasTable('inventory_audit_item'), fn (Builder $query) => $query
+                ->whereNotIn('book_id', fn ($items) => $items->select('book_id')->from('inventory_audit_item')));
+    }
+
+    public function hasPendingRepair(): bool
+    {
+        $connection = $this->getConnection();
+
+        // Preserve a pending repair if this database previously ran the draft module.
+        return $connection->getSchemaBuilder()->hasTable('book_repair')
+            && $connection->table('book_repair')->join('borrow_transaction', 'borrow_transaction.transaction_id', '=', 'book_repair.transaction_id')
+                ->where('borrow_transaction.book_id', $this->getKey())->whereNull('book_repair.completed_at')->exists();
     }
 
     public function hasOpenLoan(): bool

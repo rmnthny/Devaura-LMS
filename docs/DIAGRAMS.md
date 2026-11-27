@@ -1,57 +1,56 @@
-# System Diagrams Reference — UBNHS-LMS (`Devaura-LMS`)
+# System Diagrams Reference — UBNHS-LMS
 
-Consolidated reference from the team's Lucidchart diagrams (Current & Proposed Process Flowcharts, ERD, Use Case Diagrams, and DFDs 1.1–1.7) so future sprints and chats have full context without re-uploading images.
+Reviewed November 26, 2026 against the proposed v10 process flow, v3 ERD, role use cases, and DFDs 1.0–1.8. The workflow diagrams are the design reference. The current release covers Sprints 1–4. Sprint 5 behavior is documented for later activation. The current-process flowcharts describe the paper logbooks and staff handoffs the system replaces. Use the proposed flows as the QA reference, with the confirmed policies in [Project Rules](PROJECT_RULES.md) and the rollout recorded in [Sprint Status](SPRINT_STATUS.md).
 
----
+## Process and use-case alignment
 
-## 1. Proposed Process Flowcharts
-1. **Public Kiosk (Attendance):**
-   - **Library Member / Personnel:** Scan QR code or enter ID → System checks if registered → if found, record `time_in_at` / `time_out_at` in `attendance_log` + log to `audit_trail`; if not found, prompt to register.
-   - **Walk-In Visitor:** Select Visitor → enter **Last Name, First Name, Middle Initial, Email, Purpose** → record `time_in_at` / `time_out_at` in `attendance_log` + log to `audit_trail`.
-2. **Borrow Book:**
-   - Scan/search Library Member QR → scan/search Book QR → check `book_status === 'Available'` → check if borrower has overdue books (if yes, notify & reject borrow) → choose due date → record `borrow_transaction` → update `book_status` to `Borrowed` → log to `audit_trail`.
-3. **Return Book:**
-   - If reported **Lost** → mark book `Lost` & log to `audit_trail`.
-   - Otherwise scan/search Book QR → check if **Damaged** (if repairable, schedule repair; else keep `Damaged` out of circulation) → check if overdue (update borrow status) → record book return → if fit for borrowing, set `book_status` to `Available` → log to `audit_trail`.
-4. **Book Management:** Add Book (+ generate QR code), Update Book, Delete/Archive Book (with confirmation) → update DB & log to `audit_trail`.
-5. **Library Members Management:** Search/Filter Member, Edit Member (with duplicate ID rejection), Delete/Archive Member (Head Librarian/Admin with confirmation) → update DB & log to `audit_trail`.
-6. **Library Personnel Management:** Add Personnel (enter personal info, library assignment, credentials, duplicate ID rejection), Search Personnel, Edit Personnel, Delete/Archive Personnel (Head Librarian with confirmation) → log to `audit_trail`.
-7. **Book List / Search:** Select & apply book filters → query DB → display matches.
-8. **Audit Reports & Audit Trail:** Select filters → generate report / audit trail → Save as PDF or Print.
-9. **Role Permission (Updated to Predefined 7-Role Spatie RBAC):** 7 predefined roles (`superadmin`, `admin`, `staff`, `student`, `faculty`, `visitor`, `maintenance`) with fixed privileges per role; `superadmin` assigns personnel roles (`Faculty → admin`, `Student → staff`, `maintenance`) with strict confirmation.
+| Process | System behavior and QA checkpoints |
+| --- | --- |
+| Public kiosk and attendance | Eligible personnel sign in and time in before the attendance-only kiosk can open. Members enter a QR value or registered reference number. Walk-in visitors enter their name, email, and purpose at time-in and use their email to time out. Verify invalid identifiers, duplicate time-in, role and shift coverage, auditable time-in/out, authorized force time-out, and the separate kiosk origin. |
+| Borrow a physical copy | Authorized personnel use the member QR value or reference number and the book QR value. Staff can also search for an eligible member and select an available physical copy on the borrowing screen. The system assigns the due date three calendar days after checkout in Manila time. Checkout validates the member and copy, rejects checkout while the member has an unresolved overdue loan, records the processor and transaction reference, updates the copy, and writes an audit event. Check that two copies with the same title remain distinguishable. |
+| Return or report a loss | Authorized personnel locate the open loan using the book QR value. Staff can also search and select an open borrowing record. The return audit records whether the loan was overdue and the resulting copy status. Returns use the original transaction reference. A fit copy becomes available, a damaged copy remains out of circulation, and a reported loss marks the copy lost. Repair scheduling and completion are Sprint 5 workflows. Verify the recorded outcome and that a replay cannot close a later loan. |
+| Book management and catalog search | Head Librarian and Admin add or edit copies and manage catalog lookups. Registered members and authorized staff can filter the catalog. QR labels identify individual copies. Archive confirmation and the Head Librarian-only archive boundary preserve book history. |
+| Member and personnel management | Head Librarian provisions Student and Faculty accounts manually or by import. Authorized personnel manage members within their assigned privileges. Personnel assignments build on existing member accounts and fixed roles. Verify duplicate ID rejection, password-confirmed role changes, role transfer, schedule access, profile edits, and permitted archival. |
+| Inventory audit | In Sprints 1–4 the Head Librarian conducts individual copy checks. Each check records the actor and outcome and preserves open loans. Session worklists, recounts, discrepancy review, and approval are deferred. |
+| Operational reports and activity | Authentication, approved management operations, attendance, circulation, and inventory checks produce activity records. Report filtering, printing, PDF and Excel export, personal transaction history, dashboards, and audit-trail viewing are deferred to Sprint 5. |
 
----
+Use the [Sprint 4 handoff](handoffs/SPRINT_4_HANDOFF.md) to verify which circulation branches were exercised in QA.
 
-## 2. Entity Relationship Diagram (ERD) & DFD Data Store Mapping
-Aligned with `feat/sprint-1-database`:
+## DFD and ERD crosswalk
 
-| DFD Store | Database Table(s) | Key Columns / Scope |
-| :--- | :--- | :--- |
-| **D1 — Member Records** | `library_member` | `member_id` (PK), `account_id` (FK → `user_account`), `last_name`, `first_name`, `middle_initial`, timestamps, `deleted_at` |
-| **D2 — Personnel Records** | `library_personnel`, `department`, `personnel_schedule`, `schedule_day`, `schedule_period`, Spatie `roles`/`permissions` | Personnel profiles, subject-only `department`, schedules (`day_id`, `period_id`), and Spatie RBAC |
-| **D3 — Visitor Records** | `walk_in_visitor` | `visitor_id` (PK), `last_name`, `first_name`, `middle_initial`, `email` |
-| **D4 — Attendance Logs** | `attendance_log` | `log_id` (PK), `user_role`, `member_id`, `personnel_id`, `visitor_id`, `time_in_at`, `time_out_at` |
-| **D5 — Book Catalog** | `book`, `genre`, `author`, `book_author`, `publisher`, `book_publisher` | `book_id` (PK), `genre_id`, `isbn`, `book_title`, `book_status` (`Available`, `Borrowed`, `Lost`, `Damaged`), `book_qr_value` (`BK-XXXX-XX`), `date_published`, `deleted_at` |
-| **D6 — Borrow Transactions** | `borrow_transaction` | `transaction_id` (PK), `borrower_id`, `processed_by`, `book_id`, `borrow_date`, `return_date`, `due_date`, `transaction_status` (`Borrowed`, `Returned`, `Overdue`, `Lost`) |
-| **D7 — Audit Trail** | `activity_log` (`spatie/laravel-activitylog`) | Chronological system activities, actor, target, properties, timestamps |
-| **D8 — Login Credentials** | `user_account` | `account_id` (PK), `reference_number` (12-digit LRN / 7-digit DepEd Emp. No.), `username`, `email`, `password_hash`, `account_status` (`Active`, `Inactive`, `Locked`, `Pending`), `user_qr_value` (`UBNHS-YYYY-XXXX`), `deleted_at` |
+| Store in the supplied DFDs | Current schema or draft status |
+| --- | --- |
+| D1 — Member Records | `library_member`, linked to `user_account` by `account_id` |
+| D2 — Personnel Records | `library_personnel`, `department`, `personnel_schedule`, `schedule_day`, `schedule_period` |
+| D3 — Attendance Logs | `attendance_log` links either `account_id` or `visitor_id` and retains visitor-only purpose |
+| D4 — Book Catalog | `book`, `genre`, `author`, `book_author`, `publisher`, `book_publisher`. `book_id` and `book_qr_value` identify a physical copy. |
+| D5 — Borrow Transactions | `borrow_transaction` links `borrower_id`, `borrow_processed_by`, and `return_processed_by` to accounts. It tracks the copy, loan dates, transaction status, and a unique transaction code. |
+| D6 — Audit Trail | `activity_log` records the actor, subject, event, and changes. |
+| D7 — User Accounts | `user_account` holds the unique reference number, email, account status, and member QR value. Email is used for login. |
+| D8 and D9 — Inventory Audit and Items | The deferred `inventory_audit` and `inventory_audit_item` schema stores sessions, verification, and discrepancies. Individual copy checks use `book` and `activity_log` in the current release. |
+| D10 — Visitor Records | `walk_in_visitor` stores visitor identity. Purpose belongs to the attendance visit. |
+| D11 — Roles and Permissions | Predefined Spatie roles and permissions and their assignment tables. |
 
----
+`notifications` stores member notices separately. The Sprint 4 migration also adds a checkout request identifier for replay protection and timestamps for email delivery attempts.
 
-## 3. Use Case Diagrams (By Actor)
-- **Superadmin (Head Librarian):** Time In/Out, Manage Book Inventory (+ Generate/Print QR), Audit Library Inventory, Generate Operational Reports, View Audit Trail, Manage User Roles & Superadmin Transfer, Manage Library Personnel & Schedules, Manage Library Members, Search Book Catalog, Process Book Borrowing/Return, View Attendance Logs, Borrow/Return Book.
-- **Admin (Assigned Teacher — Faculty only):** Time In/Out, Search Book Catalog, Process Book Borrowing/Return, View Attendance Logs, Update Personal Info, View Audit Trail, Borrow/Return Book, Manage Library Personnel & Staff Schedules, Manage Book Inventory (+ Generate/Print QR), Manage Members, Generate Operational Reports, Audit Inventory.
-- **Staff (Student Staff — Student only):** Time In/Out, Search Book Catalog, Process Book Borrowing/Return, View Attendance Logs, Update Personal Info, Borrow/Return Book, Manage Library Personnel (view/schedule), Manage Book Inventory (+ Generate/Print QR).
-- **Library Member (Student / Faculty):** Register Account (+ Email OTP & Member QR), Log In, Time In/Out, Search Book Catalog, Borrow Book, Return Book, View Borrowing History, View Personal QR, Update Personal Info.
-- **Walk-In Visitor:** Time In/Out (at `/kiosk` or manual entry), Search Book Catalog.
+| DFD | Verification against the local system |
+| --- | --- |
+| 1.0 — Library Management System | Verify the access and account boundaries for Head Librarian, Admin, Staff, library members, and walk-in visitors. |
+| 1.1 — Authenticate Users and Manage Access | Verify email login, account status, OTP where applicable, profile updates, assigned permissions, and authentication activity. |
+| 1.2 — Record Library Attendance | Verify member and visitor attendance against D3, with personnel coverage, correct identity, and D6 activity. |
+| 1.3 — Manage Book Catalog and Inventory | Verify authorized maintenance, import, QR print, and catalog filters against D4. |
+| 1.4 — Process Book Borrowing | Verify account eligibility and staff authorization, availability and overdue checks, D4/D5 consistency, D6 audit, and the checkout notice. |
+| 1.5 — Process Book Returns and Losses | Verify the selected loan and physical copy, the return assessment, D4/D5 status updates, and D6 outcome. |
+| 1.6 — Manage Members and Personnel | Verify provisioning, member and personnel changes, schedule access, fixed role assignment, and management activity. |
+| 1.7 — Conduct Inventory Audits | Verify Head Librarian access and per-copy checks now. Worklists, recounts, discrepancy filters, and approvals belong to Sprint 5. |
+| 1.8 — Generate Reports and Retrieve Records | Verify that reporting, dashboard, own-record history, and activity viewer routes are absent in Sprints 1–4. Test their access, filters, and exports when Sprint 5 opens. |
 
----
+## Finalized access and workflow decisions
 
-## 4. Data Flow Diagrams (DFD 1.1 – 1.7)
-- **1.1 Account Registration & Login:** Retrieve User Info → Verify User Via Email (6-digit OTP) → Record Registration (`D1`, `D8`) → Identify & Verify User → Allow Access → Record Login/Attendance (`D7`).
-- **1.2 Library Attendance:** Identify Library Visitor (`D1`, `D2`, `D3`) → Record Time-In or Time-Out (`D4`) + Audit (`D7`).
-- **1.3 Book Catalog & Inventory:** Access & Maintain Book Catalog (`D5`) / Search Book Catalog (`D5`).
-- **1.4 Book Borrowing:** Validate Borrower (`D1`, check overdue in `D6`) → Check Book Availability (`D5`) → Record Borrowing (`D6`, update `D5`, log `D7`).
-- **1.5 Returns & Losses:** Find Active Borrow Record (`D6`) → Assess Return or Loss → Update Status (`D5`, `D6`) & Audit (`D7`).
-- **1.6 QR Code Generation:** Retrieve Member (`D1`/`D8`) or Book (`D5`) ID → Generate QR Code (`milon/barcode`).
-- **1.7 Reports & Record Retrieval:** Receive Report/History Query → Compile & Output Records (`D4`, `D5`, `D6`, `D7`).
+- The public kiosk offers attendance on a separate origin. It directs unregistered members to the Head Librarian for registration. Visitors can record attendance without an account.
+- QR inputs accept typed values and keyboard-style readers. Member reference and search-based selection provide the manual paths.
+- Authorized staff assign existing roles within the Spatie permission matrix. The Head Librarian retains Archive access. Admins may assign and revoke Student Staff within their authorized scope.
+- The Head Librarian alone conducts individual copy checks. When Sprint 5 opens, the Head Librarian also conducts and approves audit sessions.
+- Damaged returns remain out of circulation. Scheduled repairs and their completion screen are deferred to Sprint 5.
+- An overdue checkout rejection queues the same notice as the scheduler, which prevents duplicate alerts for the same loan.
+- The [active handoff](ACTIVE_HANDOFF.md) records the Sprint 1–4 release and QA. The [deferred Sprint 5 handoff](handoffs/SPRINT_5_HANDOFF.md) records the earlier draft and its prior QA.

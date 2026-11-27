@@ -46,6 +46,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
+            "@php artisan library:check-database",
             "@php artisan dev"
         ],
         "test": [

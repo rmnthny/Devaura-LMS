@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/inventory.php';
 require __DIR__.'/attendance.php';
+require __DIR__.'/circulation.php';
 
 Route::get('/', fn () => request()->user()?->cannot('books.view')
     ? to_route('profile.edit') : to_route('books.index'));

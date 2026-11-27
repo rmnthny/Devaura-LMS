@@ -8,16 +8,17 @@ Before proposing or changing code:
 
 1. Read `docs/ACTIVE_HANDOFF.md`, `docs/SPRINT_STATUS.md`, and `docs/PROJECT_RULES.md`.
 2. Inspect the current Git branch and working tree. Preserve changes that already exist.
-3. Inspect the relevant routes, controllers, services, models, migrations, views, and tests. The repository is the source of truth for implemented behavior.
-4. Compare the request with the confirmed decisions below. Ask only when a decision would materially change the system.
-5. Work only within the active sprint unless the user explicitly changes scope.
+3. For circulation or notifications, also read [the Sprint 4 handoff](docs/handoffs/SPRINT_4_HANDOFF.md).
+4. Inspect the relevant routes, controllers, services, models, migrations, views, and tests. The repository is the source of truth for implemented behavior.
+5. Compare the request with the confirmed decisions below. Ask only when a decision would materially change the system.
+6. Work only within the active sprint unless the user explicitly changes scope.
 
 Do not reconstruct requirements from old chat messages, screenshots, or diagrams when a newer decision is recorded in these documents.
 
 ## Current work
 
-- Active development branch: `feat/sprint-3-attendance`
-- Active sprint: Sprint 3, Public Kiosk and Attendance Monitoring
+- Active local development branch: `feat/sprint-4-backend`
+- Current release scope: Sprints 1–4. Sprint 5 source is deferred and outside Laravel discovery.
 - Current state and resume instructions: `docs/ACTIVE_HANDOFF.md`
 - Sprint checklist: `docs/SPRINT_STATUS.md`
 
@@ -31,7 +32,7 @@ If the checked-out branch differs, report it before making branch-specific chang
 - `admin` is Faculty only. `staff` is Student only.
 - The Head Librarian creates Student and Faculty accounts manually or through bulk import.
 - The Head Librarian alone can access Archive and manage permanent deletion where allowed.
-- Admins may assign or revoke the Staff role for Students, manage Staff schedules, conduct inventory audits, and generate operational reports.
+- Admins may assign or revoke the Staff role for Students and manage Staff schedules. The Head Librarian alone conducts inventory checks. Reports and the audit-trail viewer are deferred until Sprint 5.
 - Public attendance accepts Student and Faculty member identifiers. Visitors provide name, email, and purpose when timing in. Purpose is visitor-only.
 - Camera QR scanning is deferred. QR values or reference numbers are entered manually.
 - The public kiosk opens only while eligible library personnel coverage is active.
@@ -42,6 +43,7 @@ If the checked-out branch differs, report it before making branch-specific chang
 
 - Reuse Laravel validation, authorization, Eloquent models, services, and Spatie permissions already in the repository.
 - Enforce access in routes and backend code. Hiding a button is not authorization.
+- Keep Sprint 5 routes, controllers, views, migrations, and tests out of active discovery until the sprint is approved.
 - Keep public kiosk responses free of staff navigation and authenticated account information.
 - Preserve CSRF protection, rate limits, active-account checks, audit logging, transactions, and row or application locks where already used.
 - Keep offline frontend assets in `public/vendor`. Do not introduce external CDNs.

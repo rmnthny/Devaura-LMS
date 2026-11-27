@@ -52,7 +52,7 @@ final class Rbac
         ];
         $admin = [
             ...$staff,
-            'members.manage', 'inventory.audit', 'reports.generate', 'audit.view',
+            'members.manage', 'reports.generate', 'audit.view',
             'books.manage', 'books.update', 'schedules.manage-staff',
         ];
         $member = ['attendance.time', 'books.view', 'borrow.self', 'history.own', 'qr.own', 'profile.update'];

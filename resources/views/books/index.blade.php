@@ -434,7 +434,7 @@
 
             action="{{ route('books.qr-sheet') }}"
 
-            target="_blank"
+            target="\_blank"
 
         >
 
@@ -657,6 +657,13 @@
                                             {{ $book->book_title }}
 
                                         </span>
+
+                                        {{-- Sprint 4: Identify a specific physical copy during circulation. --}}
+                                        @can('circulation.process')
+                                            <small class="books-record-author">
+                                                Copy #{{ $book->getKey() }}
+                                            </small>
+                                        @endcan
 
                                         @if($book->authors->isNotEmpty())
 
@@ -1003,4 +1010,5 @@
 </script>
 
 @endif
+
 @endpush

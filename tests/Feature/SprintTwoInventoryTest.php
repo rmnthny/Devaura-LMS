@@ -173,7 +173,9 @@ class SprintTwoInventoryTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $book = Book::factory()->create();
-        $this->actingAs($admin)->get(route('inventory.index'))->assertOk()
+        $this->actingAs($admin)->get(route('inventory.index'))->assertForbidden();
+        $head = $this->headLibrarian();
+        $this->actingAs($head)->get(route('inventory.index'))->assertOk()
             ->assertSee('name="book_qr_value"', false)
             ->assertDontSee('html5-qrcode.min.js')
             ->assertDontSee('Scan with camera');
@@ -184,7 +186,7 @@ class SprintTwoInventoryTest extends TestCase
         $this->postJson(route('inventory.store'), ['book_qr_value' => $book->book_qr_value, 'condition' => 'Damaged'])
             ->assertOk()->assertJsonPath('book_status', 'Damaged');
         $log = Activity::inLog('inventory')->forSubject($book)->sole();
-        $this->assertTrue($log->causer->is($admin));
+        $this->assertTrue($log->causer->is($head));
         $this->assertSame('Available', $log->getExtraProperty('previous_status'));
         $this->assertSame('Damaged', $book->refresh()->book_status);
     }

@@ -251,25 +251,26 @@
 
                 @endcanany
 
-                <!-- INVENTORY MANAGEMENT -->
+                <!-- INVENTORY AUDITS -->
 
                 @can('inventory.audit')
 
                     <a href="{{ route('inventory.index') }}"
-                       title="Inventory Management"
-                       aria-label="Inventory Management"
-                       class="sidebar-link {{ request()->routeIs('inventory.*') ? 'is-active' : '' }}">
+                    title="Inventory Audits"
+                    aria-label="Inventory Audits"
+                    class="sidebar-link {{ request()->routeIs('inventory.*') ? 'is-active' : '' }}">
 
                         <i class="bi bi-box-seam"
-                           aria-hidden="true"></i>
+                        aria-hidden="true"></i>
 
                         <span class="sidebar-link-text">
-                            Inventory Management
+                            Inventory Audits
                         </span>
 
                     </a>
 
                 @endcan
+
 
                 <!-- ARCHIVE -->
 
@@ -325,81 +326,39 @@
 
                 <!-- BOOK BORROWING AND RETURNS -->
 
-                @can('circulation.process')
 
-                    <span class="sidebar-link sidebar-unavailable"
-                          aria-disabled="true"
-                          title="Book Borrowing — Coming in Sprint 4">
+                    @can('circulation.process')
 
-                        <i class="bi bi-box-arrow-up-right"
-                           aria-hidden="true"></i>
+                        <a href="{{ route('circulation.borrow.form') }}"
+                        title="Book Borrowing"
+                        class="sidebar-link {{ request()->routeIs('circulation.borrow*') ? 'is-active' : '' }}">
 
-                        <span class="sidebar-link-text">
-                            Book Borrowing
-                        </span>
+                            <i class="bi bi-box-arrow-up-right"
+                            aria-hidden="true"></i>
 
-                        <small class="sidebar-soon">Soon</small>
+                            <span class="sidebar-link-text">
+                                Book Borrowing
+                            </span>
 
-                    </span>
+                        </a>
 
-                    <span class="sidebar-link sidebar-unavailable"
-                          aria-disabled="true"
-                          title="Book Returns — Coming in Sprint 4">
+                        <a href="{{ route('circulation.return.form') }}"
+                        title="Book Returns"
+                        class="sidebar-link {{ request()->routeIs('circulation.return*') ? 'is-active' : '' }}">
 
-                        <i class="bi bi-arrow-return-left"
-                           aria-hidden="true"></i>
+                            <i class="bi bi-arrow-return-left"
+                            aria-hidden="true"></i>
 
-                        <span class="sidebar-link-text">
-                            Book Returns
-                        </span>
+                            <span class="sidebar-link-text">
+                                Book Returns
+                            </span>
 
-                        <small class="sidebar-soon">Soon</small>
+                        </a>
 
-                    </span>
+                    @endcan
 
-                @endcan
 
-                <!-- OPERATIONAL REPORTS -->
 
-                @can('reports.generate')
-
-                    <span class="sidebar-link sidebar-unavailable"
-                          aria-disabled="true"
-                          title="Reports — Coming in Sprint 5">
-
-                        <i class="bi bi-bar-chart"
-                           aria-hidden="true"></i>
-
-                        <span class="sidebar-link-text">
-                            Operational Reports
-                        </span>
-
-                        <small class="sidebar-soon">Soon</small>
-
-                    </span>
-
-                @endcan
-
-                <!-- AUDIT TRAIL -->
-
-                @can('audit.view')
-
-                    <span class="sidebar-link sidebar-unavailable"
-                          aria-disabled="true"
-                          title="Audit Trail — Coming in Sprint 5">
-
-                        <i class="bi bi-clock-history"
-                           aria-hidden="true"></i>
-
-                        <span class="sidebar-link-text">
-                            Audit Trail
-                        </span>
-
-                        <small class="sidebar-soon">Soon</small>
-
-                    </span>
-
-                @endcan
 
                 <!-- ACCOUNT -->
 
@@ -589,6 +548,16 @@
                                     </a>
 
                                 @endcan
+
+                                        <a href="{{ route('notifications.index') }}"
+                                        class="profile-menu-item {{ request()->routeIs('notifications.*') ? 'is-active' : '' }}">
+
+                                            <i class="bi bi-bell"
+                                            aria-hidden="true"></i>
+
+                                            Notifications
+
+                                        </a>
 
                                 <div class="profile-menu-divider"></div>
 

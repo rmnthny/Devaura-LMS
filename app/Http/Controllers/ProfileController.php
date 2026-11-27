@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
-use App\Mail\PasswordChangedMail;
 use App\Models\Department;
 use App\Models\LibraryMember;
+use App\Models\User;
+use App\Services\LibraryAlerts;
 use App\Support\Rbac;
 use App\Support\MemberFieldRules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
@@ -30,11 +32,10 @@ class ProfileController extends Controller
         return new UserResource($request->user());
     }
 
-    public function update(Request $request)
+    public function update(Request $request, LibraryAlerts $alerts)
     {
         $user = $request->user();
         $isFaculty = $this->hasSubjectDepartment($user);
-
         $data = $request->validate([
             ...MemberFieldRules::names(),
             'department_id' => $isFaculty ? ['sometimes', 'required', 'exists:department,department_id'] : ['prohibited'],
@@ -46,38 +47,42 @@ class ProfileController extends Controller
             $data['middle_initial'] = MemberFieldRules::formatMiddleInitial($data['middle_initial']);
         }
 
-        DB::transaction(function () use ($user, $data, $isFaculty) {
+        DB::transaction(function () use ($user, $data, $isFaculty, $alerts): void {
+            $member = $user->member()->lockForUpdate()->first();
+            $account = User::lockForUpdate()->findOrFail($user->getKey());
+            $passwordChanged = false;
             if (! empty($data['password'])) {
-                $user->password_hash = $data['password'];
-                $user->save();
+                if (! Hash::check($data['current_password'], $account->getAuthPassword())) {
+                    throw ValidationException::withMessages(['current_password' => 'Your current password has changed. Try again.']);
+                }
+                $passwordChanged = ! Hash::check($data['password'], $account->getAuthPassword());
+                if ($passwordChanged) {
+                    $account->password_hash = $data['password'];
+                    $account->save();
+                }
             }
 
             $names = collect($data)->only(['last_name', 'first_name', 'middle_initial'])->all();
-
-            $user->member?->update($names);
+            $member?->update($names);
             if ($isFaculty && array_key_exists('department_id', $data)) {
                 $names['department_id'] = $data['department_id'] ?: null;
             }
             if ($isFaculty && array_key_exists('department_id', $names)) {
-                $personnel = $user->personnel()->withTrashed()->firstOrNew();
+                $personnel = $account->personnel()->withTrashed()->firstOrNew();
                 $personnel->fill($names);
                 $personnel->deleted_at = null;
                 $personnel->save();
             } else {
-                $user->personnel?->update($names);
+                $personnel = $account->personnel;
+                $personnel?->update($names);
+            }
+
+            if ($passwordChanged || $member?->wasChanged() || $personnel?->wasChanged() || $personnel?->wasRecentlyCreated) {
+                $alerts->accountUpdated($account, $passwordChanged
+                    ? 'The password for your library account was changed.'
+                    : 'Your library profile was updated.', $passwordChanged);
             }
         });
-
-        if (! empty($data['password'])) {
-            try {
-                Mail::to($user->email)->send(new PasswordChangedMail(
-                    $user->refresh()->fullName(),
-                    now()->format('F j, Y \a\t g:i A'),
-                ));
-            } catch (\Throwable $error) {
-                report($error);
-            }
-        }
 
         return $request->expectsJson() ? response()->json(['message' => 'Personal information updated.'])
             : to_route('profile.edit')->with('status', 'Personal information updated.');

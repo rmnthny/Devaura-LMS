@@ -27,7 +27,15 @@ class PasswordChangedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.password-changed',
+            view: 'emails.library-alert',
+            text: 'emails.library-alert-text',
+            with: [
+                'title' => 'Library account password changed',
+                'section' => 'Account Security',
+                'details' => 'The password for your library account was changed.',
+                'fields' => ['Date and time' => $this->changedAt],
+                'instructions' => 'If you made this change, no further action is needed. Otherwise, please contact the Head Librarian immediately.',
+            ],
         );
     }
 }

@@ -28,6 +28,7 @@
                 @endforeach
             </ul>
         @endif
+        <p class="text-body-secondary">New library member? Ask the Head Librarian to register your account. Walk-in visitors can use visitor attendance.</p>
         @include('attendance.forms', ['actionUrl' => route('kiosk.record')])
     @else
         <div class="card card-body">
