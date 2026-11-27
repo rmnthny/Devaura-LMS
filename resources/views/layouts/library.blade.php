@@ -69,6 +69,11 @@
         <link rel="stylesheet"
             href="{{ asset('css/topbar.css') }}">
 
+
+        <link rel="stylesheet"
+        href="{{ asset('css/notification-toast.css') }}">
+
+
         <link rel="stylesheet"
             href="{{ asset('css/responsive.css') }}">
 
@@ -488,6 +493,21 @@
 
                     <!-- PROFILE DROPDOWN -->
 
+
+                        @php
+                            $libraryUnreadQuery = auth()->user()
+                                ->notifications()
+                                ->where('type', \App\Services\LibraryAlerts::class)
+                                ->whereNull('read_at');
+
+                            $libraryUnreadCount = (clone $libraryUnreadQuery)->count();
+
+                            $libraryLatestUnread = (clone $libraryUnreadQuery)
+                                ->latest('created_at')
+                                ->first();
+                        @endphp
+
+
                     @auth
 
                         <details class="workspace-profile"
@@ -496,11 +516,25 @@
                             <summary class="workspace-profile-trigger"
                                      aria-label="Account menu">
 
-                                <div class="workspace-avatar">
 
-                                    {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr(auth()->user()->fullName(), 0, 1)) }}
+                            <div class="workspace-avatar notification-avatar">
+                                {{ \Illuminate\Support\Str::upper(
+                                    \Illuminate\Support\Str::substr(
+                                        auth()->user()->fullName(),
+                                        0,
+                                        1
+                                    )
+                                ) }}
 
-                                </div>
+                                @if($libraryUnreadCount > 0)
+                                    <span class="notification-avatar-badge"
+                                        aria-label="{{ $libraryUnreadCount }} unread notifications">
+                                        {{ $libraryUnreadCount > 9 ? '9+' : $libraryUnreadCount }}
+                                    </span>
+                                @endif
+                            </div>
+
+
 
                                 <div class="workspace-profile-info">
 
@@ -549,15 +583,21 @@
 
                                 @endcan
 
-                                        <a href="{{ route('notifications.index') }}"
-                                        class="profile-menu-item {{ request()->routeIs('notifications.*') ? 'is-active' : '' }}">
 
-                                            <i class="bi bi-bell"
-                                            aria-hidden="true"></i>
+                            <a href="{{ route('notifications.index') }}"
+                            class="profile-menu-item {{ request()->routeIs('notifications.*') ? 'is-active' : '' }}">
 
-                                            Notifications
+                                <i class="bi bi-bell" aria-hidden="true"></i>
 
-                                        </a>
+                                <span>Notifications</span>
+
+                                @if($libraryUnreadCount > 0)
+                                    <span class="notification-menu-count">
+                                        {{ $libraryUnreadCount > 99 ? '99+' : $libraryUnreadCount }}
+                                    </span>
+                                @endif
+                            </a>
+
 
                                 <div class="profile-menu-divider"></div>
 
@@ -692,6 +732,54 @@
     </div>
 
 
+    @auth
+        @if(isset($libraryLatestUnread) && $libraryLatestUnread)
+
+            <aside
+                id="libraryNotificationToast"
+                class="library-notification-toast d-print-none"
+                data-notification-id="{{ $libraryLatestUnread->id }}"
+                aria-label="Unread library notification"
+                hidden
+            >
+                <span class="library-toast-icon" aria-hidden="true">
+                    <i class="bi bi-bell-fill"></i>
+                </span>
+
+                <div class="library-toast-body">
+                    <span class="library-toast-label">
+                        NEW LIBRARY NOTIFICATION
+                    </span>
+
+                    <strong>
+                        {{ $libraryLatestUnread->data['title'] ?? 'Library update' }}
+                    </strong>
+
+                    <p>
+                        {{ $libraryLatestUnread->data['message'] ?? 'You have an unread notification.' }}
+                    </p>
+
+                    <a class="library-toast-link"
+                    href="{{ route('notifications.index') }}">
+                        View notification
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <button
+                    type="button"
+                    id="libraryNotificationToastClose"
+                    class="library-toast-close"
+                    aria-label="Dismiss notification preview"
+                >
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </aside>
+
+        @endif
+    @endauth
+
+
         <!-- SHARED WORKSPACE INTERACTIONS -->
 
         <script src="{{ asset('js/workspace.js') }}"
@@ -701,6 +789,12 @@
 
         <script src="{{ asset('js/file-upload.js') }}"
                 defer></script>
+
+
+        <!-- SHARED NOTIFICATION TOAST -->
+        <script src="{{ asset('js/notification-toast.js') }}"
+                defer></script>
+
 
         <!-- MODULE-SPECIFIC SCRIPTS -->
 

@@ -1,0 +1,249 @@
+
+/* ===========================================
+   DEVAURA LMS — NOTIFICATION INDICATORS
+   Sprint 3–4 · Modern Academic Glass 2.1
+   =========================================== */
+
+/* Avatar unread count */
+
+.notification-avatar {
+    position: relative;
+    overflow: visible !important;
+    flex-shrink: 0;
+}
+
+.notification-avatar-badge {
+    position: absolute;
+    z-index: 3;
+    top: -8px;
+    right: -9px;
+
+    display: grid;
+    place-items: center;
+
+    min-width: 21px;
+    height: 21px;
+    padding: 0 4px;
+
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+
+    background: #b82232;
+    color: #ffffff;
+
+    font-family: Inter, "Segoe UI", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+
+    box-shadow: 0 3px 9px rgba(184,34,50,.20);
+}
+
+/* Count in the existing profile menu */
+
+.notification-menu-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 23px;
+    height: 23px;
+    margin-left: auto;
+    padding: 0 7px;
+
+    color: #ffffff;
+    background: #b82232;
+
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 750;
+    line-height: 1;
+}
+
+/* Floating notification preview */
+
+.library-notification-toast {
+    position: fixed;
+
+    /* Directly below the profile area */
+    top: 72px;
+    right: 18px;
+    bottom: auto;
+    left: auto;
+
+    z-index: 1050;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    width: min(390px, calc(100vw - 32px));
+    padding: 17px;
+
+    background: #ffffff;
+    border: 1px solid #dce5f0;
+    border-left: 4px solid #2468b6;
+    border-radius: 15px;
+
+    box-shadow: 0 18px 45px rgba(23,45,99,.18);
+
+    color: #1b2941;
+    animation: libraryToastEnter .3s ease both;
+}
+
+.library-notification-toast[hidden] {
+    display: none !important;
+}
+
+.library-toast-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 43px;
+    height: 43px;
+
+    border-radius: 12px;
+    background: #eaf2fb;
+    color: #2468b6;
+    font-size: 19px;
+}
+
+.library-toast-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.library-toast-label {
+    display: block;
+    margin: 2px 0 7px;
+
+    color: #2468b6;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.library-toast-body strong {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #172d63;
+    font-size: 14px;
+    font-weight: 750;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.library-toast-body p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+
+    margin: 0 0 11px;
+
+    color: #52627a;
+    font-size: 12px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.library-toast-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    min-height: 34px;
+
+    color: #2468b6;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.library-toast-link:hover {
+    color: #172d63;
+    text-decoration: underline;
+}
+
+.library-toast-close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+
+    color: #64748b;
+    background: transparent;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.library-toast-close:hover {
+    background: #eaf2fb;
+    color: #172d63;
+}
+
+.library-toast-close:focus-visible,
+.library-toast-link:focus-visible {
+    outline: 3px solid #2468b6;
+    outline-offset: 2px;
+}
+
+.library-notification-toast.is-hiding {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
+}
+
+@keyframes libraryToastEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile and tablet */
+
+@media (max-width: 600px) {
+    .library-notification-toast {
+        top: 80px;
+        right: 12px;
+        bottom: auto;
+        width: calc(100vw - 24px);
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .library-toast-icon {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .library-notification-toast {
+        animation: none;
+    }
+
+    .library-notification-toast.is-hiding {
+        transition: none;
+    }
+}

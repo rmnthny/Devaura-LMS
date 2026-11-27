@@ -1,0 +1,442 @@
+
+/* ==========================================
+   UBNHS LMS — NOTIFICATIONS
+   Sprint 3–4 UI/UX
+   Modern Academic Glass 2.1
+   ========================================== */
+
+.notification-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    color: #1b2941;
+}
+
+/* PAGE HEADER */
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.notification-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.notification-page-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 57px;
+    height: 57px;
+    border-radius: 15px;
+
+    background: #dceafa;
+    color: #2468b6;
+    font-size: 25px;
+}
+
+.notification-eyebrow {
+    display: block;
+    margin-bottom: 4px;
+
+    color: #2468b6;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.notification-heading h1 {
+    margin: 0 0 5px;
+
+    color: #172d63;
+    font-size: clamp(25px, 2.5vw, 32px);
+    font-weight: 800;
+}
+
+.notification-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* MAIN INBOX */
+
+.notification-panel {
+    width: 100%;
+    min-width: 0;
+
+    background: #fff;
+    border: 1px solid #dce5f0;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(23, 45, 99, .065);
+
+    overflow: hidden;
+}
+
+.notification-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 23px 26px;
+    border-bottom: 1px solid #dce5f0;
+}
+
+.notification-panel-header h2 {
+    margin: 0 0 5px;
+    color: #172d63;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.notification-panel-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.notification-panel-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #2468b6;
+    background: #eaf2fb;
+
+    padding: 9px 13px;
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 650;
+}
+
+/* NOTIFICATION LIST */
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 17px;
+
+    padding: 22px 26px;
+
+    background: #fff;
+    border-bottom: 1px solid #e2eaf4;
+
+    transition: background-color .18s ease;
+}
+
+.notification-item:last-child {
+    border-bottom: 0;
+}
+
+.notification-item.is-unread {
+    background: #f0f6ff;
+    box-shadow: inset 3px 0 0 #2468b6;
+}
+
+.notification-item:hover {
+    background: #f7faff;
+}
+
+.notification-item.is-unread:hover {
+    background: #eaf3ff;
+}
+
+.notification-item-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+    background: #eaf2fb;
+    color: #2468b6;
+
+    font-size: 20px;
+}
+
+.notification-item.is-read .notification-item-icon {
+    background: #eff3f7;
+    color: #718198;
+}
+
+.notification-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+
+    min-width: 0;
+}
+
+.notification-item-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.notification-item-heading h3 {
+    margin: 0;
+
+    color: #172d63;
+    font-size: 16px;
+    font-weight: 750;
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+}
+
+.notification-item.is-read
+.notification-item-heading h3 {
+    color: #34445c;
+    font-weight: 650;
+}
+
+.notification-message {
+    margin: 0;
+    color: #53657d;
+
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.notification-item-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.notification-item-meta time {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* READ / UNREAD */
+
+.notification-unread-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 5px 10px;
+    border-radius: 99px;
+
+    background: #dceafa;
+    color: #175ba5;
+
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.notification-unread-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+    background: #2468b6;
+}
+
+.notification-read-label {
+    color: #718198;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.notification-action {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-start;
+}
+
+.notification-page .notification-action .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 44px;
+    padding: 9px 14px;
+
+    border: 1px solid #b7d0ee;
+    border-radius: 10px;
+
+    color: #2468b6;
+    background: white;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.notification-page .notification-action .btn:hover {
+    color: #fff;
+    background: #2468b6;
+    border-color: #2468b6;
+}
+
+/* EMPTY STATE */
+
+.notification-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+
+    padding: 57px 24px;
+    text-align: center;
+}
+
+.notification-empty-icon {
+    display: grid;
+    place-items: center;
+
+    width: 70px;
+    height: 70px;
+
+    border-radius: 20px;
+    background: #eaf2fb;
+    color: #2468b6;
+
+    font-size: 29px;
+}
+
+.notification-empty h3 {
+    margin: 7px 0 0;
+    color: #172d63;
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.notification-empty p {
+    max-width: 400px;
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* PAGINATION */
+
+.notification-pagination {
+    padding: 18px 25px;
+    border-top: 1px solid #dce5f0;
+}
+
+.notification-pagination .pagination {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.notification-pagination .page-link {
+    border-radius: 9px;
+    color: #2468b6;
+    border-color: #dce5f0;
+}
+
+.notification-pagination .page-item.active .page-link {
+    background: #2468b6;
+    border-color: #2468b6;
+    color: white;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+    .notification-item {
+        flex-wrap: wrap;
+    }
+
+    .notification-action {
+        margin-left: 62px;
+    }
+}
+
+@media (max-width: 600px) {
+    .notification-page {
+        gap: 16px;
+    }
+
+    .notification-heading {
+        align-items: flex-start;
+    }
+
+    .notification-page-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 21px;
+    }
+
+    .notification-panel-header {
+        padding: 18px;
+    }
+
+    .notification-panel-label {
+        display: none;
+    }
+
+    .notification-item {
+        padding: 18px 15px;
+        gap: 12px;
+    }
+
+    .notification-item-icon {
+        width: 39px;
+        height: 39px;
+        font-size: 18px;
+    }
+
+    .notification-item-content {
+        flex-basis: calc(100% - 55px);
+    }
+
+    .notification-action {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .notification-action .btn {
+        width: 100%;
+    }
+
+    .notification-empty {
+        padding: 40px 20px;
+    }
+
+    .notification-pagination {
+        padding: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notification-page *,
+    .notification-page *::before,
+    .notification-page *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}

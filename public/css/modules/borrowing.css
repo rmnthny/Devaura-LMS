@@ -1,0 +1,553 @@
+
+/* ==========================================
+   UBNHS LMS — Book Borrowing
+   Modern Academic Glass 2.1
+   Scoped module stylesheet
+   ========================================== */
+
+.borrowing-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    color: var(--ws-text, #1b2941);
+}
+
+.borrowing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.borrowing-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.borrowing-heading-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #dceafa;
+    color: #2468b6;
+    font-size: 26px;
+}
+
+.borrowing-eyebrow {
+    color: #2468b6;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.borrowing-heading h1 {
+    margin: 3px 0 4px;
+    font-size: clamp(25px, 2.5vw, 32px);
+    font-weight: 800;
+    color: var(--ws-heading, #172d63);
+}
+
+.borrowing-heading p {
+    margin: 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 14px;
+}
+
+.borrowing-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(320px, .9fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.borrowing-side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.borrowing-card {
+    min-width: 0;
+    padding: clamp(20px, 2vw, 28px);
+    background: var(--ws-surface, #fff);
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 18px;
+    box-shadow: var(--ws-shadow, 0 8px 25px rgba(23,45,99,.07));
+}
+
+.borrowing-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.borrowing-section-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 45px;
+    height: 45px;
+    color: #2468b6;
+    background: #eaf2fb;
+    border-radius: 12px;
+    font-size: 21px;
+}
+
+.borrowing-card-heading h2 {
+    margin: 0 0 4px;
+    color: var(--ws-heading, #172d63);
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.borrowing-card-heading p {
+    margin: 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 12px;
+}
+
+.borrowing-form,
+.borrowing-search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.borrowing-field-block {
+    padding: 18px;
+    border: 1px solid var(--ws-border, #dce5f0);
+    border-radius: 13px;
+    background: var(--ws-surface-secondary, #f7faff);
+}
+
+.borrowing-field-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: var(--ws-heading, #172d63);
+    font-size: 15px;
+}
+
+.borrowing-step {
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    flex: none;
+    background: #dceafa;
+    color: #2468b6;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.borrowing-page .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ws-text, #1b2941);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.borrowing-page .form-control {
+    min-height: 48px;
+    border-radius: 10px;
+    border: 1px solid var(--ws-border-hover, #c3d6ec);
+    background: var(--ws-surface, #fff);
+    color: var(--ws-text, #1b2941);
+    font-size: 14px;
+}
+
+.borrowing-page .form-control:focus {
+    border-color: #2468b6;
+    box-shadow: 0 0 0 4px rgba(36,104,182,.12);
+}
+
+.borrowing-field-hint {
+    margin: 8px 0 0;
+    color: var(--ws-muted, #64748b);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.borrowing-selection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex-wrap: wrap;
+    padding: 12px;
+    border: 1px solid #cfe3f6;
+    background: var(--ws-info-soft, #eaf2fb);
+    border-radius: 11px;
+}
+
+.borrowing-selection-icon {
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    flex: none;
+    border-radius: 10px;
+    background: var(--ws-surface, #fff);
+    color: #2468b6;
+    font-size: 18px;
+}
+
+.borrowing-selection-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.borrowing-selection-content small {
+    font-size: 11px;
+    color: var(--ws-muted, #64748b);
+}
+
+.borrowing-selection-content strong {
+    font-size: 13px;
+    color: var(--ws-text, #1b2941);
+    overflow-wrap: anywhere;
+}
+
+.borrowing-selection > a {
+    color: #2468b6;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.borrowing-due {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 17px;
+    border: 1px solid #d0e2f5;
+    border-radius: 12px;
+    background: var(--ws-info-soft, #eaf2fb);
+}
+
+.borrowing-due > i {
+    color: #2468b6;
+    font-size: 22px;
+}
+
+.borrowing-due strong {
+    display: block;
+    font-size: 14px;
+    color: var(--ws-heading, #172d63);
+}
+
+.borrowing-due p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ws-text, #1b2941);
+}
+
+.borrowing-page .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 650;
+}
+
+.borrowing-submit .btn {
+    min-width: 200px;
+}
+
+.borrowing-search-form .btn {
+    align-self: flex-start;
+}
+
+.borrowing-results {
+    margin-top: 22px;
+    border-top: 1px solid var(--ws-border, #dce5f0);
+    padding-top: 17px;
+}
+
+.borrowing-results h3 {
+    font-size: 14px;
+    font-weight: 750;
+    color: var(--ws-heading, #172d63);
+    margin: 0 0 12px;
+}
+
+.borrowing-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.borrowing-results li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--ws-border, #dce5f0);
+    text-decoration: none;
+    color: var(--ws-text, #1b2941);
+    overflow-wrap: anywhere;
+}
+
+.borrowing-results li a:hover {
+    background: var(--ws-surface-hover, #eef5ff);
+    border-color: var(--ws-border-hover, #b6cdeb);
+}
+
+.borrowing-results li a span {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.borrowing-results li a small {
+    display: block;
+    margin-top: 3px;
+    color: var(--ws-muted, #64748b);
+    font-weight: 400;
+}
+
+.borrowing-no-results {
+    padding: 13px;
+    border: 1px dashed var(--ws-border, #dce5f0);
+    border-radius: 10px;
+    color: var(--ws-muted, #64748b);
+    font-size: 13px;
+}
+
+.borrowing-guideline {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 0;
+    border-top: 1px solid var(--ws-border, #dce5f0);
+}
+
+.borrowing-guideline span {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 29px;
+    height: 29px;
+    border-radius: 9px;
+    background: var(--ws-info-soft, #eaf2fb);
+    color: #2468b6;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.borrowing-guideline p {
+    margin: 2px 0 0;
+    color: var(--ws-text, #1b2941);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.borrowing-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    border-radius: 12px;
+}
+
+@media (max-width: 1050px) {
+    .borrowing-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .borrowing-side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .borrowing-side {
+        grid-template-columns: 1fr;
+    }
+
+    .borrowing-heading-icon {
+        width: 47px;
+        height: 47px;
+        font-size: 22px;
+    }
+
+    .borrowing-card {
+        padding: 18px;
+    }
+
+    .borrowing-field-block {
+        padding: 14px;
+    }
+
+    .borrowing-submit .btn,
+    .borrowing-search-form .btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .borrowing-page *,
+    .borrowing-page *::before,
+    .borrowing-page *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ==========================================
+   BOOK BORROWING — BALANCED CARD LAYOUT
+   Sprint 3–4 UI/UX
+   ========================================== */
+
+/* Main columns share the same bottom edge */
+.borrowing-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(340px, 1fr);
+    gap: 18px;
+    align-items: stretch;
+}
+
+/* Left card occupies its full column height */
+.borrowing-checkout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+}
+
+/* Distribute content naturally inside checkout */
+.borrowing-checkout .borrowing-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 15px;
+}
+
+/* Consistent field block spacing */
+.borrowing-field-block {
+    padding: 17px 19px;
+}
+
+/* Due-date card stays near the submit action */
+.borrowing-due {
+    margin-top: auto;
+}
+
+/* Full-width checkout action */
+.borrowing-submit {
+    display: flex;
+    width: 100%;
+}
+
+.borrowing-submit .btn {
+    width: 100%;
+    min-height: 48px;
+}
+
+/* Right side fills the same height as checkout */
+.borrowing-side {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 18px;
+    height: 100%;
+    min-width: 0;
+}
+
+/* Search card remains content-sized */
+.borrowing-search {
+    min-height: 0;
+}
+
+/* Guidelines expand to fill remaining space */
+.borrowing-guidelines {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Equal distribution of guideline rows */
+.borrowing-guideline {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    min-height: 48px;
+    padding: 10px 0;
+}
+
+/* Prevent heading from stretching */
+.borrowing-guidelines .borrowing-card-heading {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+}
+
+/* Unified card dimensions */
+.borrowing-card {
+    border-radius: 17px;
+    padding: 24px;
+}
+
+/* TABLET */
+@media (max-width: 1050px) {
+    .borrowing-grid {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .borrowing-checkout {
+        height: auto;
+    }
+
+    .borrowing-due {
+        margin-top: 0;
+    }
+
+    .borrowing-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto;
+        height: auto;
+        align-items: stretch;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+    .borrowing-side {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .borrowing-card {
+        padding: 18px;
+    }
+
+    .borrowing-field-block {
+        padding: 15px;
+    }
+
+    .borrowing-guideline {
+        min-height: 0;
+    }
+}
