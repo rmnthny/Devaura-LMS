@@ -160,8 +160,12 @@ class MemberManagementTest extends TestCase
         $this->actingAs($this->head)->postJson(route('members.qr-sheet'), [
             'member_ids' => [$current->getKey(), $archived->getKey()],
         ])->assertUnprocessable()->assertJsonValidationErrors('member_ids');
+        $this->assertDatabaseMissing('activity_log', ['event' => 'qr_sheet_generated']);
         $this->post(route('members.qr-sheet'), ['member_ids' => [$current->getKey()]])
             ->assertOk()->assertHeader('Content-Type', 'application/pdf');
+        $this->assertDatabaseHas('activity_log', [
+            'log_name' => 'members', 'event' => 'qr_sheet_generated', 'causer_id' => $this->head->getKey(),
+        ]);
     }
 
     public function test_head_librarian_can_permanently_delete_a_confirmed_archived_member(): void

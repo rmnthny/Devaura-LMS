@@ -80,6 +80,16 @@ class SprintTwoInventoryTest extends TestCase
         ])->assertOk()->assertJsonPath('book_qr_value', $first['book_qr_value'])
             ->assertJsonPath('book_status', 'Damaged')->assertJsonCount(0, 'authors');
         $this->assertDatabaseMissing('book_publisher', ['book_id' => $first['book_id']]);
+
+        Book::findOrFail($second['book_id'])->delete();
+        $this->postJson(route('books.qr-sheet'), ['book_ids' => [$first['book_id'], $second['book_id']]])
+            ->assertUnprocessable()->assertJsonValidationErrors('book_ids');
+        $this->assertDatabaseMissing('activity_log', ['event' => 'qr_sheet_generated']);
+        $this->post(route('books.qr-sheet'), ['book_ids' => [$first['book_id']]])
+            ->assertOk()->assertHeader('Content-Type', 'application/pdf');
+        $this->assertDatabaseHas('activity_log', [
+            'log_name' => 'book', 'event' => 'qr_sheet_generated', 'causer_id' => auth()->id(),
+        ]);
     }
 
     public function test_lookups_create_update_search_delete_and_protect_linked_records(): void

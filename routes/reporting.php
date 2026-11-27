@@ -11,6 +11,6 @@ Route::middleware('secure')->group(function () {
         ->middleware('permission:history.own|borrow.self')->name('history.index');
     Route::get('/reports', [LibraryReportController::class, 'index'])
         ->middleware('permission:reports.generate')->name('reports.index');
-    Route::get('/audit-trail', [LibraryReportController::class, 'index'])
+    Route::get('/audit-trail', [LibraryReportController::class, 'audit'])
         ->middleware('permission:audit.view')->name('audit.index');
 });

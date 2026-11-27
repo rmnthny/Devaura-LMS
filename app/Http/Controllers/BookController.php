@@ -12,6 +12,7 @@ use App\Services\BookCatalog;
 use App\Services\QrCodeService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BookController extends Controller
 {
@@ -72,6 +73,12 @@ class BookController extends Controller
             ->orderBy('book_id')
             ->get();
 
+        if ($books->count() !== count($validated['book_ids'])) {
+            throw ValidationException::withMessages([
+                'book_ids' => 'One or more selected book copies are unavailable. Refresh Book Management and select the copies again.',
+            ]);
+        }
+
         $items = $books->map(fn (Book $book) => [
             'title' => $book->book_title,
             'subtitle' => $book->genre?->genre_name,
@@ -80,11 +87,18 @@ class BookController extends Controller
             'png' => $qr->getQrPngBase64($book->book_qr_value, 6),
         ])->all();
 
-        return Pdf::loadView('pdf.qr-sheet', [
+        $response = Pdf::loadView('pdf.qr-sheet', [
             'title' => 'Book QR Labels',
             'columns' => 3,
             'items' => $items,
         ])->setPaper('a4')->stream('book-qr-labels.pdf');
+
+        activity('book')->causedBy($request->user())
+            ->event('qr_sheet_generated')
+            ->withProperties(['book_ids' => $books->modelKeys()])
+            ->log('Generated a printable book QR sheet');
+
+        return $response;
     }
 
     public function label(Book $book, QrCodeService $qr)

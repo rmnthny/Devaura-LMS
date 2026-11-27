@@ -216,11 +216,18 @@ class MemberController extends Controller
             ];
         })->values()->all();
 
-        return \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.qr-sheet', [
+        $response = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.qr-sheet', [
             'title' => 'Member QR Cards',
             'columns' => 2,
             'items' => $items,
         ])->setPaper('a4')->stream('member-qr-cards.pdf');
+
+        activity('members')->causedBy($request->user())
+            ->event('qr_sheet_generated')
+            ->withProperties(['member_ids' => $members->modelKeys()])
+            ->log('Generated a printable member QR sheet');
+
+        return $response;
     }
 
     public function qrCard(Request $request, LibraryMember $member, QrCodeService $qrService)

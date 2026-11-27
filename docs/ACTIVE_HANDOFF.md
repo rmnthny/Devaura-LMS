@@ -1,16 +1,23 @@
 # Active Development Handoff
 
-Updated November 26, 2026.
+Updated November 27, 2026.
+
+## Sprint 5 development approval
+
+Approved November 27, 2026. Sprint 5 development started from pushed Sprint 4 baseline `af3eeba` and fast-forwarded to the integrated UI commit `2e98696`. The published and local Sprint 4 branch refs remain at the Sprint 4 baseline. Sprint 4 team acceptance remains open.
 
 ## Resume point
 
-- Branch: `feat/sprint-4-backend`, base `f946aee`
-- Current release: Sprints 1–4. Authentication, predefined RBAC, catalog and individual inventory checks, kiosk attendance, and circulation with notifications are active locally.
+- Development checkout: `feat/sprint-5-UI-backend`, based on integrated UI commit `2e986965d2d9ee84874a8f930f2bae70ac278710`.
+- Prototype: Authentication, predefined RBAC, catalog and individual inventory checks, kiosk attendance, and circulation with notifications. Sprint 5 adds dashboard KPIs, personal transaction history, reports, PDF/Excel exports, and the Audit Trail viewer.
 - Sprint 3 closeout: Kristine's sign-off and merge are still pending.
-- Latest automated result: 94 tests passed with 1,051 assertions on the dedicated `devaura_lms_test` database on November 27, 2026.
+- Integrated baseline: 94 tests passed with 1,051 assertions on the dedicated `devaura_lms_test` database on November 27, 2026.
+- Latest recorded Sprint 5 verification: 103 full-suite tests with 1,242 assertions passed on `devaura_lms_test`. Earlier isolated browser and export checks are in the Sprint 5 handoff. Dropdown wiring and team sign-off are pending.
+- [Sprint 5 handoff](handoffs/SPRINT_5_HANDOFF.md) records role access, KPI and report definitions, verification, and pending release checks.
+- [Sprint 5 defense walkthrough](SPRINT_5_DEMO.md) records the Laragon setup and synthetic demo commands.
 - [Sprint 4 handoff](handoffs/SPRINT_4_HANDOFF.md) records the circulation rules, migration, mail worker, scheduler, and verification.
 - [Diagram crosswalk](DIAGRAMS.md) maps the finalized flows, use cases, DFDs, and ERD to the local system.
-- [Deferred Sprint 5 source](../deferred/sprint-5/README.md) preserves dashboard, personal history, report exports, audit-trail viewing, inventory sessions, and scheduled repairs outside Laravel discovery.
+- Inventory-session, approval, and repair workflows remain deferred. Earlier source drafts are available in Git history at `2e98696`.
 
 Always verify the branch and rerun the tests because this document records the last known result and cannot guarantee that later local changes still pass.
 
@@ -104,8 +111,7 @@ The default staff URL may appear as either `localhost:8000` or `127.0.0.1:8000`.
 
 ## Deferred work
 
-- Sprint 5 routes, assets, migrations, and tests remain outside the active application and default migration/test discovery. Any tables from an earlier draft migration remain intact.
-
+- Inventory audit sessions and approval, repair scheduling, and repair completion remain outside active discovery for this four-task delivery. Any tables from an earlier draft migration remain intact.
 - Camera-based QR scanning
 - Public book-catalog lookup on the kiosk
 - Production web-server configuration for a dedicated kiosk hostname

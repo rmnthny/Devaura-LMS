@@ -23,7 +23,7 @@ Built by **Group 1 — Devaura** (PUP Taguig):
 - **7-Role RBAC:** `superadmin` (Head Librarian), `admin` (Assigned Teacher), `staff` (Student Staff), `student`, `faculty`, `visitor`, and `maintenance`. The Head Librarian adds Student and Faculty accounts individually or by import and is the only role with Archive access. The Head Librarian and Admins can add books. Existing pending accounts can still verify their email.
 - **Book Inventory & Archiving:** Digital catalog with stock counts, real-time availability, unique QR codes, soft-delete archiving, and QR-verified inventory audits.
 - **Personnel schedules:** Assigned teachers and student staff can view their shifts. Schedule managers can add, edit, or remove shifts within their assigned permissions.
-- **Current release:** Sprints 1–4 cover accounts and RBAC, catalog and individual inventory checks, kiosk attendance, and circulation with notifications. See the [active handoff](docs/ACTIVE_HANDOFF.md) for local setup and QA. Sprint 5 source is preserved under `deferred/sprint-5/`.
+- **Current release:** Sprints 1–4 cover accounts and RBAC, catalog and individual inventory checks, kiosk attendance, and circulation with notifications. See the [active handoff](docs/ACTIVE_HANDOFF.md) for local setup and QA. The development checkout includes the approved Sprint 5 dashboard, personal history, Operational Reports, and Audit Trail. See the [Sprint 5 handoff](docs/handoffs/SPRINT_5_HANDOFF.md) for scope and QA.
 
 ---
 
@@ -101,6 +101,7 @@ Library personnel can check out a book by entering QR values or searching for th
 The member inbox records account and circulation notices. The mail worker sends the corresponding emails. The scheduler finds due and overdue loans. See the [Sprint 4 handoff](docs/handoffs/SPRINT_4_HANDOFF.md) for operational checks and QA evidence.
 
 ## Project Docs
+- [Project documentation index](docs/README.md)
 - [AI Working Agreement](AGENTS.md)
 - [Active Development Handoff](docs/ACTIVE_HANDOFF.md)
 - [Project Rules](docs/PROJECT_RULES.md)

@@ -161,11 +161,12 @@
 
                 <!-- DASHBOARD -->
 
-                @canany(['reports.generate', 'books.manage'])
+                @canany(['reports.generate', 'history.own', 'borrow.self'])
 
-                    <span class="sidebar-link sidebar-unavailable"
-                          aria-disabled="true"
-                          title="Dashboard — Coming in Sprint 5">
+                    <a href="{{ route('dashboard.index') }}"
+                       title="Dashboard"
+                       class="sidebar-link {{ request()->routeIs('dashboard.*') ? 'is-active' : '' }}"
+                       @if(request()->routeIs('dashboard.*')) aria-current="page" @endif>
 
                         <i class="bi bi-grid-1x2"
                            aria-hidden="true"></i>
@@ -174,9 +175,7 @@
                             Dashboard
                         </span>
 
-                        <small class="sidebar-soon">Soon</small>
-
-                    </span>
+                    </a>
 
                 @endcanany
 
@@ -365,13 +364,45 @@
 
 
 
+                @can('reports.generate')
+                    <a href="{{ route('reports.index') }}"
+                       title="Operational Reports"
+                       class="sidebar-link {{ request()->routeIs('reports.*') ? 'is-active' : '' }}"
+                       @if(request()->routeIs('reports.*')) aria-current="page" @endif>
+                        <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
+                        <span class="sidebar-link-text">Operational Reports</span>
+                    </a>
+                @endcan
+
+                @can('audit.view')
+                    <a href="{{ route('audit.index') }}"
+                       title="Audit Trail"
+                       class="sidebar-link {{ request()->routeIs('audit.*') ? 'is-active' : '' }}"
+                       @if(request()->routeIs('audit.*')) aria-current="page" @endif>
+                        <i class="bi bi-journal-text" aria-hidden="true"></i>
+                        <span class="sidebar-link-text">Audit Trail</span>
+                    </a>
+                @endcan
+
                 <!-- ACCOUNT -->
 
-                @can('qr.own')
-
+                @canany(['qr.own', 'history.own', 'borrow.self'])
                     <div class="sidebar-section-label">
                         Account
                     </div>
+                @endcanany
+
+                @canany(['history.own', 'borrow.self'])
+                    <a href="{{ route('history.index') }}"
+                       title="My transactions"
+                       class="sidebar-link {{ request()->routeIs('history.*') ? 'is-active' : '' }}"
+                       @if(request()->routeIs('history.*')) aria-current="page" @endif>
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <span class="sidebar-link-text">My transactions</span>
+                    </a>
+                @endcanany
+
+                @can('qr.own')
 
                     <a href="{{ route('members.my-qr-card') }}"
                        title="My QR Card"

@@ -1,6 +1,6 @@
 # Sprint Status
 
-The active release covers **Sprints 1–4**. Sprint 5 source remains deferred outside the running application. Each sprint follows this Agile loop (tracked in **Notion**: *Not Started → In Progress → Postponed / Done*):
+The published release covers **Sprints 1–4**. The separate Sprint 5 development checkout integrates the team's Sprint 3–4 UI and activates the approved dashboard, reports and audit viewer. Each sprint follows this Agile loop (tracked in **Notion**: *Not Started → In Progress → Postponed / Done*):
 **Build → `php artisan test` + Apidog/Postman API Check → Kristine's QA Review → Apply QA Fixes → Merge to `main`**.
 
 ---
@@ -58,7 +58,7 @@ The dedicated kiosk device walkthrough and Kristine's QA decision are pending.
 The visit-purpose migration is additive. Run it before opening the Sprint 3 screens.
 See `docs/ACTIVE_HANDOFF.md` for the exact behavior, local addresses, last known tests, and remaining QA.
 
-## Current Sprint
+## Sprint 4 closeout
 
 ### Sprint 4 — Book Circulation & Notifications
 - [x] **4.1:** Staff-assisted QR checkout and return with `TRX-YYYYMMDD-XXXX` references, borrower and processor accounts, coordinated copy updates, replay protection, and protected search and selection for members, available copies, and open loans.
@@ -66,14 +66,16 @@ See `docs/ACTIVE_HANDOFF.md` for the exact behavior, local addresses, last known
 - [x] **4.3:** In-app and queued email notifications for account updates, pending items, and due and overdue loans. The November 27 full suite passed 94 tests and 1,051 assertions. Live Gmail verification passed for the redesigned checkout notice.
 - [ ] **4.4:** Team QA, Postman or Apidog verification, and sign-off before merge.
 
-Sprint 4 is local on `feat/sprint-4-backend`, based on `f946aee`. See the [Sprint 4 handoff](handoffs/SPRINT_4_HANDOFF.md) for exact results and remaining QA. The [diagram crosswalk](DIAGRAMS.md) records alignment and decisions for team review.
+Sprint 4 is published on `feat/sprint-4-backend` at `af3eeba`. See the [Sprint 4 handoff](handoffs/SPRINT_4_HANDOFF.md) for exact results and remaining QA. The [diagram crosswalk](DIAGRAMS.md) records alignment and decisions for team review.
 
-## Upcoming Sprints
+## Current Sprint
 
 ### Sprint 5 — Analytical Dashboard, Formal Reports, Audit Logs & Defense Polish
-- [ ] **5.1:** Role-scoped dashboards with operational KPIs and Manila-date attendance and checkout trends, plus private member transaction history.
-- [ ] **5.2:** Date-filtered, printable PDF and Excel reports for attendance, circulation, and inventory checks.
-- [ ] **5.3:** Chronological Audit Trail for Head Librarian and Admin. Inventory sessions and approval are Head Librarian-only. The damaged-return flow supports repair scheduling and completion.
-- [ ] **5.4:** Team QA, real-device/browser walkthrough, and defense readiness sign-off.
 
-Deferred source and prior QA evidence are recorded in the [Sprint 5 handoff](handoffs/SPRINT_5_HANDOFF.md). The [diagram crosswalk](DIAGRAMS.md) identifies the active release boundary.
+Development approved November 27, 2026. The Sprint 3–4 UI is integrated at `2e98696`. The combined baseline passed 94 tests with 1,051 assertions before Sprint 5 changes.
+- [x] **5.1 Dashboard (Shams):** Role-scoped KPIs and seven-day Manila attendance and circulation charts, with private member transaction history.
+- [x] **5.2 Reports and audit (Shams and Anthony):** Date-filtered PDF and Excel exports for attendance, circulation and individual inventory checks, and a chronological Audit Trail with filtered PDF and Excel export and current-page printing for Head Librarian and Admin.
+- [x] **5.3 Integrated QA (Anthony, Kristine, Kyle and Shams):** Latest recorded full suite passed 103 tests with 1,242 assertions. The earlier integrated browser walkthrough covered ports 8000 and 8001. Team verification and sign-off are pending.
+- [x] **5.4 Defense prototype (Anthony and Kyle):** Isolated synthetic fixtures and a repeatable Laragon walkthrough. Team rehearsal and defense readiness sign-off are pending.
+
+Inventory sessions and approval, repair scheduling, and repair completion remain deferred for the broader design. See the [Sprint 5 handoff](handoffs/SPRINT_5_HANDOFF.md) for verification and outstanding checks and the [defense walkthrough](SPRINT_5_DEMO.md) for demo prerequisites.

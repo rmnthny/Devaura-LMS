@@ -15,15 +15,19 @@ class ReleaseScopeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_sprint_five_routes_and_tables_are_outside_the_active_release(): void
+    public function test_reporting_is_active_and_sessions_and_repairs_stay_deferred(): void
     {
         $this->seed();
         $this->actingAs($this->headLibrarian());
 
-        foreach (['dashboard.index', 'history.index', 'reports.index', 'audit.index', 'inventory.sessions.index', 'circulation.repairs.index'] as $route) {
+        foreach (['dashboard.index', 'history.index', 'reports.index', 'audit.index'] as $route) {
+            $this->assertTrue(Route::has($route), $route);
+            $this->get(route($route))->assertOk();
+        }
+        foreach (['inventory.sessions.index', 'circulation.repairs.index'] as $route) {
             $this->assertFalse(Route::has($route), $route);
         }
-        foreach (['/dashboard', '/my-transactions', '/reports?format=pdf', '/reports?format=xlsx', '/audit-trail', '/inventory/audit/sessions', '/circulation/repairs'] as $path) {
+        foreach (['/inventory/audit/sessions', '/circulation/repairs'] as $path) {
             $this->getJson($path)->assertNotFound();
         }
         $this->postJson('/inventory/audit/sessions')->assertNotFound();
@@ -33,7 +37,7 @@ class ReleaseScopeTest extends TestCase
         }
 
         $this->get(route('books.index'))->assertOk()
-            ->assertSee('Inventory Audits')->assertDontSee('Operational Reports')->assertDontSee('Audit Trail');
+            ->assertSee('Inventory Audits')->assertSee('Operational Reports')->assertSee('Audit Trail');
         $this->get(route('inventory.index'))->assertOk();
     }
 
