@@ -1,0 +1,1199 @@
+
+/* ==========================================================
+   DEVAURA LMS — MY TRANSACTIONS
+   SPRINT 5 · MODERN ACADEMIC GLASS 3.0
+
+   Clean • Responsive • Accessible
+   Dashboard-consistent design
+   ========================================================== */
+
+
+/* ==========================================================
+   01. DESIGN SYSTEM
+   ========================================================== */
+
+.history-page {
+    --history-navy: #172d63;
+    --history-blue: #2468b6;
+    --history-green: #21855b;
+    --history-red: #b82232;
+
+    --history-text: #1b2941;
+    --history-muted: #64748b;
+
+    --history-border: #dce5f0;
+    --history-surface: #ffffff;
+    --history-soft: #f6f9fe;
+    --history-light-blue: #eaf2fb;
+
+    --history-shadow:
+        0 4px 12px rgba(23, 45, 99, .03),
+        0 14px 34px rgba(23, 45, 99, .065);
+
+    --history-hover-shadow:
+        0 10px 22px rgba(23, 45, 99, .055),
+        0 22px 48px rgba(23, 45, 99, .09);
+
+    --history-transition:
+        220ms cubic-bezier(.2, .7, .2, 1);
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+
+    gap: 24px;
+
+    color: var(--history-text);
+}
+
+
+/* ==========================================================
+   02. DARK THEME VARIABLES
+   ========================================================== */
+
+html[data-theme="dark"] .history-page {
+    --history-navy: #e5eeff;
+    --history-blue: #8dbdf9;
+
+    --history-text: #e7edf8;
+    --history-muted: #afbdd1;
+
+    --history-border: #35465f;
+    --history-surface: #19273c;
+    --history-soft: #21324b;
+    --history-light-blue: #243955;
+
+    --history-shadow:
+        0 10px 28px rgba(0, 0, 0, .16);
+
+    --history-hover-shadow:
+        0 16px 38px rgba(0, 0, 0, .24);
+}
+
+
+/* ==========================================================
+   03. PAGE HEADER
+   ========================================================== */
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+}
+
+.history-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+    min-width: 0;
+}
+
+.history-heading-content {
+    min-width: 0;
+}
+
+.history-heading-icon {
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    width: 60px;
+    height: 60px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #d8e9fc,
+            #edf5ff
+        );
+
+    color: #2468b6;
+
+    font-size: 26px;
+}
+
+.history-eyebrow,
+.history-section-eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--history-blue);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+}
+
+.history-heading h1 {
+    margin: 0 0 7px;
+
+    color: var(--history-navy);
+
+    font-size: clamp(27px, 2.6vw, 34px);
+    font-weight: 800;
+
+    line-height: 1.2;
+    letter-spacing: -.025em;
+}
+
+.history-heading p {
+    margin: 0;
+
+    color: var(--history-muted);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* ==========================================================
+   04. BACK TO DASHBOARD
+   ========================================================== */
+
+.history-back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    min-height: 45px;
+    padding: 10px 16px;
+
+    border: 1px solid var(--history-border);
+    border-radius: 12px;
+
+    background: var(--history-surface);
+    color: var(--history-blue);
+
+    font-size: 13px;
+    font-weight: 750;
+
+    text-decoration: none;
+
+    box-shadow: var(--history-shadow);
+
+    transition:
+        background-color var(--history-transition),
+        color var(--history-transition),
+        transform var(--history-transition),
+        box-shadow var(--history-transition);
+}
+
+.history-back-link:hover {
+    transform: translateY(-2px);
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    box-shadow: var(--history-hover-shadow);
+}
+
+.history-back-link:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================================================
+   05. OVERVIEW BANNER
+   ========================================================== */
+
+.history-overview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    gap: 24px;
+
+    min-width: 0;
+
+    padding: 26px;
+
+    border: 1px solid var(--history-border);
+    border-radius: 19px;
+
+    background: var(--history-surface);
+
+    box-shadow: var(--history-shadow);
+}
+
+.history-overview-content {
+    display: flex;
+    align-items: center;
+
+    gap: 17px;
+
+    flex: 1;
+    min-width: 0;
+}
+
+.history-overview-icon {
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    width: 65px;
+    height: 65px;
+
+    border-radius: 17px;
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    font-size: 27px;
+}
+
+.history-overview-text {
+    min-width: 0;
+}
+
+.history-overview-eyebrow {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--history-blue);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+}
+
+.history-overview-text h2 {
+    margin: 0 0 7px;
+
+    color: var(--history-navy);
+
+    font-size: clamp(17px, 2vw, 21px);
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+.history-overview-text p {
+    margin: 0;
+
+    max-width: 490px;
+
+    color: var(--history-muted);
+
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.history-overview-stat {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    min-width: 190px;
+
+    padding: 18px 22px;
+
+    border: 1px solid var(--history-border);
+    border-radius: 14px;
+
+    background: var(--history-soft);
+}
+
+.history-overview-stat > span {
+    color: var(--history-muted);
+
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.history-overview-stat strong {
+    color: var(--history-navy);
+
+    font-size: 34px;
+    font-weight: 800;
+
+    line-height: 1.15;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.history-overview-stat small {
+    color: var(--history-muted);
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================================
+   06. MAIN TRANSACTION CARD
+   ========================================================== */
+
+.history-card {
+    min-width: 0;
+
+    overflow: hidden;
+
+    border: 1px solid var(--history-border);
+    border-radius: 19px;
+
+    background: var(--history-surface);
+
+    box-shadow: var(--history-shadow);
+
+    transition:
+        box-shadow var(--history-transition);
+}
+
+.history-card:hover {
+    box-shadow: var(--history-hover-shadow);
+}
+
+.history-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    gap: 15px;
+
+    padding: 24px 26px;
+
+    border-bottom: 1px solid var(--history-border);
+}
+
+.history-card-title {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    min-width: 0;
+}
+
+.history-card-title > div {
+    min-width: 0;
+}
+
+.history-card-icon {
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    width: 47px;
+    height: 47px;
+
+    border-radius: 13px;
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    font-size: 21px;
+}
+
+.history-card-title h2 {
+    margin: 0 0 5px;
+
+    color: var(--history-navy);
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.history-card-title p {
+    margin: 0;
+
+    color: var(--history-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.history-count {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 14px;
+
+    border-radius: 999px;
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    font-size: 12px;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   07. TABLE CONTAINER
+   ========================================================== */
+
+.history-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: #b5cce6 transparent;
+}
+
+.history-table {
+    width: 100%;
+
+    min-width: 850px;
+
+    border-collapse: collapse;
+
+    font-size: 13px;
+}
+
+.history-table thead {
+    background: #edf4fc;
+}
+
+.history-table th {
+    padding: 17px 18px;
+
+    color: #172d63;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: .2px;
+
+    text-align: left;
+    white-space: nowrap;
+}
+
+.history-table td {
+    padding: 19px 18px;
+
+    border-bottom: 1px solid var(--history-border);
+
+    color: var(--history-text);
+
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+.history-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.history-row {
+    transition:
+        background-color var(--history-transition);
+}
+
+.history-row:hover {
+    background: var(--history-soft);
+}
+
+.history-table time {
+    white-space: nowrap;
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ==========================================================
+   08. TRANSACTION REFERENCE
+   ========================================================== */
+
+.history-reference {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: var(--history-blue);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    overflow-wrap: anywhere;
+}
+
+.history-reference i {
+    font-size: 13px;
+}
+
+
+/* ==========================================================
+   09. BOOK DETAILS
+   ========================================================== */
+
+.history-book {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+.history-book-icon {
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    font-size: 19px;
+}
+
+.history-book-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.history-book-info strong {
+    display: block;
+
+    color: var(--history-navy);
+
+    font-size: 13px;
+    font-weight: 750;
+
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+}
+
+.history-book-info small {
+    color: var(--history-muted);
+
+    font-size: 11px;
+}
+
+
+/* ==========================================================
+   10. DUE AND RETURN DATES
+   ========================================================== */
+
+.history-no-return {
+    color: var(--history-muted);
+
+    font-size: 12px;
+    font-style: italic;
+}
+
+.history-due-overdue {
+    color: #b82232;
+
+    font-weight: 800;
+}
+
+
+/* ==========================================================
+   11. TRANSACTION STATUS BADGES
+   ========================================================== */
+
+.history-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.history-status.is-returned {
+    color: #166a41;
+    background: #e2f5e9;
+}
+
+.history-status.is-borrowed {
+    color: #185da8;
+    background: #e6f1fd;
+}
+
+.history-status.is-overdue {
+    color: #9f5111;
+    background: #fff0dc;
+}
+
+.history-status.is-lost {
+    color: #ab2434;
+    background: #fce8eb;
+}
+
+.history-status.is-neutral {
+    color: #52627a;
+    background: #edf1f5;
+}
+
+
+/* ==========================================================
+   12. EMPTY STATE
+   ========================================================== */
+
+.history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    padding: 65px 24px;
+
+    text-align: center;
+}
+
+.history-empty-icon {
+    display: grid;
+    place-items: center;
+
+    width: 82px;
+    height: 82px;
+
+    border-radius: 22px;
+
+    background: var(--history-light-blue);
+    color: var(--history-blue);
+
+    font-size: 35px;
+}
+
+.history-empty h3 {
+    margin: 4px 0 0;
+
+    color: var(--history-navy);
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.history-empty p {
+    max-width: 420px;
+
+    margin: 0;
+
+    color: var(--history-muted);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.history-empty-caption {
+    margin-top: 7px;
+
+    color: var(--history-muted);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* ==========================================================
+   13. PAGINATION
+   ========================================================== */
+
+.history-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 20px 26px;
+
+    border-top: 1px solid var(--history-border);
+}
+
+.history-pagination-info {
+    color: var(--history-muted);
+
+    font-size: 12px;
+}
+
+.history-pagination nav {
+    min-width: 0;
+}
+
+.history-pagination .pagination {
+    margin: 0;
+
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.history-pagination .page-link {
+    border: 1px solid var(--history-border);
+    border-radius: 9px;
+
+    color: var(--history-blue);
+
+    background: var(--history-surface);
+
+    transition:
+        background-color var(--history-transition),
+        color var(--history-transition);
+}
+
+.history-pagination .page-link:hover {
+    background: var(--history-light-blue);
+}
+
+.history-pagination .page-item.active .page-link {
+    background: #2468b6;
+    border-color: #2468b6;
+
+    color: #ffffff;
+}
+
+.history-pagination .page-item.disabled .page-link {
+    background: var(--history-soft);
+    color: var(--history-muted);
+}
+
+
+/* ==========================================================
+   14. INFORMATION NOTE
+   ========================================================== */
+
+.history-information {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 16px 19px;
+
+    border: 1px solid var(--history-border);
+    border-radius: 13px;
+
+    background: var(--history-soft);
+}
+
+.history-information i {
+    flex-shrink: 0;
+
+    color: var(--history-blue);
+
+    font-size: 17px;
+}
+
+.history-information p {
+    margin: 0;
+
+    color: var(--history-muted);
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* ==========================================================
+   15. DARK-MODE REFINEMENTS
+   ========================================================== */
+
+html[data-theme="dark"] .history-table thead {
+    background: #283d59;
+}
+
+html[data-theme="dark"] .history-table th {
+    color: #edf3ff;
+}
+
+html[data-theme="dark"] .history-status.is-returned {
+    color: #a5e8c2;
+    background: #204236;
+}
+
+html[data-theme="dark"] .history-status.is-borrowed {
+    color: #a6cfff;
+    background: #25476e;
+}
+
+html[data-theme="dark"] .history-status.is-overdue {
+    color: #ffd7a0;
+    background: #4c3828;
+}
+
+html[data-theme="dark"] .history-status.is-lost {
+    color: #ffc0c9;
+    background: #4b2b36;
+}
+
+html[data-theme="dark"] .history-status.is-neutral {
+    color: #d1dcea;
+    background: #34455d;
+}
+
+html[data-theme="dark"] .history-due-overdue {
+    color: #ff9caa;
+}
+
+html[data-theme="dark"] .history-heading-icon {
+    background: #294568;
+    color: #a6cfff;
+}
+
+
+/* ==========================================================
+   16. KEYBOARD ACCESSIBILITY
+   ========================================================== */
+
+.history-back-link:focus-visible,
+.history-table-wrapper:focus-visible,
+.history-pagination .page-link:focus-visible {
+    outline: 3px solid #86baf5;
+    outline-offset: 3px;
+}
+
+
+/* ==========================================================
+   17. TABLET
+   ========================================================== */
+
+@media (max-width: 900px) {
+
+    .history-overview {
+        align-items: flex-start;
+    }
+
+    .history-card-header {
+        padding: 20px;
+    }
+
+    .history-pagination {
+        padding: 18px 20px;
+    }
+}
+
+
+/* ==========================================================
+   18. MOBILE TRANSACTION CARDS
+
+   Existing semantic table remains in the Blade.
+   Each row becomes a readable stacked card.
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    .history-page {
+        gap: 19px;
+    }
+
+    .history-header {
+        align-items: flex-start;
+    }
+
+    .history-heading {
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+    .history-heading-icon {
+        width: 46px;
+        height: 46px;
+
+        border-radius: 13px;
+
+        font-size: 21px;
+    }
+
+    .history-heading h1 {
+        font-size: 26px;
+    }
+
+    .history-heading p {
+        font-size: 12px;
+    }
+
+    .history-back-link {
+        width: 100%;
+    }
+
+    .history-overview {
+        padding: 20px;
+
+        gap: 17px;
+    }
+
+    .history-overview-content {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .history-overview-icon {
+        width: 48px;
+        height: 48px;
+
+        border-radius: 13px;
+
+        font-size: 22px;
+    }
+
+    .history-overview-text h2 {
+        font-size: 17px;
+    }
+
+    .history-overview-stat {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .history-card-header {
+        padding: 18px;
+    }
+
+    .history-card-title {
+        align-items: flex-start;
+    }
+
+    .history-card-icon {
+        width: 43px;
+        height: 43px;
+    }
+
+    .history-count {
+        font-size: 11px;
+    }
+
+    /* Transform the desktop table into cards */
+
+    .history-table-wrapper {
+        padding: 14px;
+
+        overflow: visible;
+    }
+
+    .history-table {
+        display: block;
+
+        width: 100%;
+        min-width: 0;
+    }
+
+    .history-table thead {
+        display: none;
+    }
+
+    .history-table tbody {
+        display: grid;
+
+        gap: 13px;
+    }
+
+    .history-row {
+        display: block;
+
+        overflow: hidden;
+
+        border: 1px solid var(--history-border);
+        border-radius: 14px;
+
+        background: var(--history-surface);
+
+        box-shadow:
+            0 4px 12px rgba(23, 45, 99, .035);
+    }
+
+    .history-row:hover {
+        background: var(--history-surface);
+    }
+
+    .history-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 16px;
+
+        padding: 13px 15px;
+
+        border-bottom: 1px solid var(--history-border);
+
+        text-align: right;
+    }
+
+    .history-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .history-table td::before {
+        content: attr(data-label);
+
+        flex-shrink: 0;
+
+        color: var(--history-muted);
+
+        font-size: 11px;
+        font-weight: 750;
+
+        text-align: left;
+    }
+
+    .history-table td:nth-child(2) {
+        align-items: flex-start;
+    }
+
+    .history-table td:nth-child(2)
+    .history-book {
+        justify-content: flex-end;
+
+        max-width: 68%;
+    }
+
+    .history-book-info {
+        text-align: right;
+    }
+
+    .history-book-info strong {
+        font-size: 12px;
+    }
+
+    .history-book-icon {
+        width: 34px;
+        height: 34px;
+
+        font-size: 16px;
+    }
+
+    .history-reference {
+        white-space: normal;
+
+        text-align: right;
+    }
+
+    .history-pagination {
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 12px;
+
+        padding: 16px;
+    }
+
+    .history-pagination-info {
+        text-align: center;
+    }
+
+    .history-pagination nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .history-empty {
+        padding: 44px 20px;
+    }
+
+    .history-empty-icon {
+        width: 67px;
+        height: 67px;
+
+        font-size: 29px;
+    }
+
+    .history-empty h3 {
+        font-size: 19px;
+    }
+
+    .history-information {
+        padding: 14px;
+    }
+}
+
+
+/* ==========================================================
+   19. SMALL MOBILE
+   ========================================================== */
+
+@media (max-width: 400px) {
+
+    .history-heading h1 {
+        font-size: 23px;
+    }
+
+    .history-overview {
+        padding: 16px;
+    }
+
+    .history-card-header {
+        padding: 15px;
+    }
+
+    .history-table-wrapper {
+        padding: 10px;
+    }
+
+    .history-table td {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .history-table td::before {
+        font-size: 10px;
+    }
+
+    .history-status {
+        font-size: 10px;
+        padding: 7px 9px;
+    }
+}
+
+
+/* ==========================================================
+   20. REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .history-page *,
+    .history-page *::before,
+    .history-page *::after {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    .history-back-link:hover {
+        transform: none !important;
+    }
+}
